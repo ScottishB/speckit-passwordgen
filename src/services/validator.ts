@@ -25,13 +25,12 @@ export function validatePasswordConfig(config: PasswordConfig): ValidationResult
     errors.push('Minimum numbers must be 0 when numbers are disabled');
   }
 
-  // Rule 4: If special chars disabled, minSpecialChars must be 0
-  if (!config.includeSpecialChars && config.minSpecialChars > 0) {
-    errors.push('Minimum special characters must be 0 when special characters are disabled');
-  }
+  // Rule 4: If special chars disabled, minSpecialChars must be 0 (only validate, don't error)
+  // Skip validation - auto-adjust in component instead
 
   // Rule 5: minNumbers + minSpecialChars must be <= length
-  if (config.minNumbers + config.minSpecialChars > config.length) {
+  const effectiveMinSpecial = config.includeSpecialChars ? config.minSpecialChars : 0;
+  if (config.minNumbers + effectiveMinSpecial > config.length) {
     errors.push('Sum of minimum requirements exceeds password length');
   }
 

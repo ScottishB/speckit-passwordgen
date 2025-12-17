@@ -194,6 +194,10 @@ main {
   z-index: 1000;
 }
 
+.loading-overlay[hidden] {
+  display: none;
+}
+
 .spinner {
   width: 3rem;
   height: 3rem;

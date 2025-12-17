@@ -19,28 +19,37 @@ class AppComponent {
 
   async initialize(): Promise<void> {
     try {
+      console.log('[App] Starting initialization...');
       // Show loading overlay
       this.showLoading(true);
 
       // Initialize database
+      console.log('[App] Initializing database...');
       await this.database.initialize();
+      console.log('[App] Database initialized');
 
       // Initialize components
+      console.log('[App] Initializing components...');
       this.passwordForm = new PasswordFormComponent(this.database);
       this.passphraseForm = new PassphraseFormComponent(this.database);
       this.historyList = new HistoryListComponent(this.historyService);
+      console.log('[App] Components initialized');
 
       // Setup tab switching
+      console.log('[App] Setting up tab switching...');
       this.setupTabSwitching();
 
       // Setup URL hash routing
+      console.log('[App] Setting up hash routing...');
       this.setupHashRouting();
 
       // Hide loading overlay
+      console.log('[App] Hiding loading overlay...');
       this.showLoading(false);
 
-      console.log('App initialized successfully');
+      console.log('[App] App initialized successfully');
     } catch (error) {
+      console.error('[App] Initialization failed:', error);
       this.handleError(error as Error);
     }
   }

@@ -1,10 +1,8 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  root: './src',
-  publicDir: '../public',
   build: {
-    outDir: '../dist',
+    outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
       input: './src/index.html',
@@ -29,5 +27,8 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ['sql.js'],
+    esbuildOptions: {
+      target: 'es2022',
+    },
   },
 });

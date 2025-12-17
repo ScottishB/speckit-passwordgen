@@ -1,187 +1,98 @@
-import initSqlJs, { type Database as SqlJsDatabase } from 'sql.js';
 import type { GeneratedCredential } from '../models/GeneratedCredential';
 
+// Temporary in-memory storage until sql.js loading is fixed
 export class Database {
-  private db: SqlJsDatabase | null = null;
+  private credentials: GeneratedCredential[] = [];
+  private nextId = 1;
   private initialized = false;
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
     try {
-      // Initialize SQL.js
-      const SQL = await initSqlJs({
-        locateFile: (_file: string) => `/sql-wasm.wasm`,
-      });
-
-      // Try to load existing database from localStorage
-      const savedDb = localStorage.getItem('password-gen-db');
-      if (savedDb) {
-        const buffer = Uint8Array.from(atob(savedDb), c => c.charCodeAt(0));
-        this.db = new SQL.Database(buffer);
-      } else {
-        this.db = new SQL.Database();
+      console.log('[Database] Starting initialization...');
+      console.log('[Database] Using in-memory storage with localStorage...');
+      
+      // Load from localStorage if available
+      const saved = localStorage.getItem('password-gen-credentials');
+      if (saved) {
+        this.credentials = JSON.parse(saved);
+        this.nextId = Math.max(...this.credentials.map(c => c.id), 0) + 1;
+        console.log(`[Database] Loaded ${this.credentials.length} credentials from localStorage`);
       }
-
-      // Create schema if it doesn't exist
-      this.db.run(`
-        CREATE TABLE IF NOT EXISTS generated_credentials (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          type TEXT NOT NULL CHECK(type IN ('password', 'passphrase')),
-          value TEXT NOT NULL,
-          timestamp INTEGER NOT NULL,
-          config TEXT NOT NULL
-        )
-      `);
-
-      this.db.run(`CREATE INDEX IF NOT EXISTS idx_timestamp ON generated_credentials(timestamp DESC)`);
-      this.db.run(`CREATE INDEX IF NOT EXISTS idx_type ON generated_credentials(type)`);
-
+      
       this.initialized = true;
+      console.log('[Database] Initialization complete!');
     } catch (error) {
-      console.error('Failed to initialize database:', error);
+      console.error('[Database] Failed to initialize database:', error);
       throw new Error('Database initialization failed');
     }
   }
 
+  private persist(): void {
+    try {
+      localStorage.setItem('password-gen-credentials', JSON.stringify(this.credentials));
+    } catch (error) {
+      console.error('Failed to persist to localStorage:', error);
+    }
+  }
+
   async saveCredential(credential: Omit<GeneratedCredential, 'id'>): Promise<GeneratedCredential> {
-    if (!this.db) {
+    if (!this.initialized) {
       throw new Error('Database not initialized');
     }
 
-    try {
-      this.db.run(
-        `INSERT INTO generated_credentials (type, value, timestamp, config) VALUES (?, ?, ?, ?)`,
-        [credential.type, credential.value, credential.timestamp, credential.config]
-      );
+    const newCredential: GeneratedCredential = {
+      ...credential,
+      id: this.nextId++,
+    };
 
-      const result = this.db.exec(`SELECT last_insert_rowid() as id`);
-      const id = result[0]?.values[0]?.[0] as number;
+    this.credentials.push(newCredential);
+    this.persist();
 
-      // Persist to localStorage
-      await this.exportDatabase();
-
-      return {
-        ...credential,
-        id,
-      };
-    } catch (error) {
-      console.error('Failed to save credential:', error);
-      throw new Error('Failed to save to database');
-    }
+    return newCredential;
   }
 
   async getAllCredentials(limit = 50): Promise<GeneratedCredential[]> {
-    if (!this.db) {
+    if (!this.initialized) {
       throw new Error('Database not initialized');
     }
 
-    try {
-      const result = this.db.exec(
-        `SELECT id, type, value, timestamp, config FROM generated_credentials ORDER BY timestamp DESC LIMIT ?`,
-        [limit]
-      );
-
-      if (result.length === 0) return [];
-
-      const credentials: GeneratedCredential[] = [];
-      for (const row of result[0]!.values) {
-        credentials.push({
-          id: row[0] as number,
-          type: row[1] as 'password' | 'passphrase',
-          value: row[2] as string,
-          timestamp: row[3] as number,
-          config: row[4] as string,
-        });
-      }
-
-      return credentials;
-    } catch (error) {
-      console.error('Failed to get credentials:', error);
-      return [];
-    }
+    return this.credentials
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, limit);
   }
 
   async getCredentialsByType(type: 'password' | 'passphrase', limit = 50): Promise<GeneratedCredential[]> {
-    if (!this.db) {
+    if (!this.initialized) {
       throw new Error('Database not initialized');
     }
 
-    try {
-      const result = this.db.exec(
-        `SELECT id, type, value, timestamp, config FROM generated_credentials WHERE type = ? ORDER BY timestamp DESC LIMIT ?`,
-        [type, limit]
-      );
-
-      if (result.length === 0) return [];
-
-      const credentials: GeneratedCredential[] = [];
-      for (const row of result[0]!.values) {
-        credentials.push({
-          id: row[0] as number,
-          type: row[1] as 'password' | 'passphrase',
-          value: row[2] as string,
-          timestamp: row[3] as number,
-          config: row[4] as string,
-        });
-      }
-
-      return credentials;
-    } catch (error) {
-      console.error('Failed to get credentials by type:', error);
-      return [];
-    }
+    return this.credentials
+      .filter(c => c.type === type)
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, limit);
   }
 
   async getCredentialById(id: number): Promise<GeneratedCredential | null> {
-    if (!this.db) {
+    if (!this.initialized) {
       throw new Error('Database not initialized');
     }
 
-    try {
-      const result = this.db.exec(
-        `SELECT id, type, value, timestamp, config FROM generated_credentials WHERE id = ?`,
-        [id]
-      );
-
-      if (result.length === 0 || result[0]!.values.length === 0) return null;
-
-      const row = result[0]!.values[0]!;
-      return {
-        id: row[0] as number,
-        type: row[1] as 'password' | 'passphrase',
-        value: row[2] as string,
-        timestamp: row[3] as number,
-        config: row[4] as string,
-      };
-    } catch (error) {
-      console.error('Failed to get credential by id:', error);
-      return null;
-    }
+    return this.credentials.find(c => c.id === id) || null;
   }
 
   async exportDatabase(): Promise<Uint8Array> {
-    if (!this.db) {
+    if (!this.initialized) {
       throw new Error('Database not initialized');
     }
 
-    try {
-      const data = this.db.export();
-      // Save to localStorage
-      const base64 = btoa(String.fromCharCode(...data));
-      localStorage.setItem('password-gen-db', base64);
-      return data;
-    } catch (error) {
-      console.error('Failed to export database:', error);
-      throw new Error('Failed to export database');
-    }
+    const json = JSON.stringify(this.credentials);
+    return new TextEncoder().encode(json);
   }
 
   async close(): Promise<void> {
-    if (this.db) {
-      this.db.close();
-      this.db = null;
-      this.initialized = false;
-    }
+    this.persist();
+    this.initialized = false;
   }
 }
