@@ -5,6 +5,16 @@
 **Status**: Draft  
 **Input**: User description: "Users need to log in to see their own passwords and assign them to specific sites"
 
+## Clarifications
+
+### Session 2025-12-19
+
+- Q: How should stored passwords be encrypted in localStorage? → A: Derive encryption key from user's master password using PBKDF2/Argon2 (strong security, passwords remain encrypted even if storage compromised)
+- Q: Should 2FA be mandatory or optional during registration? → A: Optional - users can skip 2FA setup but are warned about security risks (more flexible, but weaker default)
+- Q: What should trigger session expiration? → A: Both idle (30 min) and absolute timeout (8 hours) - strongest security, prevents both abandoned and stale sessions
+- Q: Should the system maintain a history of previously generated passwords? → A: Limited history - keep last 50 generated passwords with timestamps and assignment status (balanced approach, supports retrieval of recent passwords)
+- Q: How should user data be stored to ensure complete isolation between users? → A: Per-user encryption keys derived from each user's master password (strongest isolation, each user's data independently encrypted)
+
 ## User Scenarios & Testing
 
 ### User Story 1 - User Registration & Login (Priority: P1)
@@ -27,20 +37,21 @@ Users can create an account with username/password and log in to access their pe
 
 ### User Story 2 - Two-Factor Authentication (Priority: P1)
 
-Users must complete 2FA during login to add an extra security layer for their password vault.
+Users can optionally enable 2FA during registration or later in settings to add an extra security layer for their password vault. Users who skip 2FA setup are shown security warnings.
 
-**Why this priority**: Critical security requirement - password vaults are high-value targets. Must be implemented before users trust the system with real passwords.
+**Why this priority**: Critical security feature - password vaults are high-value targets. Offering 2FA with clear warnings balances security with user flexibility.
 
 **Independent Test**: Can be tested by enabling 2FA during registration, logging out, and verifying that login requires both password AND 2FA code. Success means unauthorized access is significantly harder.
 
 **Acceptance Scenarios**:
 
-1. **Given** I am registering a new account, **When** I complete password setup, **Then** I am prompted to set up 2FA (TOTP app like Google Authenticator)
-2. **Given** I have scanned the QR code with my authenticator app, **When** I enter the 6-digit code, **Then** 2FA is enabled and I see backup codes
-3. **Given** I am logging in with 2FA enabled, **When** I enter correct password, **Then** I am prompted for 6-digit 2FA code
-4. **Given** I am on 2FA code entry, **When** I enter correct code from my app, **Then** I am logged into my vault
+1. **Given** I am registering a new account, **When** I complete password setup, **Then** I am prompted to set up 2FA with options to "Enable 2FA" or "Skip (Not Recommended)"
+2. **Given** I choose to skip 2FA setup, **When** I confirm, **Then** I see a warning "Your passwords will be less secure without 2FA" and can proceed or go back
+3. **Given** I have scanned the QR code with my authenticator app, **When** I enter the 6-digit code, **Then** 2FA is enabled and I see backup codes
+4. **Given** I am logging in with 2FA enabled, **When** I enter correct password, **Then** I am prompted for 6-digit 2FA code
 5. **Given** I am on 2FA code entry, **When** I enter incorrect code 3 times, **Then** I am locked out for 15 minutes
 6. **Given** I have lost access to my 2FA device, **When** I use a backup code, **Then** I can log in and am prompted to re-setup 2FA
+7. **Given** I skipped 2FA during registration, **When** I navigate to Settings, **Then** I can enable 2FA at any time
 
 ---
 
@@ -57,7 +68,7 @@ Users can assign their generated passwords/passphrases to specific websites or I
 1. **Given** I just generated a password, **When** I click "Assign to Site", **Then** I see a popup with fields for Site Name, URL/IP, Username, and Notes
 2. **Given** I am in the assign popup, **When** I enter "GitHub" as site name and "github.com" as URL, **Then** the password is saved with these details
 3. **Given** I am in the assign popup, **When** I enter "192.168.1.1" as IP address for "Home Router", **Then** the password is saved and validated as IP format
-4. **Given** I am viewing my password history, **When** I click an unassigned password, **Then** I can assign it to a site retroactively
+4. **Given** I am viewing my password history (last 50 generated), **When** I click an unassigned password, **Then** I can assign it to a site retroactively and see when it was generated
 5. **Given** I am in the assign popup, **When** I leave the form open for 5 minutes without action, **Then** the popup times out for security
 
 ---
@@ -126,7 +137,7 @@ Users can permanently delete their account and all associated data with appropri
   System allows it (legitimate use case: single password for multiple test sites) but shows a warning about password reuse risks.
 
 - **What happens when no password history exists for a new user?**  
-  Sites section shows empty state with message "No passwords saved yet" and prominent "Generate Password" button.
+  Sites section shows empty state with message "No passwords saved yet" and prominent "Generate Password" button. Password history section also shows "No passwords generated yet".
 
 - **What happens when a user's session expires while editing a site?**  
   User is redirected to login. After re-authentication, unsaved changes are lost (with prior warning). Consider auto-save drafts for future enhancement.
@@ -151,11 +162,11 @@ Users can permanently delete their account and all associated data with appropri
 
 - **FR-001**: System MUST require unique usernames (3-50 chars, alphanumeric + underscore)
 - **FR-002**: System MUST enforce strong passwords for user accounts (min 12 chars, uppercase, lowercase, number, special char)
-- **FR-003**: System MUST hash user passwords using bcrypt or Argon2 before storage
-- **FR-004**: System MUST implement TOTP-based 2FA (compatible with Google Authenticator, Authy)
-- **FR-005**: System MUST generate 10 single-use backup codes during 2FA setup
-- **FR-006**: System MUST lock accounts for 15 minutes after 3 failed 2FA attempts
-- **FR-007**: System MUST implement session management with 30-minute idle timeout
+- **FR-003**: System MUST hash user passwords using bcrypt or Argon2 before storage; derive encryption key from user's master password using PBKDF2 (100,000 iterations) or Argon2 for encrypting stored site passwords
+- **FR-004**: System MUST offer optional TOTP-based 2FA during registration and in settings (compatible with Google Authenticator, Authy); users can skip with explicit warning about security risks
+- **FR-005**: System MUST generate 10 single-use backup codes during 2FA setup (when user chooses to enable 2FA)
+- **FR-006**: System MUST lock accounts for 15 minutes after 3 failed 2FA attempts (applies only to accounts with 2FA enabled)
+- **FR-007**: System MUST implement session management with dual expiration: 30-minute idle timeout (no activity) AND 8-hour absolute timeout (from initial login), whichever occurs first
 - **FR-008**: System MUST log all security events (login, logout, failed attempts, 2FA changes)
 
 #### Password & Site Management
@@ -172,32 +183,34 @@ Users can permanently delete their account and all associated data with appropri
 - **FR-018**: System MUST support editing all site details except creation date
 - **FR-019**: System MUST allow regenerating passwords for existing sites
 - **FR-020**: System MUST preserve password history when editing sites
+- **FR-021**: System MUST maintain history of last 50 generated passwords per user with generation timestamp and assignment status; automatically remove oldest when limit exceeded
 
 #### Data & User Management
 
-- **FR-021**: System MUST isolate user data - users see only their own passwords
-- **FR-022**: System MUST persist all user data locally using browser storage
-- **FR-023**: Users MUST be able to delete their account with confirmation
-- **FR-024**: System MUST require typing "DELETE" + password for account deletion
-- **FR-025**: System MUST permanently remove all user data on account deletion
-- **FR-026**: System MUST terminate all active sessions on account deletion
-- **FR-027**: System MUST show empty state messaging when no passwords exist
-- **FR-028**: System MUST handle storage quota limits gracefully
+- **FR-022**: System MUST isolate user data - users see only their own passwords; each user's data encrypted with unique key derived from their master password ensuring cryptographic isolation
+- **FR-023**: System MUST persist all user data locally using browser storage
+- **FR-024**: Users MUST be able to delete their account with confirmation
+- **FR-025**: System MUST require typing "DELETE" + password for account deletion
+- **FR-026**: System MUST permanently remove all user data on account deletion
+- **FR-027**: System MUST terminate all active sessions on account deletion
+- **FR-028**: System MUST show empty state messaging when no passwords exist
+- **FR-029**: System MUST handle storage quota limits gracefully
 
 #### User Interface
 
-- **FR-029**: System MUST provide clear navigation between Generator, Sites, and Settings sections
-- **FR-030**: System MUST show password strength indicator during registration
-- **FR-031**: System MUST display QR code for 2FA setup with manual entry alternative
-- **FR-032**: System MUST show inline validation for all form fields
-- **FR-033**: System MUST auto-focus relevant fields (username on login, 2FA code on 2FA step)
-- **FR-034**: System MUST preserve form state during temporary errors (network issues)
+- **FR-030**: System MUST provide clear navigation between Generator, Sites, and Settings sections
+- **FR-031**: System MUST show password strength indicator during registration
+- **FR-032**: System MUST display QR code for 2FA setup with manual entry alternative
+- **FR-033**: System MUST show inline validation for all form fields
+- **FR-034**: System MUST auto-focus relevant fields (username on login, 2FA code on 2FA step)
+- **FR-035**: System MUST preserve form state during temporary errors (network issues)
+- **FR-036**: System MUST display password generation timestamps in history view with human-readable format (e.g., "2 hours ago", "Dec 19, 2025")
 
 ### Key Entities
 
 - **User Account**: Represents a registered user with username, hashed password, 2FA secret, backup codes, creation date, last login
 - **Site Entry**: Represents a saved site/password combination with site name, URL/IP, username, password (encrypted), notes, creation date, last modified date, user ID (foreign key)
-- **Session**: Represents an active login session with session token, user ID, creation time, last activity time, device/browser info
+- **Session**: Represents an active login session with session token, user ID, creation time (for absolute timeout), last activity time (for idle timeout), device/browser info
 - **Security Event**: Represents logged security actions with event type (login, logout, failed attempt, 2FA change), user ID, timestamp, IP address, details
 
 ## Success Criteria
@@ -208,7 +221,7 @@ Users can permanently delete their account and all associated data with appropri
 - **SC-002**: Users can assign a generated password to a site in under 30 seconds
 - **SC-003**: Users can retrieve and copy a saved password in under 10 seconds
 - **SC-004**: System prevents 100% of unauthorized access attempts (password + 2FA required)
-- **SC-005**: Zero unencrypted passwords stored in browser storage
+- **SC-005**: Zero unencrypted passwords stored in browser storage; all site passwords encrypted using key derived from user's master password; each user's data cryptographically isolated
 - **SC-006**: Search/filter returns results in under 500ms for up to 100 saved sites
 - **SC-007**: 95% of users successfully enable 2FA on first attempt
 - **SC-008**: Account deletion completes in under 10 seconds
