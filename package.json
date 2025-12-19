@@ -33,6 +33,10 @@
     "vitest": "^1.0.0"
   },
   "dependencies": {
+    "@types/qrcode": "^1.5.6",
+    "argon2-browser": "^1.18.0",
+    "otpauth": "^9.4.1",
+    "qrcode": "^1.5.4",
     "sql.js": "^1.9.0"
   }
 }
