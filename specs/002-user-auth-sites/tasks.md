@@ -66,11 +66,12 @@
   - Document recommended parameters
   - **Completed**: Created test-argon2.html prototype, recommended params: 3 iterations, 64 MiB
 
-- [ ] **TASK-006**: Prototype TOTP integration with otpauth
+- [x] **TASK-006**: Prototype TOTP integration with otpauth ✅
   - Create test script for secret generation
   - Test token generation and validation
   - Test time drift tolerance (±1 period)
   - Document integration approach
+  - **Completed**: Created test-totp.html with live token generator, window=1 (±30s tolerance)
 
 - [ ] **TASK-007**: Prototype QR code generation with qrcode library
   - Generate sample QR code for TOTP URI
