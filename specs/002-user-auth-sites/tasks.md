@@ -50,11 +50,12 @@
   - Consider fallback to 50K iterations if needed
   - **Completed**: Created interactive HTML benchmark tool at scripts/benchmark-pbkdf2.html
 
-- [ ] **TASK-004**: Verify Web Crypto API browser support
+- [x] **TASK-004**: Verify Web Crypto API browser support ✅
   - Create feature detection utility for Web Crypto API
   - Test crypto.subtle.importKey, encrypt, decrypt
   - Document minimum browser versions
   - Create fallback error message for unsupported browsers
+  - **Completed**: Created cryptoSupport.ts utility and check-crypto-support.html test page
 
 ### Library Prototyping
 
