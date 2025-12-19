@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PBKDF2 Performance Benchmark</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .info-section {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .info-section strong {
+            color: #333;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #results {
+            margin-top: 30px;
+        }
+
+        .result-block {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .result-block h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .result-line {
+            padding: 8px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .divider {
+            border-top: 1px solid #ddd;
+            margin: 10px 0;
+        }
+
+        .status-pass {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-fail {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .recommendations {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+
+        .recommendations h3 {
+            color: #1976D2;
+            margin-bottom: 15px;
+        }
+
+        .recommendations ul {
+            list-style-position: inside;
+            color: #333;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 PBKDF2 Performance Benchmark</h1>
+        <p class="subtitle">Testing key derivation performance with different iteration counts</p>
+
+        <div class="info-section">
+            <strong>Platform:</strong> <span id="platform"></span><br>
+            <strong>User Agent:</strong> <span id="userAgent"></span><br>
+            <strong>Target:</strong> 100,000 iterations should complete in &lt;3 seconds
+        </div>
+
+        <button id="runBenchmark" onclick="runFullBenchmark()">
+            Run Benchmark
+        </button>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // Display platform info
+        document.getElementById('platform').textContent = navigator.platform || 'Unknown';
+        document.getElementById('userAgent').textContent = navigator.userAgent;
+
+        // Generate random salt
+        function generateSalt() {
+            return crypto.getRandomValues(new Uint8Array(16));
+        }
+
+        // String to Uint8Array
+        function stringToUint8Array(str) {
+            return new TextEncoder().encode(str);
+        }
+
+        // PBKDF2 key derivation
+        async function deriveKey(password, salt, iterations) {
+            const startTime = performance.now();
+
+            const passwordKey = await crypto.subtle.importKey(
+                'raw',
+                stringToUint8Array(password),
+                'PBKDF2',
+                false,
+                ['deriveBits', 'deriveKey']
+            );
+
+            const key = await crypto.subtle.deriveKey(
+                {
+                    name: 'PBKDF2',
+                    salt: salt,
+                    iterations: iterations,
+                    hash: 'SHA-256',
+                },
+                passwordKey,
+                { name: 'AES-GCM', length: 256 },
+                true,
+                ['encrypt', 'decrypt']
+            );
+
+            const endTime = performance.now();
+            const duration = endTime - startTime;
+
+            return { key, duration };
+        }
+
+        // Run benchmark for specific iteration count
+        async function runBenchmark(iterations, runs = 5) {
+            const durations = [];
+            const testPassword = 'TestPassword123!@#';
+            const salt = generateSalt();
+
+            for (let i = 0; i < runs; i++) {
+                const { duration } = await deriveKey(testPassword, salt, iterations);
+                durations.push(duration);
+            }
+
+            const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
+            const minDuration = Math.min(...durations);
+            const maxDuration = Math.max(...durations);
+
+            return {
+                iterations,
+                runs: durations,
+                avgDuration,
+                minDuration,
+                maxDuration,
+                pass: avgDuration < 3000
+            };
+        }
+
+        // Display result block
+        function displayResult(result) {
+            const resultsDiv = document.getElementById('results');
+            const block = document.createElement('div');
+            block.className = 'result-block';
+
+            const statusClass = result.pass ? 'status-pass' : 'status-fail';
+            const statusText = result.pass ? '✅ PASS' : '❌ FAIL';
+
+            block.innerHTML = `
+                <h3>📊 ${result.iterations.toLocaleString()} iterations (${result.runs.length} runs)</h3>
+                ${result.runs.map((duration, i) => 
+                    `<div class="result-line">Run ${i + 1}: ${duration.toFixed(2)}ms</div>`
+                ).join('')}
+                <div class="divider"></div>
+                <div class="result-line"><strong>Average:</strong> ${result.avgDuration.toFixed(2)}ms</div>
+                <div class="result-line"><strong>Min:</strong> ${result.minDuration.toFixed(2)}ms</div>
+                <div class="result-line"><strong>Max:</strong> ${result.maxDuration.toFixed(2)}ms</div>
+                <div class="result-line"><strong>Status:</strong> <span class="${statusClass}">${statusText}</span> (target: &lt;3000ms)</div>
+            `;
+
+            resultsDiv.appendChild(block);
+        }
+
+        // Display recommendations
+        function displayRecommendations(results) {
+            const resultsDiv = document.getElementById('results');
+            const recsDiv = document.createElement('div');
+            recsDiv.className = 'recommendations';
+
+            const result100k = results.find(r => r.iterations === 100000);
+            const result50k = results.find(r => r.iterations === 50000);
+
+            let recommendation;
+            if (result100k && result100k.pass) {
+                recommendation = `Use 100,000 iterations (average: ${result100k.avgDuration.toFixed(0)}ms) - Meets security recommendations`;
+            } else if (result50k && result50k.pass) {
+                recommendation = `Consider 50,000 iterations (average: ${result50k.avgDuration.toFixed(0)}ms) - Acceptable fallback`;
+            } else {
+                recommendation = `Performance below target - consider optimizations or lower iteration count`;
+            }
+
+            recsDiv.innerHTML = `
+                <h3>📝 Recommendations</h3>
+                <ul>
+                    <li><strong>Recommendation:</strong> ${recommendation}</li>
+                    <li>Desktop typically performs 2-3x faster than mobile devices</li>
+                    <li>Add loading indicator for key derivation in UI</li>
+                    <li>Consider caching derived keys during session (if secure)</li>
+                    <li>Warn users on slow devices about expected wait time</li>
+                </ul>
+            `;
+
+            resultsDiv.appendChild(recsDiv);
+        }
+
+        // Run full benchmark
+        async function runFullBenchmark() {
+            const button = document.getElementById('runBenchmark');
+            const resultsDiv = document.getElementById('results');
+
+            // Disable button and clear results
+            button.disabled = true;
+            button.innerHTML = 'Running Benchmark<span class="spinner"></span>';
+            resultsDiv.innerHTML = '';
+
+            try {
+                // Run benchmarks sequentially
+                const tests = [10000, 50000, 100000, 200000];
+                const results = [];
+
+                for (const iterations of tests) {
+                    const result = await runBenchmark(iterations, iterations === 200000 ? 3 : 5);
+                    results.push(result);
+                    displayResult(result);
+                }
+
+                displayRecommendations(results);
+
+                button.innerHTML = '✅ Benchmark Complete - Run Again';
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="result-block" style="border-left-color: #dc3545;">
+                    <h3>❌ Error</h3>
+                    <div class="result-line">${error.message}</div>
+                </div>`;
+                button.innerHTML = '❌ Benchmark Failed - Try Again';
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        // Check Web Crypto API availability
+        if (!crypto || !crypto.subtle) {
+            document.getElementById('results').innerHTML = `
+                <div class="result-block" style="border-left-color: #dc3545;">
+                    <h3>❌ Web Crypto API Not Available</h3>
+                    <div class="result-line">Your browser does not support the Web Crypto API.</div>
+                    <div class="result-line">Please use a modern browser (Chrome, Firefox, Safari, Edge).</div>
+                </div>
+            `;
+            document.getElementById('runBenchmark').disabled = true;
+        }
+    </script>
+</body>
+</html>
