@@ -48,6 +48,12 @@ Add user authentication and site password management to the existing password ge
 - No breaking changes to existing password generator functionality
 - Bundle size increase <200KB (gzipped)
 
+**Security Standards**: 
+- OWASP ASVS 4.0 (Application Security Verification Standard)
+- NIST SP 800-63B (Digital Identity Guidelines)
+- OWASP Top 10 2021 compliance
+- See [SECURITY.md](./SECURITY.md) for complete security implementation guide
+
 **Scale/Scope**: 
 - Multi-user local application (same browser, different users)
 - ~1500 lines of new TypeScript logic
@@ -97,6 +103,13 @@ Add user authentication and site password management to the existing password ge
   - TotpService: secret generation, token validation, backup codes
   - SiteService: CRUD operations, search/filter, sorting
   - SecurityLogService: event logging, retrieval
+- **Security Tests** (Vitest):
+  - Timing attack resistance (password verification)
+  - Tamper detection (AES-GCM authentication)
+  - Rate limiting and account lockout
+  - Session timeout and invalidation
+  - Common password rejection
+  - 2FA bypass prevention
 - **Integration Tests** (Vitest):
   - Full registration flow (username → password → 2FA → login)
   - Session timeout scenarios (idle, absolute, concurrent sessions)
@@ -451,6 +464,244 @@ export interface VaultData {
 3. Add session activity tracking
 4. Handle logout and session expiration events
 5. Add "Sites" and "Settings" navigation tabs
+
+---
+
+## Security Decisions
+
+**Reference**: See [SECURITY.md](./SECURITY.md) for complete security implementation guide, OWASP/NIST compliance details, and security testing requirements.
+
+### Password Hashing: Argon2id
+
+**Decision**: Use Argon2id for password hashing (winner of 2015 Password Hashing Competition)
+
+**Parameters**:
+- Time (iterations): 3
+- Memory: 64 MiB (65536 KiB)
+- Parallelism: 1 (browser limitation)
+- Hash length: 32 bytes (256 bits)
+
+**Justification**:
+- OWASP recommended algorithm for password storage
+- Superior resistance to GPU/ASIC attacks compared to PBKDF2 or bcrypt
+- Memory-hard function prevents parallel cracking
+- Parameters exceed OWASP minimums (time: 2+, memory: 19 MiB+)
+- Performance acceptable for user login: ~500-1200ms desktop, ~1200-2000ms mobile
+
+**Alternatives Considered**:
+- PBKDF2-SHA256: Not memory-hard, vulnerable to GPU attacks
+- bcrypt: Less resistant to GPU attacks than Argon2
+- scrypt: Good but Argon2 is newer and preferred by OWASP
+
+### Key Derivation: PBKDF2
+
+**Decision**: Use PBKDF2-SHA256 with 100,000 iterations for encryption key derivation
+
+**Parameters**:
+- Algorithm: PBKDF2 with HMAC-SHA-256
+- Iterations: 100,000
+- Salt: 32 bytes (256 bits), cryptographically random
+- Output: 256-bit AES-GCM key
+
+**Justification**:
+- NIST SP 800-63B approved KDF
+- Exceeds NIST minimum of 10,000 iterations (2023 guidance)
+- Meets OWASP recommendation of 100,000+ iterations for PBKDF2
+- Native browser support via Web Crypto API (no external dependency)
+- Performance acceptable: ~500-1500ms desktop, ~1500-3000ms mobile
+- Used only for key derivation, not password hashing (Argon2id for that)
+
+**Why Not Argon2 for Keys?**:
+- Argon2 not available in Web Crypto API (requires external library)
+- PBKDF2 with 100K iterations provides sufficient protection for key derivation
+- Keys are ephemeral (never stored), reducing attack surface
+
+### Data Encryption: AES-256-GCM
+
+**Decision**: Use AES-256-GCM for encrypting user data at rest
+
+**Parameters**:
+- Algorithm: AES-GCM (Galois/Counter Mode)
+- Key length: 256 bits
+- IV length: 96 bits (12 bytes)
+- Tag length: 128 bits (16 bytes)
+
+**Justification**:
+- NIST approved authenticated encryption algorithm
+- GCM mode provides both confidentiality (encryption) and integrity (authentication)
+- Tamper detection: Any modification to ciphertext fails authentication
+- Native browser support via Web Crypto API
+- Industry standard for data encryption
+- 256-bit keys provide future-proof security (quantum-resistant until large-scale quantum computers)
+
+**Alternatives Considered**:
+- AES-CBC: No built-in authentication, requires separate HMAC
+- ChaCha20-Poly1305: Not available in Web Crypto API
+
+### Password Requirements: NIST SP 800-63B Compliant
+
+**Decision**: Minimum 8 characters, no composition rules
+
+**Requirements**:
+- Minimum length: 8 characters
+- Maximum length: 256 characters (exceeds NIST minimum of 64)
+- Allow all printable ASCII and Unicode characters
+- No composition rules (no "must contain uppercase, number, special char")
+- Screen against top 10,000 common passwords
+- No periodic password change requirements
+
+**Justification**:
+- NIST SP 800-63B Section 5.1.1.1 compliance
+- OWASP ASVS 4.0 Section 2.1.1 compliance
+- Composition rules reduce entropy and frustrate users
+- Length is more important than character diversity
+- Common password screening prevents weak passwords
+
+**Rejected Requirements**:
+- ❌ "Must contain uppercase, lowercase, number, special character"
+- ❌ "Must change password every 90 days"
+- ❌ "Cannot reuse last 5 passwords"
+- All rejected per NIST guidance as counterproductive
+
+### Session Management
+
+**Decision**: 30-minute idle timeout, 8-hour absolute timeout
+
+**Parameters**:
+- Idle timeout: 30 minutes of inactivity
+- Absolute timeout: 8 hours from login
+- Warning: 5 minutes before idle timeout
+- Session ID: UUID v4 (cryptographically random)
+
+**Justification**:
+- OWASP ASVS 4.0 Section 3.2.2 compliance
+- Balance between security and usability
+- 30-minute idle prevents session hijacking from unattended devices
+- 8-hour absolute prevents indefinite sessions
+- Warning gives users chance to continue session
+
+**Alternatives Considered**:
+- 15-minute idle: Too aggressive, poor UX
+- No absolute timeout: Security risk for long-running sessions
+- Remember me: Rejected for security reasons (NIST guidance)
+
+### Two-Factor Authentication: TOTP
+
+**Decision**: Time-based One-Time Passwords (TOTP) per RFC 6238
+
+**Parameters**:
+- Algorithm: SHA-1 (maximum authenticator app compatibility)
+- Digits: 6
+- Period: 30 seconds
+- Window: ±1 period (±30 seconds for clock skew)
+- Secret: 160 bits (20 bytes)
+- Backup codes: 10 codes, single-use, hashed (SHA-256)
+
+**Justification**:
+- OWASP ASVS 4.0 Section 2.8 compliance
+- NIST SP 800-63B AAL2 (Authenticator Assurance Level 2)
+- RFC 6238 standard protocol
+- Compatible with all major authenticator apps (Google, Microsoft, Authy, etc.)
+- SHA-1 acceptable for TOTP (not for signatures/certificates)
+- Backup codes provide recovery option
+
+**Alternatives Considered**:
+- SMS OTP: Not available in browser-only application
+- Hardware tokens (U2F/WebAuthn): Too complex for this scope
+- Email OTP: Not available in offline-first application
+
+### Security Logging
+
+**Decision**: Comprehensive security event logging with privacy protection
+
+**Logged Events**:
+- All authentication events (login, logout, registration)
+- Password changes
+- 2FA setup/disable
+- Session events (timeout, revocation)
+- Account deletion
+
+**Privacy Protection**:
+- Never log passwords, tokens, secrets, or keys
+- Redact email addresses (u***@example.com)
+- Sanitize all metadata before storage
+- Limit to 1000 events per user (auto-prune oldest)
+
+**Justification**:
+- OWASP ASVS 4.0 Section 7.2.1 compliance
+- Provides audit trail for security incidents
+- Helps users monitor account activity
+- Privacy-preserving (no PII in logs)
+
+### Rate Limiting & Account Lockout
+
+**Decision**: Progressive rate limiting with temporary account lockout
+
+**Parameters**:
+- Failed login attempts: Max 5 before rate limiting activates
+- Rate limiting delays: 1s, 2s, 4s, 8s, 16s (exponential backoff)
+- Account lockout: 10 failed attempts in 15 minutes
+- Lockout duration: 15 minutes
+
+**Justification**:
+- OWASP ASVS 4.0 protection against brute-force attacks
+- Exponential backoff slows down automated attacks
+- Temporary lockout prevents credential stuffing
+- 15-minute cooldown balances security and UX
+
+**Implementation Note**:
+- Rate limiting state stored in memory (resets on page reload)
+- Acceptable for client-side application with no server persistence
+- Users can always clear browser data to reset (but this also clears their vault)
+
+### No Server-Side Pepper
+
+**Decision**: Do not implement password pepper
+
+**Justification**:
+- Client-side application with no server component
+- No secure place to store pepper (would be visible in JavaScript)
+- Argon2id with strong parameters provides sufficient protection
+- Per-user encryption keys (derived from master password) provide similar benefit
+
+**Note**: If this application were server-based, a pepper would be strongly recommended.
+
+### Key Storage Policy
+
+**Decision**: Never store encryption keys
+
+**Policy**:
+- Encryption keys are ALWAYS derived from user's master password on-demand
+- Keys exist only in memory during active session
+- Keys are marked non-extractable in Web Crypto API
+- Keys are cleared from memory on logout/timeout
+
+**Justification**:
+- Keys derived from passwords can't be stolen from storage
+- Compromised localStorage doesn't expose keys
+- User's master password is the only secret needed
+- Follows principle of least privilege
+
+### Data Classification
+
+**Encrypted at Rest** (using per-user keys):
+- Site passwords
+- Site URLs
+- Site notes/descriptions
+- 2FA secrets (TOTP base32 secrets)
+
+**Not Encrypted** (already protected or not sensitive):
+- Usernames (needed for login)
+- Email addresses (needed for account recovery)
+- Password hashes (already cryptographically protected by Argon2id)
+- Session metadata (timestamps, user agents - not sensitive)
+- Security logs (audit trail - no PII)
+- 2FA backup codes (hashed with SHA-256, not encrypted)
+
+**Justification**:
+- Minimize performance overhead (only encrypt sensitive data)
+- Balance between security and usability
+- Non-sensitive data accessible without decryption key
 
 ---
 

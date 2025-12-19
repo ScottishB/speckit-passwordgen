@@ -80,11 +80,12 @@
   - Document optimal size and format
   - **Completed**: Created test-qrcode.html with size comparison, 256x256 recommended, Medium (M) error correction
 
-- [ ] **TASK-008**: Review and document security best practices
+- [x] **TASK-008**: Review and document security best practices ✅
   - Review OWASP guidelines for password storage
   - Review NIST guidelines for key derivation
   - Document security decisions in plan.md
   - Create security checklist for implementation
+  - **Completed**: Created SECURITY.md with comprehensive OWASP/NIST guidelines, updated plan.md with security decisions section
 
 ---
 
