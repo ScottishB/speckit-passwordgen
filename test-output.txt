@@ -1,0 +1,3557 @@
+npm warn Unknown user config "always-auth". This will stop working in the next major version of npm.
+npm warn Unknown user config "email". This will stop working in the next major version of npm.
+
+> password-generator@1.0.0 test
+> vitest --run
+
+
+ RUN  v1.6.1 /Users/scottbrown/ninjasasquatch/speckit-passwordgen
+
+ ❯ tests/components/auth/RegisterForm.test.ts  (0 test)
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > constructor > should create instance with valid database
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > constructor > should throw error if database is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should log a security event
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should generate event ID automatically
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should generate timestamp automatically
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should accept custom event ID
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should accept custom timestamp
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should throw error if event is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should throw error if userId is missing
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should throw error if eventType is missing
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should throw error if ipAddress is missing
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should throw error if details are missing
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should log multiple events for same user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should log events for different users
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should persist events to localStorage
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > logEvent() > should log all event types
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getUserEvents() > should return empty array when no events exist
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getUserEvents() > should return all events for a user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getUserEvents() > should only return events for specified user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getUserEvents() > should return events sorted by timestamp descending
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getUserEvents() > should limit results when limit specified
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getUserEvents() > should return all events when limit not specified
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getUserEvents() > should throw error if userId is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getUserEvents() > should handle corrupted localStorage gracefully
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stderr | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getUserEvents() > should handle corrupted localStorage gracefully
+[SecurityLogService] Failed to load user events: SyntaxError: Unexpected token 'i', "invalid-json" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at SecurityLogService.getUserEvents (/Users/scottbrown/ninjasasquatch/speckit-passwordgen/src/services/SecurityLogService.ts:144:47)
+    at /Users/scottbrown/ninjasasquatch/speckit-passwordgen/tests/services/security/SecurityLogService.test.ts:262:40
+    at file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:958:5)
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getUserEvents() > should return most recent events when limited
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getEventsByType() > should return events of specific type
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getEventsByType() > should return empty array when no events of type exist
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getEventsByType() > should only return events for specified user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getEventsByType() > should return events sorted by timestamp descending
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getEventsByType() > should limit results when limit specified
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getEventsByType() > should throw error if userId is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > getEventsByType() > should throw error if eventType is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > clearUserEvents() > should clear all events for a user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > clearUserEvents() > should only clear events for specified user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > clearUserEvents() > should be idempotent (no error if user has no events)
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > clearUserEvents() > should throw error if userId is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > clearUserEvents() > should persist deletion to localStorage
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > clearUserEvents() > should handle empty localStorage
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > Integration > should handle full event lifecycle
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > Integration > should track login attempts for security audit
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > Integration > should track account lifecycle events
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:401
+    throw new Error(`process.exit unexpectedly called with "${code}"`);
+    ^
+
+Error: process.exit unexpectedly called with "1"
+    at process.exit (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:401:11)
+    at process.workerOnGlobalUncaughtException [as _fatalException] (node:internal/main/worker_thread:292:11)
+
+Node.js v24.11.0
+file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:401
+    throw new Error(`process.exit unexpectedly called with "${code}"`);
+    ^
+
+Error: process.exit unexpectedly called with "1"
+    at process.exit (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:401:11)
+    at process.workerOnGlobalUncaughtException [as _fatalException] (node:internal/main/worker_thread:292:11)
+
+Node.js v24.11.0
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > Integration > should handle concurrent event logging
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > Integration > should persist events across service instances
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/security/SecurityLogService.test.ts > SecurityLogService > Integration > should support large event volumes
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ✓ tests/services/security/SecurityLogService.test.ts  (44 tests) 46ms
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Complete Registration Flow > should complete full registration → 2FA setup → login flow
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > constructor > should create LoginForm with authService
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > constructor > should throw error if authService is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > render > should render login form with username input
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > render > should render login form with password input
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > render > should render 2FA code input (hidden initially)
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > render > should render submit button
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > render > should render error container with proper ARIA attributes
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > render > should have proper form heading with id
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > validation > should validate required username on blur
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > validation > should clear username error on input
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > validation > should validate required password on blur
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > validation > should clear password error on input
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > form submission > should prevent submission with empty fields
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > form submission > should call authService.login with valid credentials
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > constructor > should create TotpSetupModal instance
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > constructor > should throw error if container is null
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > constructor > should throw error if authService is null
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > constructor > should throw error if totpService is null
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > constructor > should throw error if userId is null
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > render > should render modal overlay
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > render > should render modal dialog with proper ARIA
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > render > should render modal title
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > render > should render QR code container
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > render > should render manual entry section
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > render > should render verification input with proper attributes
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > render > should render backup codes section (initially hidden)
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > render > should render action buttons
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > initialization > should call authService.enable2FA with userId
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > form submission > should disable form during submission
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > initialization > should display QR code after initialization
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > form submission > should dispatch login-success event on successful login
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > 2FA handling > should show 2FA input when 2FA_REQUIRED error occurs
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > 2FA handling > should include 2FA code in login call when provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > initialization > should display manual entry secret
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > 2FA handling > should validate 2FA code format (6 digits)
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > 2FA handling > should accept 8-character backup codes
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > 2FA handling > should convert 2FA code to uppercase
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > initialization > should focus verification input after initialization
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > error handling > should display invalid credentials error
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > error handling > should display account locked error
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > error handling > should display invalid 2FA code error
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > initialization > should handle initialization error
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > verification input > should clear error when user types
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > error handling > should handle generic errors
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stderr | tests/components/auth/LoginForm.test.ts > LoginForm > error handling > should handle generic errors
+Login error: Error: Network error
+    at /Users/scottbrown/ninjasasquatch/speckit-passwordgen/tests/components/auth/LoginForm.test.ts:423:56
+    at file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at listOnTimeout (node:internal/timers:569:9)
+    at processTimers (node:internal/timers:543:7)
+    at runSuite (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:909:15)
+
+ ✓ tests/components/auth/LoginForm.test.ts  (34 tests) 157ms
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > reset > should reset form to initial state
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > reset > should focus on username input after reset
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > accessibility > should have proper ARIA labels on inputs
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > accessibility > should set aria-invalid on validation error
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > accessibility > should have role="alert" on error containers
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > accessibility > should have aria-live="polite" on field errors
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > accessibility > should have aria-live="assertive" on form error
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > accessibility > should have proper autocomplete attributes
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/LoginForm.test.ts > LoginForm > destroy > should clear container content
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > verification input > should auto-verify when 6 digits entered
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > LoginForm Accessibility > should have proper ARIA labels on all inputs
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > LoginForm Accessibility > should have proper autocomplete attributes
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > LoginForm Accessibility > should have error containers with role="alert"
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > LoginForm Accessibility > should set aria-invalid when errors are shown
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > LoginForm Accessibility > should support keyboard navigation with Tab
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > LoginForm Accessibility > should support form submission with Enter key
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > LoginForm Accessibility > should have visible focus indicators
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > LoginForm Accessibility > should announce 2FA requirement to screen readers
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > verification input > should verify on Enter key press
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > verification > should show error for empty code
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > verification > should show error for invalid format
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > verification > should show error for invalid code
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > verification > should clear input and refocus after invalid code
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > verification > should show backup codes after successful verification
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > RegisterForm Accessibility > should have proper ARIA labels on all inputs
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > RegisterForm Accessibility > should have password strength indicator with proper ARIA
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > RegisterForm Accessibility > should announce password strength changes
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > RegisterForm Accessibility > should announce username availability to screen readers
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > backup codes > should display all backup codes
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > backup codes > should display code numbers
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > backup codes > should hide verify and skip buttons
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > backup codes > should show complete button
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > copy backup codes > should copy all backup codes to clipboard
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > copy backup codes > should show visual feedback after copy
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ❯ tests/services/crypto/CryptoService.decryption.test.ts  (42 tests | 3 failed) 631ms
+   ❯ tests/services/crypto/CryptoService.decryption.test.ts > CryptoService - Data Decryption > Round-trip Encryption/Decryption > should preserve data type through round-trip
+     → Data cannot be undefined or null
+   ❯ tests/services/crypto/CryptoService.decryption.test.ts > CryptoService - Data Decryption > Security Properties > should throw DECRYPTION_FAILED error for tampered data
+     → expected 'INVALID_INPUT' to be 'DECRYPTION_FAILED' // Object.is equality
+   ❯ tests/services/crypto/CryptoService.decryption.test.ts > CryptoService - Data Decryption > Error Handling > should include descriptive error message for tampered data
+     → expected 'Invalid base64 string' to contain 'decrypt'
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > saveSession() > should save a new session
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > saveSession() > should persist session to localStorage
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > saveSession() > should update existing session
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > saveSession() > should save multiple sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > saveSession() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > saveSession() > should save session with all fields
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > getSession() > should retrieve session by ID
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > getSession() > should return null for non-existent session
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > getSession() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > getSession() > should retrieve correct session from multiple sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > deleteSession() > should delete session by ID
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > deleteSession() > should persist deletion to localStorage
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > deleteSession() > should be idempotent (no error if session does not exist)
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > deleteSession() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > deleteSession() > should only delete specified session
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > getUserSessions() > should return empty array when user has no sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > getUserSessions() > should retrieve all sessions for a user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > getUserSessions() > should only return sessions for specified user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > getUserSessions() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > deleteAllUserSessions() > should delete all sessions for a user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > deleteAllUserSessions() > should persist deletion to localStorage
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > deleteAllUserSessions() > should only delete sessions for specified user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > deleteAllUserSessions() > should be idempotent (no error if user has no sessions)
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > deleteAllUserSessions() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > deleteAllUserSessions() > should not persist if no sessions were deleted
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > Integration > should handle full session lifecycle
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > Integration > should handle multi-device user sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > Integration > should handle user deletion with sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > Integration > should persist sessions across database close and reopen
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] Loaded 0 users
+[Database] Loaded 1 sessions
+[Database] Loaded 0 security events
+[Database] Loaded 0 legacy credentials
+[Database] Initialization complete!
+
+ ✓ tests/services/database/Database.sessions.test.ts  (31 tests) 13ms
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > Integration > should handle concurrent session operations
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.sessions.test.ts > Database - Session Methods > Integration > should support session expiration checking
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ❯ tests/services/crypto/CryptoService.utilities.test.ts  (63 tests | 2 failed) 15ms
+   ❯ tests/services/crypto/CryptoService.utilities.test.ts > CryptoService - Utility Methods > validatePasswordStrength() > Valid Passwords > should accept password with exactly 8 characters
+     → expected false to be true // Object.is equality
+   ❯ tests/services/crypto/CryptoService.utilities.test.ts > CryptoService - Utility Methods > validatePasswordStrength() > Multiple Errors > should return multiple errors for long common password
+     → expected 1 to be greater than 1
+stdout | tests/services/migration/MigrationService.test.ts > MigrationService > Constructor > should create MigrationService instance
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:401
+    throw new Error(`process.exit unexpectedly called with "${code}"`);
+    ^
+
+Error: process.exit unexpectedly called with "1"
+    at process.exit (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:401:11)
+    at process.workerOnGlobalUncaughtException [as _fatalException] (node:internal/main/worker_thread:292:11)
+
+Node.js v24.11.0
+ ✓ tests/services/totp/TotpService.test.ts  (49 tests) 71ms
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Complete Registration Flow > should allow registration without 2FA (skip)
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > RegisterForm Accessibility > should have error containers with role="alert"
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > RegisterForm Accessibility > should set aria-invalid when validation fails
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > RegisterForm Accessibility > should support keyboard navigation through all form fields
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > RegisterForm Accessibility > should have proper autocomplete attributes
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > RegisterForm Accessibility > should have help text properly associated with inputs
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should have proper modal ARIA attributes
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Login with 2FA Flow > should complete login flow with TOTP code
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should have QR code with alt text
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should have verification input with proper ARIA
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Login with 2FA Flow > should complete login flow with backup code
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should have error container with role="alert"
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should support Escape key to close modal after verification
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ✓ tests/services/crypto/CryptoService.encryption.test.ts  (37 tests) 443ms
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Login with 2FA Flow > should reject invalid 2FA code
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should support Enter key for verification
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should trap focus within modal
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Session Timeout Flow > should detect expired session
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Session Timeout Flow > should handle session expiration on activity check
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Logout Flow > should complete logout flow
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Logout Flow > should clear current user and session on logout
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Form Switching > should switch from login to register form
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Form Switching > should switch from register to login form
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Form Switching > should preserve authentication state during navigation
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Error Recovery > should allow retry after failed login
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should have backup codes list with proper ARIA
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > createSession() > should create a new session
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > createSession() > should generate unique session IDs
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > createSession() > should generate unique session tokens
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > createSession() > should set timestamps correctly
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > createSession() > should set expiration to 8 hours from creation
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > createSession() > should persist session to database
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > createSession() > should throw error if userId is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > createSession() > should set device info
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > createSession() > should set IP address
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > createSession() > should create multiple sessions for same user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > getSession() > should retrieve an existing session
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > getSession() > should return null for non-existent session
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > getSession() > should throw error if sessionId is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > getSession() > should retrieve correct session from multiple sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > updateActivity() > should update last activity timestamp
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > getUserSessions() > should return empty array when user has no sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > getUserSessions() > should return all sessions for a user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > getUserSessions() > should only return sessions for specified user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > getUserSessions() > should throw error if userId is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > getUserSessions() > should return sessions with all properties
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > getUserSessions() > should return sessions in storage order
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > getUserSessions() > should include expired sessions (does not filter)
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > getUserSessions() > should handle user with many sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > invalidateAllUserSessions() > should delete all sessions for a user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > invalidateAllUserSessions() > should only delete sessions for specified user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > invalidateAllUserSessions() > should be idempotent (no error if user has no sessions)
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > invalidateAllUserSessions() > should throw error if userId is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > invalidateAllUserSessions() > should persist deletion to database
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > invalidateAllUserSessions() > should handle deletion of many sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > Integration > should handle multi-device scenario
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ✓ tests/services/database/Database.users.test.ts  (36 tests) 15ms
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > saveUser() > should save a new user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > saveUser() > should persist user to localStorage
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > saveUser() > should update existing user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > saveUser() > should save multiple users
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > saveUser() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getUser() > should retrieve user by ID
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getUser() > should return null for non-existent user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getUser() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getUser() > should retrieve correct user from multiple users
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getUserByUsername() > should retrieve user by username
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getUserByUsername() > should return null for non-existent username
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getUserByUsername() > should be case-sensitive
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getUserByUsername() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getUserByUsername() > should retrieve correct user from multiple users
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getAllUsers() > should return empty array when no users exist
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getAllUsers() > should return all users
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getAllUsers() > should return copy of users array
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > getAllUsers() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > updateUser() > should update user username
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > updateUser() > should update user lastLogin
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > updateUser() > should update multiple fields
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > updateUser() > should not allow ID to be changed
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > updateUser() > should persist updates to localStorage
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > updateUser() > should throw error for non-existent user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > updateUser() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > updateUser() > should preserve fields not being updated
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > deleteUser() > should delete user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > deleteUser() > should persist deletion to localStorage
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > deleteUser() > should delete user vault
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > deleteUser() > should delete user sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > deleteUser() > should throw error for non-existent user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > deleteUser() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > deleteUser() > should only delete specified user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > Integration > should handle full user lifecycle
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > Integration > should persist across database close and reopen
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] Loaded 1 users
+[Database] Loaded 0 sessions
+[Database] Loaded 0 security events
+[Database] Loaded 0 legacy credentials
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.users.test.ts > Database - User CRUD Methods > Integration > should handle multiple concurrent operations
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ❯ tests/services/database/Database.vault.test.ts  (25 tests | 2 failed) 17ms
+   ❯ tests/services/database/Database.vault.test.ts > Database - Vault Methods > getVault() > should handle localStorage errors gracefully
+     → expected '{"version":1,"sites":[{"id":"site-1",…' to be null
+   ❯ tests/services/database/Database.vault.test.ts > Database - Vault Methods > deleteVault() > should throw error if localStorage fails
+     → promise resolved "undefined" instead of rejecting
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > saveVault() > should save encrypted vault data
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > saveVault() > should overwrite existing vault data
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > saveVault() > should save vaults for multiple users
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > saveVault() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > saveVault() > should persist vault immediately to localStorage
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > saveVault() > should handle empty vault data
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > saveVault() > should handle large vault data
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > getVault() > should retrieve encrypted vault data
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > getVault() > should return null for non-existent vault
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > getVault() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > getVault() > should retrieve correct vault for specific user
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > getVault() > should handle localStorage errors gracefully
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > deleteVault() > should delete vault data
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > deleteVault() > should remove vault from localStorage
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > deleteVault() > should only delete specified user vault
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > deleteVault() > should throw error if database not initialized
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > deleteVault() > should throw error if localStorage fails
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > Integration > should handle full vault lifecycle
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > Integration > should handle multi-user vaults independently
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > Integration > should persist vault across database close and reopen
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] Loaded 0 users
+[Database] Loaded 0 sessions
+[Database] Loaded 0 security events
+[Database] Loaded 0 legacy credentials
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > Integration > should cascade delete vault when user is deleted
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > Integration > should handle concurrent vault operations
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > Integration > should use correct storage key pattern
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > Integration > should handle vault operations for user with special characters in ID
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/database/Database.vault.test.ts > Database - Vault Methods > Integration > should support storing complex encrypted vault structures
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > Integration > should support password change workflow
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > Integration > should support "logout everywhere" feature
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > Integration > should handle concurrent session operations
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > Integration > should support session management for multiple users
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > Integration > should handle session management after cleanup
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ✓ tests/services/session/SessionService.multisession.test.ts  (22 tests) 17ms
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > Integration > should persist session changes across database restarts
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] Loaded 0 users
+[Database] Loaded 2 sessions
+[Database] Loaded 0 security events
+[Database] Loaded 0 legacy credentials
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.multisession.test.ts > SessionService - Multi-Session Management > Integration > should support viewing active devices
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > updateActivity() > should not change other session properties
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > updateActivity() > should persist activity update to database
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > updateActivity() > should throw error if sessionId is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > updateActivity() > should throw error if session not found
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > updateActivity() > should handle multiple activity updates
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > invalidateSession() > should delete session from database
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > invalidateSession() > should persist deletion to database
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > invalidateSession() > should be idempotent (no error if session does not exist)
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > invalidateSession() > should throw error if sessionId is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > invalidateSession() > should only invalidate specified session
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > Integration > should handle full session lifecycle
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should announce button states to screen readers
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > Integration > should handle concurrent session operations
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > Integration > should persist sessions across database close and reopen
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] Loaded 0 users
+[Database] Loaded 1 sessions
+[Database] Loaded 0 security events
+[Database] Loaded 0 legacy credentials
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > Integration > should support multi-device sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ❯ tests/services/session/SessionService.lifecycle.test.ts  (29 tests | 2 failed) 92ms
+   ❯ tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > updateActivity() > should persist activity update to database
+     → expected 1766422684558 to be greater than 1766422684558
+   ❯ tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > Integration > should handle full session lifecycle
+     → expected 1766422684611 to be greater than 1766422684611
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should have copy button with accessible feedback
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > Keyboard Navigation Integration > should allow Tab navigation through LoginForm
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > Keyboard Navigation Integration > should allow Tab navigation through RegisterForm
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > Screen Reader Announcements > should have aria-live regions for dynamic content in LoginForm
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > Screen Reader Announcements > should have aria-live regions for dynamic content in RegisterForm
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > Screen Reader Announcements > should announce form errors assertively
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > Focus Management > should focus first input on LoginForm render
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/accessibility.test.ts > Accessibility Tests > Focus Management > should focus username input after RegisterForm reset
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ❯ tests/components/auth/accessibility.test.ts  (34 tests | 5 failed) 1584ms
+   ❯ tests/components/auth/accessibility.test.ts > Accessibility Tests > LoginForm Accessibility > should announce 2FA requirement to screen readers
+     → expected null to be truthy
+   ❯ tests/components/auth/accessibility.test.ts > Accessibility Tests > RegisterForm Accessibility > should have password strength indicator with proper ARIA
+     → expected undefined to be 'progressbar' // Object.is equality
+   ❯ tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should support Enter key for verification
+     → expected '' to be '123456' // Object.is equality
+   ❯ tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should have backup codes list with proper ARIA
+     → expected undefined to be 'list' // Object.is equality
+   ❯ tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should have copy button with accessible feedback
+     → expected null to be truthy
+ ❯ tests/integration/auth-flow.test.ts  (14 tests | 10 failed) 1607ms
+   ❯ tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Complete Registration Flow > should complete full registration → 2FA setup → login flow
+     → expected false to be true // Object.is equality
+   ❯ tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Login with 2FA Flow > should complete login flow with TOTP code
+     → expected null to be truthy
+   ❯ tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Login with 2FA Flow > should complete login flow with backup code
+     → Cannot set properties of null (setting 'value')
+   ❯ tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Login with 2FA Flow > should reject invalid 2FA code
+     → Cannot set properties of null (setting 'value')
+   ❯ tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Session Timeout Flow > should detect expired session
+     → Invalid username or password
+   ❯ tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Session Timeout Flow > should handle session expiration on activity check
+     → Invalid username or password
+   ❯ tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Logout Flow > should complete logout flow
+     → Invalid username or password
+   ❯ tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Logout Flow > should clear current user and session on logout
+     → Invalid username or password
+   ❯ tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Form Switching > should preserve authentication state during navigation
+     → Password is too weak: Password must be at least 12 characters long
+   ❯ tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Error Recovery > should allow retry after failed login
+     → expected false to be true // Object.is equality
+stdout | tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Error Recovery > should clear errors when user starts typing
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > cleanupExpiredSessions() > should return 0 when no sessions exist
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > cleanupExpiredSessions() > should not delete valid sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > cleanupExpiredSessions() > should delete expired sessions (idle timeout)
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > cleanupExpiredSessions() > should delete expired sessions (absolute timeout)
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > cleanupExpiredSessions() > should delete all expired sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > cleanupExpiredSessions() > should delete mix of expired sessions
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > cleanupExpiredSessions() > should return 0 if localStorage is corrupted
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stderr | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > cleanupExpiredSessions() > should return 0 if localStorage is corrupted
+[SessionService] Failed to cleanup expired sessions: SyntaxError: Unexpected token 'i', "invalid-json" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at SessionService.cleanupExpiredSessions (/Users/scottbrown/ninjasasquatch/speckit-passwordgen/src/services/SessionService.ts:355:40)
+    at /Users/scottbrown/ninjasasquatch/speckit-passwordgen/tests/services/session/SessionService.cleanup.test.ts:162:49
+    at file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:135:14
+    at file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:60:26
+    at runTest (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:781:17)
+    at runSuite (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runSuite (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:909:15)
+    at runFiles (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/@vitest/runner/dist/index.js:958:5)
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > cleanupExpiredSessions() > should handle empty sessions array
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > startExpirationCheck() > should start cleanup interval
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > startExpirationCheck() > should not create multiple intervals
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > startExpirationCheck() > should run cleanup at 30-second intervals
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > startExpirationCheck() > should run cleanup multiple times
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > startExpirationCheck() > should handle cleanup errors gracefully
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > startExpirationCheck() > should handle cleanup errors gracefully
+<empty line>
+stderr | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > startExpirationCheck() > should handle cleanup errors gracefully
+[SessionService] Failed to cleanup expired sessions: SyntaxError: Unexpected token 'i', "invalid-json" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at SessionService.cleanupExpiredSessions (/Users/scottbrown/ninjasasquatch/speckit-passwordgen/src/services/SessionService.ts:355:40)
+    at /Users/scottbrown/ninjasasquatch/speckit-passwordgen/src/services/SessionService.ts:307:20
+    at callTimer (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/vitest/dist/vendor/vi.YFlodzP_.js:1976:24)
+    at doTickInner (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/vitest/dist/vendor/vi.YFlodzP_.js:2562:29)
+    at Immediate.nextPromiseTick [as _onImmediate] (file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/vitest/dist/vendor/vi.YFlodzP_.js:2623:25)
+    at processImmediate (node:internal/timers:505:21)
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > stopExpirationCheck() > should stop cleanup interval
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > stopExpirationCheck() > should not error if no interval is running
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > stopExpirationCheck() > should prevent cleanup from running after stop
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > stopExpirationCheck() > should be idempotent
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > Integration > should handle start/stop/start cycle
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > Integration > should cleanup expired sessions while keeping valid ones
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > Integration > should respect cleanup interval timing
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.cleanup.test.ts > SessionService - Automatic Cleanup > Integration > should handle concurrent session operations during cleanup
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ✓ tests/services/session/SessionService.cleanup.test.ts  (21 tests) 23ms
+ ✓ tests/services/storage/StorageQuotaService.test.ts  (28 tests) 6ms
+ ❯ tests/services/SiteService.test.ts  (0 test)
+file:///Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/vitest/dist/vendor/execute.fL3szUAI.js:401
+    throw new Error(`process.exit unexpectedly called with "${code}"`);
+    ^
+
+Error: process.exit unexpectedly called with "1"
+(Use `node --trace-uncaught ...` to show where the exception was thrown)
+
+Node.js v24.11.0
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should return false for valid active session
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should return true when absolute timeout exceeded
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should return true when idle timeout exceeded
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should return false when idle timeout not exceeded
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should return false when absolute timeout not exceeded
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should throw error if session is not provided
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should return true at exact idle timeout boundary
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should return true at exact absolute timeout boundary
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should prioritize absolute timeout over idle timeout
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should return true if only idle timeout exceeded
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should return true if only absolute timeout exceeded
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should handle recently updated session
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should correctly evaluate session with maximum valid idle time
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > isSessionExpired() > should correctly evaluate session with maximum valid absolute time
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > Integration > should detect expired session in typical authentication flow
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > Integration > should keep session alive with regular activity
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > Integration > should expire session after 8 hours regardless of activity
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > Integration > should handle multiple sessions with different expiration states
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ✓ tests/services/session/SessionService.timeout.test.ts  (20 tests) 10ms
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > Integration > should validate timeout constants are correct
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/services/session/SessionService.timeout.test.ts > SessionService - Timeout Logic > Integration > should handle edge case of session at exact expiration time
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ❯ tests/services/crypto/CryptoService.keyderivation.test.ts  (23 tests | 2 failed) 291ms
+   ❯ tests/services/crypto/CryptoService.keyderivation.test.ts > CryptoService - Key Derivation (TASK-011) > deriveEncryptionKey > should throw error for empty master password
+     → expected [Function] to throw error including 'Master password cannot be empty' but got 'Master password must be a non-empty s…'
+   ❯ tests/services/crypto/CryptoService.keyderivation.test.ts > CryptoService - Key Derivation (TASK-011) > PBKDF2 Parameters > should use 100,000 iterations (NIST compliant)
+     → expected 12.182041999999456 to be greater than 100
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > copy backup codes > should handle clipboard error
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > print backup codes > should call window.print when print button clicked
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > skip button > should show confirmation dialog
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > skip button > should close modal if confirmed
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > skip button > should not close modal if cancelled
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > close modal > should dispatch completion event on close
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > close modal > should close modal on Escape key after verification
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > close modal > should not close on Escape before verification
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > close modal > should close on overlay click after verification
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > close modal > should not close on overlay click before verification
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > accessibility > should have proper ARIA labels
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > accessibility > should set aria-invalid on error
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > accessibility > should announce errors with role="alert"
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > accessibility > should have backup codes list with proper ARIA
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+stdout | tests/components/auth/TotpSetupModal.test.ts > TotpSetupModal > destroy > should clear container
+[Database] Starting initialization...
+[Database] Using localStorage for multi-user storage...
+[Database] No existing users found
+[Database] No existing sessions found
+[Database] No existing security events found
+[Database] Initialization complete!
+
+ ✓ tests/components/auth/TotpSetupModal.test.ts  (47 tests) 2897ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/services/SiteService.test.ts [ tests/services/SiteService.test.ts ]
+Error: Transform failed with 1 error:
+/Users/scottbrown/ninjasasquatch/speckit-passwordgen/tests/services/SiteService.test.ts:75:13: ERROR: Expected ";" but found ":"
+ ❯ failureErrorWithLog node_modules/esbuild/lib/main.js:1472:15
+ ❯ node_modules/esbuild/lib/main.js:755:50
+ ❯ responseCallbacks.<computed> node_modules/esbuild/lib/main.js:622:9
+ ❯ handleIncomingPacket node_modules/esbuild/lib/main.js:677:12
+ ❯ Socket.readFromStdout node_modules/esbuild/lib/main.js:600:7
+ ❯ Socket.emit node:events:508:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/28]⎯
+
+ FAIL  tests/components/auth/RegisterForm.test.ts [ tests/components/auth/RegisterForm.test.ts ]
+Error: Transform failed with 1 error:
+/Users/scottbrown/ninjasasquatch/speckit-passwordgen/tests/components/auth/RegisterForm.test.ts:312:4: ERROR: Expected "}" but found "it"
+ ❯ failureErrorWithLog node_modules/esbuild/lib/main.js:1472:15
+ ❯ node_modules/esbuild/lib/main.js:755:50
+ ❯ responseCallbacks.<computed> node_modules/esbuild/lib/main.js:622:9
+ ❯ handleIncomingPacket node_modules/esbuild/lib/main.js:677:12
+ ❯ Socket.readFromStdout node_modules/esbuild/lib/main.js:600:7
+ ❯ Socket.emit node:events:508:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/28]⎯
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 26 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Complete Registration Flow > should complete full registration → 2FA setup → login flow
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/auth-flow.test.ts:87:35
+     85|       await new Promise(resolve => setTimeout(resolve, 200));
+     86| 
+     87|       expect(registrationSuccess).toBe(true);
+       |                                   ^
+     88|       expect(registeredUserId).toBeTruthy();
+     89| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/28]⎯
+
+ FAIL  tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Login with 2FA Flow > should complete login flow with TOTP code
+AssertionError: expected null to be truthy
+
+- Expected: 
+null
+
++ Received: 
+false
+
+ ❯ tests/integration/auth-flow.test.ts:251:26
+    249|       // Should show 2FA input
+    250|       const twoFAInput = loginContainer.querySelector('#login-2fa-code…
+    251|       expect(twoFAInput).toBeTruthy();
+       |                          ^
+    252|       expect(twoFAInput.style.display).not.toBe('none');
+    253| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/28]⎯
+
+ FAIL  tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Login with 2FA Flow > should complete login flow with backup code
+TypeError: Cannot set properties of null (setting 'value')
+ ❯ tests/integration/auth-flow.test.ts:299:18
+    297|       // Enter backup code instead of TOTP
+    298|       const twoFAInput = loginContainer.querySelector('#login-2fa-code…
+    299|       twoFAInput.value = backupCode;
+       |                  ^
+    300| 
+    301|       let loginSuccess = false;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/28]⎯
+
+ FAIL  tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Login with 2FA Flow > should reject invalid 2FA code
+TypeError: Cannot set properties of null (setting 'value')
+ ❯ tests/integration/auth-flow.test.ts:345:18
+    343|       // Enter invalid code
+    344|       const twoFAInput = loginContainer.querySelector('#login-2fa-code…
+    345|       twoFAInput.value = '000000'; // Invalid code
+       |                  ^
+    346| 
+    347|       submitButton.click();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/28]⎯
+
+ FAIL  tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Session Timeout Flow > should detect expired session
+AuthError: Invalid username or password
+ ❯ AuthService.login src/services/AuthService.ts:303:15
+    301|         }
+    302| 
+    303|         throw new AuthError('Invalid username or password');
+       |               ^
+    304|       }
+    305| 
+ ❯ tests/integration/auth-flow.test.ts:363:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: undefined }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/28]⎯
+
+ FAIL  tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Session Timeout Flow > should handle session expiration on activity check
+AuthError: Invalid username or password
+ ❯ AuthService.login src/services/AuthService.ts:303:15
+    301|         }
+    302| 
+    303|         throw new AuthError('Invalid username or password');
+       |               ^
+    304|       }
+    305| 
+ ❯ tests/integration/auth-flow.test.ts:383:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: undefined }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/28]⎯
+
+ FAIL  tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Logout Flow > should complete logout flow
+AuthError: Invalid username or password
+ ❯ AuthService.login src/services/AuthService.ts:303:15
+    301|         }
+    302| 
+    303|         throw new AuthError('Invalid username or password');
+       |               ^
+    304|       }
+    305| 
+ ❯ tests/integration/auth-flow.test.ts:407:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: undefined }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/28]⎯
+
+ FAIL  tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Logout Flow > should clear current user and session on logout
+AuthError: Invalid username or password
+ ❯ AuthService.login src/services/AuthService.ts:303:15
+    301|         }
+    302| 
+    303|         throw new AuthError('Invalid username or password');
+       |               ^
+    304|       }
+    305| 
+ ❯ tests/integration/auth-flow.test.ts:428:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: undefined }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/28]⎯
+
+ FAIL  tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Form Switching > should preserve authentication state during navigation
+ValidationError: Password is too weak: Password must be at least 12 characters long
+ ❯ AuthService.register src/services/AuthService.ts:157:13
+    155|     const strengthResult = this.validatePasswordStrength(password);
+    156|     if (!strengthResult.valid) {
+    157|       throw new ValidationError(`Password is too weak: ${strengthResul…
+       |             ^
+    158|     }
+    159| 
+ ❯ tests/integration/auth-flow.test.ts:500:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/28]⎯
+
+ FAIL  tests/integration/auth-flow.test.ts > Authentication Flow Integration Tests > Error Recovery > should allow retry after failed login
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/auth-flow.test.ts:552:28
+    550|       await new Promise(resolve => setTimeout(resolve, 200));
+    551| 
+    552|       expect(loginSuccess).toBe(true);
+       |                            ^
+    553|     });
+    554| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/28]⎯
+
+ FAIL  tests/components/auth/accessibility.test.ts > Accessibility Tests > LoginForm Accessibility > should announce 2FA requirement to screen readers
+AssertionError: expected null to be truthy
+
+- Expected: 
+null
+
++ Received: 
+false
+
+ ❯ tests/components/auth/accessibility.test.ts:176:26
+    174| 
+    175|       // Should show 2FA input with proper ARIA
+    176|       expect(twoFAInput).toBeTruthy();
+       |                          ^
+    177|       expect(twoFAInput?.getAttribute('aria-label')).toContain('authen…
+    178|       expect(twoFAError?.getAttribute('role')).toBe('alert');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/28]⎯
+
+ FAIL  tests/components/auth/accessibility.test.ts > Accessibility Tests > RegisterForm Accessibility > should have password strength indicator with proper ARIA
+AssertionError: expected undefined to be 'progressbar' // Object.is equality
+
+- Expected: 
+"progressbar"
+
++ Received: 
+undefined
+
+ ❯ tests/components/auth/accessibility.test.ts:212:49
+    210| 
+    211|       expect(strengthIndicator?.getAttribute('aria-live')).toBe('polit…
+    212|       expect(progressBar?.getAttribute('role')).toBe('progressbar');
+       |                                                 ^
+    213|       expect(progressBar?.getAttribute('aria-valuemin')).toBe('0');
+    214|       expect(progressBar?.getAttribute('aria-valuemax')).toBe('100');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/28]⎯
+
+ FAIL  tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should support Enter key for verification
+AssertionError: expected '' to be '123456' // Object.is equality
+
+- Expected
++ Received
+
+- 123456
+
+ ❯ tests/components/auth/accessibility.test.ts:394:39
+    392| 
+    393|       // Verification should be triggered (no error for now)
+    394|       expect(verificationInput.value).toBe('123456');
+       |                                       ^
+    395|     });
+    396| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/28]⎯
+
+ FAIL  tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should have backup codes list with proper ARIA
+AssertionError: expected undefined to be 'list' // Object.is equality
+
+- Expected: 
+"list"
+
++ Received: 
+undefined
+
+ ❯ tests/components/auth/accessibility.test.ts:426:53
+    424|       const backupCodesList = container.querySelector('.totp-modal__ba…
+    425| 
+    426|       expect(backupCodesList?.getAttribute('role')).toBe('list');
+       |                                                     ^
+    427|       expect(backupCodesList?.getAttribute('aria-label')).toBe('Backup…
+    428| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/28]⎯
+
+ FAIL  tests/components/auth/accessibility.test.ts > Accessibility Tests > TotpSetupModal Accessibility > should have copy button with accessible feedback
+AssertionError: expected null to be truthy
+
+- Expected: 
+null
+
++ Received: 
+false
+
+ ❯ tests/components/auth/accessibility.test.ts:444:54
+    442|       const copyButton = container.querySelector('#copy-codes-button')…
+    443| 
+    444|       expect(copyButton?.getAttribute('aria-label')).toBeTruthy();
+       |                                                      ^
+    445|     });
+    446|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/28]⎯
+
+ FAIL  tests/services/crypto/CryptoService.decryption.test.ts > CryptoService - Data Decryption > Round-trip Encryption/Decryption > should preserve data type through round-trip
+CryptoError: Data cannot be undefined or null
+ ❯ CryptoService.encryptData src/services/CryptoService.ts:592:13
+    590|     // Validate data is provided
+    591|     if (data === undefined || data === null) {
+    592|       throw new CryptoError(
+       |             ^
+    593|         'Data cannot be undefined or null',
+    594|         CryptoErrorCode.INVALID_INPUT
+ ❯ tests/services/crypto/CryptoService.decryption.test.ts:183:47
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'INVALID_INPUT', originalError: undefined }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/28]⎯
+
+ FAIL  tests/services/crypto/CryptoService.decryption.test.ts > CryptoService - Data Decryption > Security Properties > should throw DECRYPTION_FAILED error for tampered data
+AssertionError: expected 'INVALID_INPUT' to be 'DECRYPTION_FAILED' // Object.is equality
+
+- Expected
++ Received
+
+- DECRYPTION_FAILED
++ INVALID_INPUT
+
+ ❯ tests/services/crypto/CryptoService.decryption.test.ts:341:45
+    339|       } catch (error) {
+    340|         expect(error).toBeInstanceOf(CryptoError);
+    341|         expect((error as CryptoError).code).toBe(CryptoErrorCode.DECRY…
+       |                                             ^
+    342|       }
+    343|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/28]⎯
+
+ FAIL  tests/services/crypto/CryptoService.decryption.test.ts > CryptoService - Data Decryption > Error Handling > should include descriptive error message for tampered data
+AssertionError: expected 'Invalid base64 string' to contain 'decrypt'
+
+- Expected
++ Received
+
+- decrypt
++ Invalid base64 string
+
+ ❯ tests/services/crypto/CryptoService.decryption.test.ts:546:48
+    544|       } catch (error) {
+    545|         expect(error).toBeInstanceOf(CryptoError);
+    546|         expect((error as CryptoError).message).toContain('decrypt');
+       |                                                ^
+    547|       }
+    548|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/28]⎯
+
+ FAIL  tests/services/crypto/CryptoService.keyderivation.test.ts > CryptoService - Key Derivation (TASK-011) > deriveEncryptionKey > should throw error for empty master password
+AssertionError: expected [Function] to throw error including 'Master password cannot be empty' but got 'Master password must be a non-empty s…'
+
+- Expected
++ Received
+
+- Master password cannot be empty
++ Master password must be a non-empty string
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/28]⎯
+
+ FAIL  tests/services/crypto/CryptoService.keyderivation.test.ts > CryptoService - Key Derivation (TASK-011) > PBKDF2 Parameters > should use 100,000 iterations (NIST compliant)
+AssertionError: expected 12.182041999999456 to be greater than 100
+ ❯ tests/services/crypto/CryptoService.keyderivation.test.ts:233:24
+    231| 
+    232|       // Should complete but take some time (minimum ~100ms)
+    233|       expect(duration).toBeGreaterThan(100);
+       |                        ^
+    234|       expect(duration).toBeLessThan(10000); // Max 10 seconds
+    235|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/28]⎯
+
+ FAIL  tests/services/crypto/CryptoService.utilities.test.ts > CryptoService - Utility Methods > validatePasswordStrength() > Valid Passwords > should accept password with exactly 8 characters
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/services/crypto/CryptoService.utilities.test.ts:207:32
+    205|         const result = cryptoService.validatePasswordStrength('abcd123…
+    206|         
+    207|         expect(result.isValid).toBe(true);
+       |                                ^
+    208|         expect(result.errors).toHaveLength(0);
+    209|       });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/28]⎯
+
+ FAIL  tests/services/crypto/CryptoService.utilities.test.ts > CryptoService - Utility Methods > validatePasswordStrength() > Multiple Errors > should return multiple errors for long common password
+AssertionError: expected 1 to be greater than 1
+ ❯ tests/services/crypto/CryptoService.utilities.test.ts:452:38
+    450|         
+    451|         expect(result.isValid).toBe(false);
+    452|         expect(result.errors.length).toBeGreaterThan(1);
+       |                                      ^
+    453|       });
+    454|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/28]⎯
+
+ FAIL  tests/services/database/Database.vault.test.ts > Database - Vault Methods > getVault() > should handle localStorage errors gracefully
+AssertionError: expected '{"version":1,"sites":[{"id":"site-1",…' to be null
+ ❯ tests/services/database/Database.vault.test.ts:192:25
+    190| 
+    191|       const retrieved = await database.getVault(userId);
+    192|       expect(retrieved).toBeNull();
+       |                         ^
+    193| 
+    194|       // Restore original method
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/28]⎯
+
+ FAIL  tests/services/database/Database.vault.test.ts > Database - Vault Methods > deleteVault() > should throw error if localStorage fails
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected: 
+[Error: rejected promise]
+
++ Received: 
+undefined
+
+ ❯ tests/services/database/Database.vault.test.ts:256:48
+    254|       };
+    255| 
+    256|       await expect(database.deleteVault(userId)).rejects.toThrow('Fail…
+       |                                                ^
+    257| 
+    258|       // Restore original method
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/28]⎯
+
+ FAIL  tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > updateActivity() > should persist activity update to database
+AssertionError: expected 1766422684558 to be greater than 1766422684558
+ ❯ tests/services/session/SessionService.lifecycle.test.ts:214:36
+    212| 
+    213|       const stored = await database.getSession(session.id);
+    214|       expect(stored?.lastActivity).toBeGreaterThan(session.lastActivit…
+       |                                    ^
+    215|     });
+    216| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/28]⎯
+
+ FAIL  tests/services/session/SessionService.lifecycle.test.ts > SessionService - Lifecycle Methods > Integration > should handle full session lifecycle
+AssertionError: expected 1766422684611 to be greater than 1766422684611
+ ❯ tests/services/session/SessionService.lifecycle.test.ts:309:39
+    307|       await sessionService.updateActivity(session.id);
+    308|       retrieved = await sessionService.getSession(session.id);
+    309|       expect(retrieved?.lastActivity).toBeGreaterThan(session.lastActi…
+       |                                       ^
+    310| 
+    311|       // Invalidate session
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/28]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 4 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+RuntimeError: abort(TypeError: Failed to parse URL from /Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/argon2-browser/dist/argon2.wasm). Build with -s ASSERTIONS=1 for more info.
+ ❯ process.abort node_modules/argon2-browser/dist/argon2.js:1:7557
+ ❯ process.emit node:events:520:35
+ ❯ emitUnhandledRejection node:internal/process/promises:252:13
+ ❯ throwUnhandledRejectionsMode node:internal/process/promises:388:19
+ ❯ processPromiseRejections node:internal/process/promises:475:17
+ ❯ processTicksAndRejections node:internal/process/task_queues:106:32
+
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+RuntimeError: abort(TypeError: Failed to parse URL from /Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/argon2-browser/dist/argon2.wasm). Build with -s ASSERTIONS=1 for more info.
+ ❯ process.abort node_modules/argon2-browser/dist/argon2.js:1:7557
+ ❯ process.emit node:events:520:35
+ ❯ emitUnhandledRejection node:internal/process/promises:252:13
+ ❯ throwUnhandledRejectionsMode node:internal/process/promises:388:19
+ ❯ processPromiseRejections node:internal/process/promises:475:17
+ ❯ processTicksAndRejections node:internal/process/task_queues:106:32
+
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+RuntimeError: abort(TypeError: Failed to parse URL from /Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/argon2-browser/dist/argon2.wasm). Build with -s ASSERTIONS=1 for more info.
+ ❯ process.abort node_modules/argon2-browser/dist/argon2.js:1:7557
+ ❯ process.emit node:events:520:35
+ ❯ emitUnhandledRejection node:internal/process/promises:252:13
+ ❯ throwUnhandledRejectionsMode node:internal/process/promises:388:19
+ ❯ processPromiseRejections node:internal/process/promises:475:17
+ ❯ processTicksAndRejections node:internal/process/task_queues:106:32
+
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+RuntimeError: abort(TypeError: Failed to parse URL from /Users/scottbrown/ninjasasquatch/speckit-passwordgen/node_modules/argon2-browser/dist/argon2.wasm). Build with -s ASSERTIONS=1 for more info.
+ ❯ process.abort node_modules/argon2-browser/dist/argon2.js:1:7557
+ ❯ process.emit node:events:520:35
+ ❯ emitUnhandledRejection node:internal/process/promises:252:13
+ ❯ throwUnhandledRejectionsMode node:internal/process/promises:388:19
+ ❯ processPromiseRejections node:internal/process/promises:475:17
+ ❯ processTicksAndRejections node:internal/process/task_queues:106:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ Test Files  9 failed | 11 passed (24)
+      Tests  26 failed | 573 passed (753)
+     Errors  4 errors
+   Start at  16:58:01
+   Duration  4.25s (transform 1.22s, setup 3ms, collect 2.25s, tests 7.93s, environment 15.82s, prepare 2.01s)
+
