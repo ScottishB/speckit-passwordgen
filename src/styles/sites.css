@@ -1,0 +1,635 @@
+/**
+ * Sites View Styles
+ * 
+ * Responsive site management interface with:
+ * - Desktop: Table layout with inline actions
+ * - Mobile: Card layout with stacked fields
+ * - Search and sort controls
+ * - Password reveal/hide functionality
+ * - Copy confirmation animations
+ * - Empty state messaging
+ * - Accessibility: WCAG 2.1 AA compliant
+ */
+
+/* ============================================
+   Layout & Container
+   ============================================ */
+
+.sites-view {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.sites-view__header {
+  margin-bottom: 2rem;
+}
+
+.sites-view__title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 1.5rem 0;
+}
+
+.sites-view__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .sites-view__controls {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* ============================================
+   Search Input
+   ============================================ */
+
+.sites-view__search {
+  flex: 1;
+  max-width: 400px;
+}
+
+.sites-view__search-input {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  background-color: #ffffff;
+  color: #111827;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.sites-view__search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.sites-view__search-input::placeholder {
+  color: #9ca3af;
+}
+
+/* ============================================
+   Sort Dropdown
+   ============================================ */
+
+.sites-view__sort {
+  width: 100%;
+  max-width: 220px;
+}
+
+.sites-view__sort-select {
+  width: 100%;
+  padding: 0.625rem 2.5rem 0.625rem 1rem;
+  font-size: 0.875rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.5rem;
+  color: #111827;
+  cursor: pointer;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  appearance: none;
+}
+
+.sites-view__sort-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ============================================
+   Desktop Table View
+   ============================================ */
+
+.sites-view__table-container {
+  display: none;
+  overflow-x: auto;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .sites-view__table-container {
+    display: block;
+  }
+}
+
+.sites-view__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.sites-view__table thead {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sites-view__table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.sites-view__table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.sites-view__table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.sites-view__table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.sites-view__cell {
+  padding: 1rem;
+  color: #111827;
+  vertical-align: middle;
+}
+
+.sites-view__cell--name {
+  font-weight: 500;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sites-view__cell--url {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sites-view__cell--username {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sites-view__cell--password {
+  font-family: 'Courier New', Courier, monospace;
+  white-space: nowrap;
+}
+
+.sites-view__cell--actions {
+  width: 100px;
+}
+
+.sites-view__url-link {
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.15s ease-in-out;
+}
+
+.sites-view__url-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.sites-view__url-link:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 0.125rem;
+}
+
+/* ============================================
+   Mobile Card View
+   ============================================ */
+
+.sites-view__cards {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .sites-view__cards {
+    display: none;
+  }
+}
+
+.sites-view__card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.sites-view__card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.sites-view__card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sites-view__card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 1rem;
+}
+
+.sites-view__card-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.sites-view__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sites-view__card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sites-view__card-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sites-view__card-value {
+  font-size: 0.875rem;
+  color: #111827;
+  word-break: break-word;
+}
+
+.sites-view__password-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ============================================
+   Password Display & Reveal
+   ============================================ */
+
+.sites-view__password {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.875rem;
+  color: #111827;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.sites-view__reveal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem;
+  border: none;
+  background-color: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.sites-view__reveal-btn:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.sites-view__reveal-btn:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.sites-view__reveal-btn:active {
+  background-color: #e5e7eb;
+}
+
+/* ============================================
+   Action Buttons
+   ============================================ */
+
+.sites-view__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sites-view__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.sites-view__action-btn:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.sites-view__action-btn:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.sites-view__action-btn:active {
+  background-color: #e5e7eb;
+}
+
+.sites-view__action-btn--copy:hover {
+  color: #3b82f6;
+}
+
+.sites-view__action-btn--edit:hover {
+  color: #10b981;
+}
+
+.sites-view__action-btn--copied {
+  color: #10b981 !important;
+  background-color: #d1fae5 !important;
+}
+
+/* ============================================
+   Icons
+   ============================================ */
+
+.sites-view__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke-width: 2;
+}
+
+/* ============================================
+   Empty State
+   ============================================ */
+
+.sites-view__empty {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.sites-view__empty-icon {
+  width: 4rem;
+  height: 4rem;
+  color: #9ca3af;
+  margin-bottom: 1.5rem;
+}
+
+.sites-view__empty-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.5rem 0;
+}
+
+.sites-view__empty-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  max-width: 400px;
+  margin: 0;
+}
+
+/* ============================================
+   Screen Reader Only
+   ============================================ */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+
+@media (max-width: 639px) {
+  .sites-view {
+    padding: 1rem;
+  }
+
+  .sites-view__title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .sites-view__search,
+  .sites-view__sort {
+    max-width: 100%;
+  }
+}
+
+/* ============================================
+   Accessibility Enhancements
+   ============================================ */
+
+/* Focus visible for keyboard navigation */
+@supports selector(:focus-visible) {
+  .sites-view__search-input:focus,
+  .sites-view__sort-select:focus,
+  .sites-view__reveal-btn:focus,
+  .sites-view__action-btn:focus,
+  .sites-view__url-link:focus {
+    outline: none;
+  }
+
+  .sites-view__search-input:focus-visible,
+  .sites-view__sort-select:focus-visible {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .sites-view__reveal-btn:focus-visible,
+  .sites-view__action-btn:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  .sites-view__url-link:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    border-radius: 0.125rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .sites-view__table {
+    border: 2px solid currentColor;
+  }
+
+  .sites-view__table th,
+  .sites-view__table td {
+    border: 1px solid currentColor;
+  }
+
+  .sites-view__card {
+    border: 2px solid currentColor;
+  }
+
+  .sites-view__action-btn,
+  .sites-view__reveal-btn {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dark mode support (optional, for future enhancement) */
+@media (prefers-color-scheme: dark) {
+  .sites-view__title {
+    color: #f9fafb;
+  }
+
+  .sites-view__search-input,
+  .sites-view__sort-select {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+  }
+
+  .sites-view__search-input::placeholder {
+    color: #6b7280;
+  }
+
+  .sites-view__table-container,
+  .sites-view__card {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+
+  .sites-view__table thead {
+    background-color: #111827;
+    border-color: #374151;
+  }
+
+  .sites-view__table th {
+    color: #d1d5db;
+  }
+
+  .sites-view__table tbody tr {
+    border-color: #374151;
+  }
+
+  .sites-view__table tbody tr:hover {
+    background-color: #111827;
+  }
+
+  .sites-view__cell {
+    color: #f9fafb;
+  }
+
+  .sites-view__card-title {
+    color: #f9fafb;
+  }
+
+  .sites-view__card-header {
+    border-color: #374151;
+  }
+
+  .sites-view__card-label {
+    color: #9ca3af;
+  }
+
+  .sites-view__card-value,
+  .sites-view__password {
+    color: #f9fafb;
+  }
+
+  .sites-view__empty-title {
+    color: #f9fafb;
+  }
+
+  .sites-view__empty-text {
+    color: #9ca3af;
+  }
+}
+
+/* Print styles */
+@media print {
+  .sites-view__search,
+  .sites-view__sort,
+  .sites-view__actions,
+  .sites-view__card-actions,
+  .sites-view__reveal-btn,
+  .sites-view__action-btn {
+    display: none !important;
+  }
+
+  .sites-view__password {
+    user-select: text;
+  }
+
+  .sites-view__table,
+  .sites-view__card {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+
+  .sites-view__table tbody tr:hover {
+    background-color: transparent;
+  }
+}
