@@ -1059,20 +1059,22 @@
 
 ### Data Migration
 
-- [ ] **TASK-101**: Create migration utility
+- [X] **TASK-101**: Create migration utility ✅
   - Create `src/services/MigrationService.ts`
   - Implement `checkForOldData(): boolean` (check for `password-gen-credentials` key)
   - Implement `exportOldData(): string` (JSON export)
   - Implement `migrateToNewUser(username: string, password: string): Promise<void>`
   - Encrypt old credentials and move to new user's vault
+  - **Completed**: Created comprehensive 357-line MigrationService with checkForOldData() detecting legacy storage, exportOldData() returning formatted JSON with metadata, migrateToNewUser() creating new account and migrating credentials to encrypted vault, deleteOldData() for cleanup, getOldDataStats() for statistics display (count, types, dates). Includes proper error handling, userId injection for site creation, and detailed migration notes for each converted credential.
 
-- [ ] **TASK-102**: Create migration UI
+- [X] **TASK-102**: Create migration UI ✅
   - Create `src/components/MigrationModal.ts`
   - Show modal on first load if old data detected
   - Offer options: "Migrate to Account" or "Start Fresh"
   - For migrate: prompt for new username/password
   - For start fresh: offer to export data first
   - Show progress/loading during migration
+  - **Completed**: Created 690-line MigrationModal component with 4-step flow (choice → migrate/export → success), statistics display showing credential count/types/dates, registration form with validation (username 3-20 chars, password 12+ chars with requirements, confirm password), export functionality with JSON download and old data deletion, skip option with confirmation dialog, loading states and error handling. Added 400+ lines of responsive CSS with fade-in animations, mobile optimization, accessibility support (ARIA, keyboard nav), and print styles.
 
 - [ ] **TASK-103**: Test migration thoroughly
   - Create mock old data
