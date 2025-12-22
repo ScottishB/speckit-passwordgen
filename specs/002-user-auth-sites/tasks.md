@@ -255,10 +255,11 @@
   - Implement `cleanupExpiredSessions(): Promise<number>`
   - **Completed**: Implemented automatic session cleanup with startExpirationCheck (30s interval with setInterval), stopExpirationCheck (cleanup control), and cleanupExpiredSessions (returns deleted count). Includes error handling and prevents multiple intervals. Created comprehensive test suite (54 tests) with fake timers covering cleanup cycles, interval management, and concurrent operations.
 
-- [ ] **TASK-030**: Implement multi-session management
+- [X] **TASK-030**: Implement multi-session management
   - Implement `getUserSessions(userId: string): Promise<Session[]>`
   - Implement `invalidateAllUserSessions(userId: string): Promise<void>`
   - Add session count limits if needed
+  - **Completed**: Implemented getUserSessions (retrieves all user sessions for device management) and invalidateAllUserSessions (force logout from all devices). Delegates to Database methods. Created comprehensive test suite (60 tests) covering multi-device scenarios, password change workflows, concurrent operations, and "logout everywhere" feature.
 
 ### SecurityLogService Implementation
 

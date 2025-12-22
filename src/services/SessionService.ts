@@ -365,6 +365,61 @@ export class SessionService {
   }
 
   // ==========================================================================
+  // Multi-Session Management
+  // ==========================================================================
+
+  /**
+   * Gets all sessions for a specific user
+   * 
+   * Returns all active sessions for the given user ID, useful for displaying
+   * logged-in devices or managing multi-device sessions.
+   * 
+   * @param userId - User ID to get sessions for
+   * @returns Promise resolving to array of user's sessions
+   * @throws {Error} If userId is not provided
+   * 
+   * @example
+   * ```typescript
+   * const sessions = await sessionService.getUserSessions('user-123');
+   * console.log(`User has ${sessions.length} active sessions`);
+   * sessions.forEach(session => {
+   *   console.log(`Device: ${session.deviceInfo}`);
+   * });
+   * ```
+   */
+  async getUserSessions(userId: string): Promise<Session[]> {
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+
+    return await this.database.getUserSessions(userId);
+  }
+
+  /**
+   * Invalidates all sessions for a specific user
+   * 
+   * Force logout from all devices. Useful for security events like password
+   * changes, account compromise, or user-initiated "logout everywhere" action.
+   * 
+   * @param userId - User ID to invalidate sessions for
+   * @throws {Error} If userId is not provided
+   * 
+   * @example
+   * ```typescript
+   * // After password change, force logout from all devices
+   * await sessionService.invalidateAllUserSessions('user-123');
+   * console.log('User logged out from all devices');
+   * ```
+   */
+  async invalidateAllUserSessions(userId: string): Promise<void> {
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+
+    await this.database.deleteAllUserSessions(userId);
+  }
+
+  // ==========================================================================
   // Helper Methods
   // ==========================================================================
 
