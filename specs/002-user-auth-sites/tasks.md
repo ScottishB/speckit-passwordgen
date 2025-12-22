@@ -279,13 +279,14 @@
 
 ### AuthService Implementation
 
-- [ ] **TASK-033**: Create AuthService class
+- [X] **TASK-033**: Create AuthService class
   - Create `src/services/AuthService.ts`
   - Add dependencies: CryptoService, SessionService, SecurityLogService, Database
   - Add current user/session state
   - Add custom error classes (ValidationError, AuthError, SessionExpiredError)
+  - **Completed**: Created AuthService class with all dependencies, state management (currentUser, currentSession), and three custom error classes for validation, authentication, and session expiration scenarios.
 
-- [ ] **TASK-034**: Implement user registration
+- [X] **TASK-034**: Implement user registration
   - Implement `register(username: string, password: string): Promise<User>`
   - Validate username availability
   - Validate password strength
@@ -293,8 +294,9 @@
   - Generate salt for key derivation
   - Save user to database
   - Log registration event
+  - **Completed**: Implemented register() with username normalization (lowercase, trim), availability checking, password strength validation (OWASP/NIST compliant), Argon2id hashing, salt generation, user creation with default values, and registration event logging.
 
-- [ ] **TASK-035**: Implement user login
+- [X] **TASK-035**: Implement user login
   - Implement `login(username: string, password: string, totpCode?: string): Promise<Session>`
   - Retrieve user by username
   - Verify password hash
@@ -303,16 +305,18 @@
   - Handle failed login attempts and account lockout
   - Create session on success
   - Log login event
+  - **Completed**: Implemented login() with username normalization, password verification, 2FA requirement detection, failed attempt tracking (5 login attempts, 3 2FA attempts), account lockout (15 minutes), lockout expiration checking, session creation, state management, and comprehensive event logging for all scenarios.
 
-- [ ] **TASK-036**: Implement authentication helpers
+- [X] **TASK-036**: Implement authentication helpers
   - Implement `logout(sessionId: string): Promise<void>`
   - Implement `getCurrentUser(): User | null`
   - Implement `getCurrentSession(): Session | null`
   - Implement `isAuthenticated(): boolean`
   - Implement `validatePasswordStrength(password: string): {valid: boolean, errors: string[]}`
   - Implement `isUsernameAvailable(username: string): Promise<boolean>`
+  - **Completed**: Implemented all 6 helper methods. logout() invalidates session and clears state with event logging. getCurrentUser/Session() return current state. isAuthenticated() checks for valid non-expired session. validatePasswordStrength() enforces 12+ chars, uppercase, lowercase, number, special character (OWASP/NIST). isUsernameAvailable() checks for username collisions with normalization.
 
-- [ ] **TASK-037**: Implement account deletion
+- [X] **TASK-037**: Implement account deletion
   - Implement `deleteAccount(userId: string, password: string): Promise<void>`
   - Verify password before deletion
   - Delete user from database
@@ -320,6 +324,7 @@
   - Invalidate all user sessions
   - Clear security events
   - Log deletion event (before clearing)
+  - **Completed**: Implemented deleteAccount() with password verification, deletion event logging (before clearing), vault deletion, session invalidation, security event clearing, user deletion, and state clearing. Includes comprehensive error handling and validation. Created comprehensive test suite (90+ tests) covering all AuthService methods including registration, login, failed attempts, account lockout, 2FA requirements, logout, authentication state, password strength, username availability, account deletion, and full integration scenarios.
 
 ### Authentication Services Testing
 
