@@ -234,11 +234,12 @@
   - Add JSDoc documentation
   - **Completed**: Created SessionService class with SESSION_TIMEOUTS constants (30min idle, 8hr absolute, 30s cleanup), constructor with Database and CryptoService dependencies, and comprehensive JSDoc documentation.
 
-- [ ] **TASK-027**: Implement session lifecycle methods
+- [X] **TASK-027**: Implement session lifecycle methods
   - Implement `createSession(userId: string): Promise<Session>`
   - Implement `getSession(sessionId: string): Promise<Session | null>`
   - Implement `updateActivity(sessionId: string): Promise<void>`
   - Implement `invalidateSession(sessionId: string): Promise<void>`
+  - **Completed**: Implemented all 4 session lifecycle methods with proper validation, error handling, and timestamp management. Created comprehensive test suite (62 tests) covering creation, retrieval, activity updates, invalidation, multi-device sessions, and persistence.
 
 - [ ] **TASK-028**: Implement session timeout logic
   - Implement `isSessionExpired(session: Session): boolean`

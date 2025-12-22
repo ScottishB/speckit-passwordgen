@@ -105,4 +105,152 @@ export class SessionService {
   getCleanupInterval(): number {
     return SESSION_TIMEOUTS.CLEANUP_INTERVAL;
   }
+
+  // ==========================================================================
+  // Session Lifecycle Methods
+  // ==========================================================================
+
+  /**
+   * Creates a new session for a user
+   * 
+   * Generates a cryptographically secure session token and stores the session
+   * in the database. The session will have idle and absolute timeout enforced.
+   * 
+   * @param userId - User ID to create session for
+   * @returns Promise resolving to the created session
+   * @throws {Error} If userId is not provided or session creation fails
+   * 
+   * @example
+   * ```typescript
+   * const session = await sessionService.createSession('user-123');
+   * console.log('Session created:', session.id);
+   * ```
+   */
+  async createSession(userId: string): Promise<Session> {
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+
+    const now = Date.now();
+    const sessionId = this.cryptoService.generateUUID();
+    const sessionToken = this.cryptoService.generateToken(32);
+
+    const session: Session = {
+      id: sessionId,
+      userId,
+      sessionToken,
+      createdAt: now,
+      lastActivity: now,
+      expiresAt: now + SESSION_TIMEOUTS.ABSOLUTE_TIMEOUT,
+      deviceInfo: this.getDeviceInfo(),
+      ipAddress: this.getIpAddress(),
+    };
+
+    await this.database.saveSession(session);
+    return session;
+  }
+
+  /**
+   * Retrieves a session by ID
+   * 
+   * @param sessionId - Session ID to retrieve
+   * @returns Promise resolving to the session, or null if not found
+   * @throws {Error} If sessionId is not provided
+   * 
+   * @example
+   * ```typescript
+   * const session = await sessionService.getSession('session-123');
+   * if (session) {
+   *   console.log('Session found for user:', session.userId);
+   * }
+   * ```
+   */
+  async getSession(sessionId: string): Promise<Session | null> {
+    if (!sessionId) {
+      throw new Error('Session ID is required');
+    }
+
+    return await this.database.getSession(sessionId);
+  }
+
+  /**
+   * Updates the last activity timestamp for a session
+   * 
+   * This resets the idle timeout but does not extend the absolute timeout.
+   * Should be called on each authenticated request to keep the session alive.
+   * 
+   * @param sessionId - Session ID to update
+   * @throws {Error} If sessionId is not provided or session not found
+   * 
+   * @example
+   * ```typescript
+   * await sessionService.updateActivity('session-123');
+   * ```
+   */
+  async updateActivity(sessionId: string): Promise<void> {
+    if (!sessionId) {
+      throw new Error('Session ID is required');
+    }
+
+    const session = await this.database.getSession(sessionId);
+    if (!session) {
+      throw new Error('Session not found');
+    }
+
+    session.lastActivity = Date.now();
+    await this.database.saveSession(session);
+  }
+
+  /**
+   * Invalidates (deletes) a session
+   * 
+   * This is used for explicit logout. The session is permanently removed
+   * from the database.
+   * 
+   * @param sessionId - Session ID to invalidate
+   * @throws {Error} If sessionId is not provided
+   * 
+   * @example
+   * ```typescript
+   * await sessionService.invalidateSession('session-123');
+   * console.log('User logged out');
+   * ```
+   */
+  async invalidateSession(sessionId: string): Promise<void> {
+    if (!sessionId) {
+      throw new Error('Session ID is required');
+    }
+
+    await this.database.deleteSession(sessionId);
+  }
+
+  // ==========================================================================
+  // Helper Methods
+  // ==========================================================================
+
+  /**
+   * Gets device information from the user agent
+   * 
+   * @returns Device info string (browser extension context)
+   * @private
+   */
+  private getDeviceInfo(): string {
+    // In browser extension context, navigator is available
+    if (typeof navigator !== 'undefined' && navigator.userAgent) {
+      return navigator.userAgent;
+    }
+    return 'Unknown Device';
+  }
+
+  /**
+   * Gets the client IP address
+   * 
+   * @returns IP address string (always 'local' for browser extension)
+   * @private
+   */
+  private getIpAddress(): string {
+    // Browser extensions don't have access to real IP
+    // This would be set by backend in a client-server architecture
+    return 'local';
+  }
 }
