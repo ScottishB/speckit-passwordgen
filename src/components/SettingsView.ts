@@ -91,6 +91,9 @@ export class SettingsView {
       <div class="settings-view">
         <header class="settings-view__header">
           <h1 class="settings-view__title">Account Settings</h1>
+          <button type="button" class="btn btn--secondary" data-action="close-settings" aria-label="Close settings">
+            Close
+          </button>
         </header>
 
         <!-- Two-Factor Authentication Section -->

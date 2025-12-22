@@ -16,6 +16,7 @@ import { SiteAssignModal } from './components/SiteAssignModal';
 import { SiteDetailModal } from './components/SiteDetailModal';
 import { SiteEditModal } from './components/SiteEditModal';
 import { DeleteAccountModal } from './components/DeleteAccountModal';
+import { SettingsView } from './components/SettingsView';
 
 class AppComponent {
   private database: Database;
@@ -36,6 +37,7 @@ class AppComponent {
   private siteDetailModal: SiteDetailModal | null = null;
   private siteEditModal: SiteEditModal | null = null;
   private deleteAccountModal: DeleteAccountModal | null = null;
+  private settingsView: SettingsView | null = null;
   private activeTab: 'password' | 'passphrase' = 'password';
   private isAuthenticated: boolean = false;
   private currentUser: string | null = null;
@@ -342,6 +344,9 @@ class AppComponent {
 
     // Add logout button to header if not present
     this.addLogoutButton();
+
+    // Add settings button to header if not present
+    this.addSettingsButton();
   }
 
   private addLogoutButton(): void {
@@ -365,6 +370,34 @@ class AppComponent {
 
     // Insert at end of header
     header.appendChild(logoutButton);
+  }
+
+  private addSettingsButton(): void {
+    const header = document.querySelector('header');
+    if (!header) return;
+
+    // Check if settings button already exists
+    if (document.getElementById('settings-button')) return;
+
+    // Create settings button
+    const settingsButton = document.createElement('button');
+    settingsButton.id = 'settings-button';
+    settingsButton.className = 'settings-button';
+    settingsButton.textContent = 'Settings';
+    settingsButton.setAttribute('aria-label', 'Open settings');
+
+    // Add click handler
+    settingsButton.addEventListener('click', () => {
+      this.openSettings();
+    });
+
+    // Insert before logout button
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) {
+      header.insertBefore(settingsButton, logoutButton);
+    } else {
+      header.appendChild(settingsButton);
+    }
   }
 
   private async handleLogout(): Promise<void> {
@@ -392,6 +425,12 @@ class AppComponent {
       const logoutButton = document.getElementById('logout-button');
       if (logoutButton) {
         logoutButton.remove();
+      }
+
+      // Remove settings button
+      const settingsButton = document.getElementById('settings-button');
+      if (settingsButton) {
+        settingsButton.remove();
       }
 
       // Stop activity tracking
@@ -448,6 +487,14 @@ class AppComponent {
       this.currentUser = null;
       this.stopActivityTracking();
       this.showAuthUI();
+    }) as EventListener);
+
+    // Listen for open-totp-setup events from settings
+    window.addEventListener('open-totp-setup', ((e: CustomEvent) => {
+      const userId = e.detail?.userId;
+      if (userId && this.isAuthenticated) {
+        this.openTotpSetup(userId);
+      }
     }) as EventListener);
   }
 
@@ -596,6 +643,103 @@ class AppComponent {
     }, { once: true });
 
     this.deleteAccountModal.show();
+  }
+
+  private openSettings(): void {
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      console.error('[App] No current user found');
+      return;
+    }
+
+    // Create a container for settings if it doesn't exist
+    let settingsContainer = document.getElementById('settings-container');
+    if (!settingsContainer) {
+      settingsContainer = document.createElement('div');
+      settingsContainer.id = 'settings-container';
+      settingsContainer.className = 'settings-container';
+      document.body.appendChild(settingsContainer);
+    }
+
+    // Clean up existing settings view if any
+    if (this.settingsView) {
+      settingsContainer.innerHTML = '';
+    }
+
+    // Create and render settings view
+    this.settingsView = new SettingsView(
+      settingsContainer,
+      this.authService,
+      this.sessionService,
+      this.totpService
+    );
+
+    this.settingsView.render();
+
+    // Add close button handler
+    const closeButton = settingsContainer.querySelector('[data-action="close-settings"]');
+    if (closeButton) {
+      closeButton.addEventListener('click', () => {
+        this.closeSettings();
+      }, { once: true });
+    }
+  }
+
+  private closeSettings(): void {
+    const settingsContainer = document.getElementById('settings-container');
+    if (settingsContainer) {
+      settingsContainer.remove();
+    }
+    this.settingsView = null;
+  }
+
+  private openTotpSetup(userId: string): void {
+    // Close settings first
+    this.closeSettings();
+
+    // Reuse the existing TOTP setup modal logic
+    const appContainer = document.querySelector('.app-container');
+    if (!appContainer) {
+      console.error('[App] Cannot find app container');
+      return;
+    }
+
+    // Create modal container
+    let modalContainer = document.getElementById('totp-modal-container');
+    if (!modalContainer) {
+      modalContainer = document.createElement('div');
+      modalContainer.id = 'totp-modal-container';
+      modalContainer.className = 'modal-container';
+      document.body.appendChild(modalContainer);
+    }
+
+    // Clean up existing modal if any
+    if (this.totpSetupModal) {
+      this.totpSetupModal.destroy();
+      this.totpSetupModal = null;
+    }
+
+    // Create TOTP setup modal
+    this.totpSetupModal = new TotpSetupModal(
+      modalContainer,
+      this.authService,
+      this.totpService,
+      userId
+    );
+
+    // Listen for completion
+    modalContainer.addEventListener('totp-setup-complete', ((e: CustomEvent) => {
+      console.log('[App] TOTP setup complete, verified:', e.detail.isVerified);
+      this.showSuccessMessage(
+        e.detail.isVerified
+          ? 'Two-factor authentication enabled successfully'
+          : 'Two-factor authentication setup skipped'
+      );
+      
+      // Remove modal container
+      modalContainer?.remove();
+      this.totpSetupModal = null;
+    }) as EventListener, { once: true });
   }
 
   private async handleSessionExpired(): Promise<void> {
