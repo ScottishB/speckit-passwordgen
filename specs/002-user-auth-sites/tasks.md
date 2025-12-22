@@ -248,11 +248,12 @@
   - Return true if either expired
   - **Completed**: Implemented isSessionExpired method with dual timeout checking (idle: 30min, absolute: 8hr). Returns true if either timeout exceeded. Created comprehensive test suite (46 tests) covering boundary conditions, timeout combinations, authentication flows, and edge cases.
 
-- [ ] **TASK-029**: Implement automatic session cleanup
+- [X] **TASK-029**: Implement automatic session cleanup
   - Implement `startExpirationCheck(): void`
   - Use setInterval with 30-second interval
   - Implement `stopExpirationCheck(): void`
   - Implement `cleanupExpiredSessions(): Promise<number>`
+  - **Completed**: Implemented automatic session cleanup with startExpirationCheck (30s interval with setInterval), stopExpirationCheck (cleanup control), and cleanupExpiredSessions (returns deleted count). Includes error handling and prevents multiple intervals. Created comprehensive test suite (54 tests) with fake timers covering cleanup cycles, interval management, and concurrent operations.
 
 - [ ] **TASK-030**: Implement multi-session management
   - Implement `getUserSessions(userId: string): Promise<Session[]>`

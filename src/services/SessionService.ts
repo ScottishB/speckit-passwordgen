@@ -270,6 +270,101 @@ export class SessionService {
   }
 
   // ==========================================================================
+  // Automatic Session Cleanup
+  // ==========================================================================
+
+  /**
+   * Starts automatic cleanup of expired sessions
+   * 
+   * Runs cleanupExpiredSessions() every 30 seconds to remove expired sessions
+   * from the database. This helps maintain database hygiene and security.
+   * 
+   * Note: Only one cleanup interval can be active at a time. Calling this
+   * method multiple times will not create multiple intervals.
+   * 
+   * @example
+   * ```typescript
+   * // Start cleanup when app initializes
+   * sessionService.startExpirationCheck();
+   * 
+   * // Stop cleanup when app closes
+   * window.addEventListener('beforeunload', () => {
+   *   sessionService.stopExpirationCheck();
+   * });
+   * ```
+   */
+  startExpirationCheck(): void {
+    // Don't create multiple intervals
+    if (this.cleanupIntervalId) {
+      return;
+    }
+
+    this.cleanupIntervalId = setInterval(async () => {
+      try {
+        await this.cleanupExpiredSessions();
+      } catch (error) {
+        console.error('[SessionService] Failed to cleanup expired sessions:', error);
+      }
+    }, SESSION_TIMEOUTS.CLEANUP_INTERVAL);
+  }
+
+  /**
+   * Stops automatic cleanup of expired sessions
+   * 
+   * Clears the cleanup interval started by startExpirationCheck().
+   * Should be called when the application is shutting down or when
+   * session management is no longer needed.
+   * 
+   * @example
+   * ```typescript
+   * sessionService.stopExpirationCheck();
+   * ```
+   */
+  stopExpirationCheck(): void {
+    if (this.cleanupIntervalId) {
+      clearInterval(this.cleanupIntervalId);
+      this.cleanupIntervalId = null;
+    }
+  }
+
+  /**
+   * Cleans up all expired sessions from the database
+   * 
+   * Iterates through all stored sessions and deletes those that have
+   * expired (either idle timeout or absolute timeout exceeded).
+   * 
+   * @returns Promise resolving to the number of sessions deleted
+   * 
+   * @example
+   * ```typescript
+   * const deletedCount = await sessionService.cleanupExpiredSessions();
+   * console.log(`Cleaned up ${deletedCount} expired sessions`);
+   * ```
+   */
+  async cleanupExpiredSessions(): Promise<number> {
+    try {
+      // Get all sessions from localStorage
+      const sessionsData = localStorage.getItem('pwgen_sessions');
+      if (!sessionsData) {
+        return 0;
+      }
+
+      const sessions: Session[] = JSON.parse(sessionsData);
+      const expiredSessions = sessions.filter(session => this.isSessionExpired(session));
+
+      // Delete each expired session
+      for (const session of expiredSessions) {
+        await this.database.deleteSession(session.id);
+      }
+
+      return expiredSessions.length;
+    } catch (error) {
+      console.error('[SessionService] Failed to cleanup expired sessions:', error);
+      return 0;
+    }
+  }
+
+  // ==========================================================================
   // Helper Methods
   // ==========================================================================
 
