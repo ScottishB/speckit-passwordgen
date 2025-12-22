@@ -1,6 +1,6 @@
 import { CryptoService } from './CryptoService';
 import { Database } from './database';
-import { HistoryService } from './HistoryService';
+import { HistoryService } from './historyService';
 import type { Site } from '../models/Site';
 import type { HistoryEntry } from '../models/HistoryEntry';
 

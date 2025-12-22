@@ -23,7 +23,8 @@ describe('Database - User CRUD Methods', () => {
     createdAt: Date.now(),
     lastLogin: null,
     failedLoginAttempts: 0,
-    lockedUntil: null,
+    lastFailedLogin: null,
+    accountLockedUntil: null,
     ...overrides,
   });
 
@@ -253,17 +254,18 @@ describe('Database - User CRUD Methods', () => {
     });
 
     it('should update multiple fields', async () => {
-      const user = createTestUser({ failedLoginAttempts: 0, lockedUntil: null });
+      const user = createTestUser({ failedLoginAttempts: 0, accountLockedUntil: null });
+    lastFailedLogin: null,
       await database.saveUser(user);
 
       const lockTime = Date.now() + 3600000;
       const updated = await database.updateUser(user.id, {
         failedLoginAttempts: 3,
-        lockedUntil: lockTime,
+        accountLockedUntil: lockTime,
       });
 
       expect(updated.failedLoginAttempts).toBe(3);
-      expect(updated.lockedUntil).toBe(lockTime);
+      expect(updated.accountLockedUntil).toBe(lockTime);
     });
 
     it('should not allow ID to be changed', async () => {

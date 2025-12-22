@@ -37,7 +37,8 @@ describe('Database - Session Methods', () => {
     createdAt: Date.now(),
     lastLogin: null,
     failedLoginAttempts: 0,
-    lockedUntil: null,
+    lastFailedLogin: null,
+    accountLockedUntil: null,
     ...overrides,
   });
 
