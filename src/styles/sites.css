@@ -792,3 +792,20 @@
   }
 }
 
+/* Form Input Group Styles */
+.form-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.form-input-group .form-input {
+  flex: 1;
+}
+
+.form-input-group .btn-icon {
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+

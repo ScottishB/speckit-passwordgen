@@ -892,13 +892,14 @@
 
 ### SiteEditModal Component
 
-- [ ] **TASK-084**: Create SiteEditModal component structure
+- [X] **TASK-084**: Create SiteEditModal component structure ✅
   - Create `src/components/SiteEditModal.ts`
   - Add modal overlay and dialog
   - Add editable form with all site fields
   - Add "Save" and "Cancel" buttons
+  - **Completed**: Created 574-line SiteEditModal component with modal overlay, dialog structure, and editable form containing fields for Site Name (required), URL/IP (required with validation), Username (optional), Password (required with show/hide toggle), and Notes (optional, max 500 chars). Added Save and Cancel buttons with icons, password reuse warning display, and field-level error display. Added CSS for .form-input-group layout with password toggle button.
 
-- [ ] **TASK-085**: Implement SiteEditModal logic
+- [X] **TASK-085**: Implement SiteEditModal logic ✅
   - Receive siteId as prop
   - Load site from SiteService
   - Pre-fill form with current values
@@ -907,6 +908,7 @@
   - Call SiteService.updateSite() on save
   - Show "Discard changes?" confirmation on cancel if dirty
   - Close modal on success
+  - **Completed**: Implemented async show() method loading site via SiteService.getSite() and storing original values, updateDirtyState() comparing current values with originals, validateUrl() using SiteService.validateUrlOrIp(), checkPasswordReuse() checking password reuse (excluding current site), togglePasswordVisibility() for password field, handleSave() with comprehensive validation and SiteService.updateSite() call dispatching 'edit-save' event, handleCancel() with dirty check and window.confirm() if changes exist dispatching 'edit-cancel' event. Added field-level and general error handling with showFieldError(), clearFieldError(), showGeneralError(), clearAllErrors() methods.
 
 - [ ] **TASK-086**: Add password regeneration to SiteEditModal
   - Add "Generate New Password" button
