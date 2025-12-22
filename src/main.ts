@@ -17,6 +17,7 @@ import { SiteDetailModal } from './components/SiteDetailModal';
 import { SiteEditModal } from './components/SiteEditModal';
 import { DeleteAccountModal } from './components/DeleteAccountModal';
 import { SettingsView } from './components/SettingsView';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 class AppComponent {
   private database: Database;
@@ -27,6 +28,7 @@ class AppComponent {
   private authService: AuthService;
   private siteService: SiteService;
   private historyService: HistoryService;
+  private errorBoundary: ErrorBoundary;
   private passwordForm: PasswordFormComponent | null = null;
   private passphraseForm: PassphraseFormComponent | null = null;
   private historyList: HistoryListComponent | null = null;
@@ -59,11 +61,28 @@ class AppComponent {
     );
     this.siteService = new SiteService(this.cryptoService, this.authService, this.database);
     this.historyService = new HistoryService(this.database);
+    
+    // Initialize error boundary early
+    this.errorBoundary = new ErrorBoundary(document.body, {
+      isProduction: import.meta.env.PROD,
+      onError: (error) => {
+        // Log error to console in development
+        if (!import.meta.env.PROD) {
+          console.error('[ErrorBoundary]', error);
+        }
+        // In production, could send to error tracking service
+      }
+    });
   }
 
   async initialize(): Promise<void> {
     try {
       console.log('[App] Starting initialization...');
+      
+      // Initialize error boundary first to catch any initialization errors
+      this.errorBoundary.initialize();
+      console.log('[App] Error boundary initialized');
+      
       // Show loading overlay
       this.showLoading(true);
 
