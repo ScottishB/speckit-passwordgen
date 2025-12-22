@@ -13,6 +13,8 @@ import { LoginForm } from './components/LoginForm';
 import { RegisterForm } from './components/RegisterForm';
 import { TotpSetupModal } from './components/TotpSetupModal';
 import { SiteAssignModal } from './components/SiteAssignModal';
+import { SiteDetailModal } from './components/SiteDetailModal';
+import { SiteEditModal } from './components/SiteEditModal';
 
 class AppComponent {
   private database: Database;
@@ -30,6 +32,8 @@ class AppComponent {
   private registerForm: RegisterForm | null = null;
   private totpSetupModal: TotpSetupModal | null = null;
   private siteAssignModal: SiteAssignModal | null = null;
+  private siteDetailModal: SiteDetailModal | null = null;
+  private siteEditModal: SiteEditModal | null = null;
   private activeTab: 'password' | 'passphrase' = 'password';
   private isAuthenticated: boolean = false;
   private currentUser: string | null = null;
@@ -416,6 +420,14 @@ class AppComponent {
         this.openSiteAssignModal(password);
       }
     }) as EventListener);
+
+    // Listen for open-detail-modal events from sites list
+    window.addEventListener('open-detail-modal', ((e: CustomEvent) => {
+      const siteId = e.detail?.siteId;
+      if (siteId && this.isAuthenticated) {
+        this.openSiteDetailModal(siteId);
+      }
+    }) as EventListener);
   }
 
   private openSiteAssignModal(generatedPassword: string): void {
@@ -453,6 +465,88 @@ class AppComponent {
     }, { once: true });
 
     this.siteAssignModal.show();
+  }
+
+  private openSiteDetailModal(siteId: string): void {
+    const appContainer = document.querySelector('.app-container');
+    if (!appContainer) {
+      console.error('[App] Cannot find app container');
+      return;
+    }
+
+    // Clean up existing modal if any
+    if (this.siteDetailModal) {
+      this.siteDetailModal.destroy();
+      this.siteDetailModal = null;
+    }
+
+    // Create and show new modal
+    this.siteDetailModal = new SiteDetailModal(
+      appContainer as HTMLElement,
+      this.siteService,
+      this.authService,
+      siteId
+    );
+
+    // Listen for modal events
+    appContainer.addEventListener('detail-edit', ((e: CustomEvent) => {
+      const editSiteId = e.detail.siteId;
+      console.log('[App] Opening edit modal for site:', editSiteId);
+      this.openSiteEditModal(editSiteId);
+    }) as EventListener, { once: true });
+
+    appContainer.addEventListener('detail-delete', ((e: CustomEvent) => {
+      console.log('[App] Site deleted:', e.detail.siteName);
+      this.showSuccessMessage(`${e.detail.siteName} deleted successfully`);
+      
+      // Refresh sites list
+      window.dispatchEvent(new CustomEvent('sites-updated'));
+    }) as EventListener, { once: true });
+
+    appContainer.addEventListener('detail-regenerate', ((e: CustomEvent) => {
+      console.log('[App] Regenerate password for site:', e.detail.siteId);
+      // TODO: Implement password regeneration flow
+      this.showSuccessMessage('Password regeneration feature coming soon');
+    }) as EventListener, { once: true });
+
+    this.siteDetailModal.show();
+  }
+
+  private openSiteEditModal(siteId: string): void {
+    const appContainer = document.querySelector('.app-container');
+    if (!appContainer) {
+      console.error('[App] Cannot find app container');
+      return;
+    }
+
+    // Clean up existing modal if any
+    if (this.siteEditModal) {
+      this.siteEditModal.destroy();
+      this.siteEditModal = null;
+    }
+
+    // Create and show new modal
+    this.siteEditModal = new SiteEditModal(
+      appContainer as HTMLElement,
+      this.siteService,
+      this.authService,
+      siteId
+    );
+
+    // Listen for modal events
+    appContainer.addEventListener('edit-save', ((e: CustomEvent) => {
+      console.log('[App] Site updated:', e.detail.site);
+      this.showSuccessMessage(`${e.detail.site.siteName} updated successfully`);
+      
+      // Refresh sites list
+      window.dispatchEvent(new CustomEvent('sites-updated'));
+    }) as EventListener, { once: true });
+
+    appContainer.addEventListener('edit-cancel', () => {
+      console.log('[App] Edit cancelled');
+    }, { once: true });
+
+    this.siteEditModal.show();
   }
 
   private async handleSessionExpired(): Promise<void> {

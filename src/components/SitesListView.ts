@@ -156,6 +156,11 @@ export class SitesListView {
     if (this.sortSelect) {
       this.sortSelect.addEventListener('change', (e) => this.handleSortChange(e));
     }
+
+    // Listen for sites updated event
+    window.addEventListener('sites-updated', () => {
+      this.loadSites();
+    });
   }
 
   /**
@@ -532,8 +537,8 @@ export class SitesListView {
 
     if (!siteId) return;
 
-    // Dispatch custom event for parent component to handle
-    this.container.dispatchEvent(new CustomEvent('edit-site', {
+    // Dispatch custom event to open detail modal (which has edit functionality)
+    window.dispatchEvent(new CustomEvent('open-detail-modal', {
       detail: { siteId },
       bubbles: true
     }));
