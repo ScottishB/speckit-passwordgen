@@ -624,60 +624,44 @@
     * Accessibility tests (6): ARIA labels, aria-invalid on errors, role="alert" and aria-live, autocomplete attributes, aria-describedby linkage, strength indicator ARIA
     * Destroy tests (2, 605ms): clear container, clear pending timeout
 
-
-### Register Form Component
-
-- [ ] **TASK-056**: Create RegisterForm component structure
-  - Create `src/components/RegisterForm.ts`
-  - Add HTML template with form structure
-  - Add username, password, confirm password inputs
-  - Add password strength indicator
-  - Add proper labels and ARIA attributes
-
-- [ ] **TASK-057**: Implement RegisterForm logic
-  - Implement username availability check (debounced)
-  - Implement password strength validation (live feedback)
-  - Implement confirm password matching
-  - Implement form submission
-  - Call AuthService.register()
-  - Handle ValidationError (username taken, weak password)
-  - Redirect to 2FA setup modal on success
-
-- [ ] **TASK-058**: Implement password strength indicator
-  - Create visual indicator (progress bar or checklist)
-  - Show requirements: 12+ chars, uppercase, lowercase, number, special char
-  - Update in real-time as user types
-  - Use semantic colors (red → yellow → green)
-  - Ensure accessibility (don't rely on color alone)
-
 ### TOTP Setup Modal Component
 
-- [ ] **TASK-059**: Create TotpSetupModal component structure
-  - Create `src/components/TotpSetupModal.ts`
-  - Add modal overlay and dialog
-  - Add QR code display area
-  - Add manual entry fallback (show secret as text)
-  - Add 6-digit code input for verification
-  - Add backup codes display
-  - Add "Skip (Not Recommended)" and "Enable 2FA" buttons
+- [X] **TASK-059**: Create TotpSetupModal component structure ✅
+  - Create `src/components/TotpSetupModal.ts` (516 lines)
+  - Add modal overlay and dialog with role="dialog", aria-modal="true"
+  - Add QR code display area with loading spinner during initialization
+  - Add manual entry fallback (show secret as monospace <code> in <details>/<summary>)
+  - Add 6-digit code input for verification (pattern="\\d{6}", inputmode="numeric", autocomplete="one-time-code")
+  - Add backup codes display section (initially hidden with display='none')
+  - Add "Skip (Not Recommended)", "Verify Code", and "Complete Setup" buttons
+  - **Status**: Component structure complete with 10 private fields (container, services, state, cached elements)
+  - **Structure**: Constructor validates 4 parameters → render() creates HTML template → cacheElements() stores references → attachEventListeners() binds events → initializeTotp() starts async flow
 
-- [ ] **TASK-060**: Implement TotpSetupModal logic
-  - Call AuthService.enable2FA() on mount
-  - Display QR code image from data URL
-  - Display manual entry secret
-  - Validate 6-digit verification code
-  - Display backup codes after successful verification
-  - Add "Copy All" and "Print" buttons for backup codes
-  - Handle skip action with warning
-  - Close modal and proceed to main app
+- [X] **TASK-060**: Implement TotpSetupModal logic ✅
+  - Call authService.enable2FA(userId) on initialization (lines 243-271)
+  - Display QR code image from result.qrCode data URL (base64-encoded PNG)
+  - Display manual entry secret in <code> element with monospace font
+  - Validate 6-digit verification code using totpService.validateToken(code, secret) - synchronous validation (lines 281-327)
+  - Auto-submit verification when exactly 6 digits entered (handleVerificationInput)
+  - Display backup codes after successful verification (8 codes in numbered grid, lines 328-366)
+  - Add "Copy All" button with navigator.clipboard.writeText(), visual feedback ("Copied!" for 2s), error handling (lines 367-392)
+  - Add "Print" button calling window.print() (lines 393-396)
+  - Handle skip action with window.confirm() warning dialog (lines 397-407)
+  - Close modal dispatching 'totp-setup-complete' CustomEvent with {isVerified: boolean} (lines 453-466)
+  - **Keyboard navigation**: Enter submits verification, Escape closes modal (only after verification)
+  - **Focus management**: Verification input focused after init, complete button focused after verification
+  - **Loading states**: setLoading(true/false) disables input/button, changes button text to "Verifying..."
 
-- [ ] **TASK-061**: Style TotpSetupModal component
-  - Style modal overlay (semi-transparent)
-  - Style modal dialog (centered, responsive)
-  - Style QR code container
-  - Style backup codes grid
-  - Add print-specific styles for backup codes
-  - Ensure focus trap and keyboard navigation
+- [X] **TASK-061**: Style TotpSetupModal component ✅
+  - Modal styled via existing auth.css (already complete from Phase 4)
+  - Modal overlay: Semi-transparent black (#000 @ 50% opacity), covers entire viewport
+  - Modal dialog: Centered with flexbox, max-width 500px, white background, rounded corners, shadow
+  - QR code container: Centered display, loading spinner transitions to image with alt text
+  - Backup codes grid: 2-column layout with numbered items (1-8), monospace font for codes
+  - Print-specific styles: @media print hides modal overlay, shows backup codes in clean format
+  - Focus trap: Keyboard navigation contained within modal, Escape closes after verification
+  - **Comprehensive test suite**: 47 tests (100% pass rate, 2.9s duration)
+  - **Test coverage**: Constructor validation (5 tests), render (8 tests), initialization (5 tests), verification input (3 tests), verification flow (5 tests), backup codes (4 tests), copy functionality (3 tests, includes 2.1s timeout wait), print (1 test), skip button (3 tests), close modal (5 tests), accessibility (4 tests), destroy (1 test)
 
 ### Auth Routing in AppComponent
 
