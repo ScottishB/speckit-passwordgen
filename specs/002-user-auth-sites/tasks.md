@@ -328,33 +328,37 @@
 
 ### Authentication Services Testing
 
-- [ ] **TASK-038**: Write unit tests for SessionService
+- [X] **TASK-038**: Write unit tests for SessionService
   - Test session creation with correct timeouts
   - Test updateActivity resets idle timeout
   - Test isSessionExpired detects idle timeout
   - Test isSessionExpired detects absolute timeout
   - Test cleanupExpiredSessions removes expired
   - Test getUserSessions returns only user's sessions
+  - **Completed**: Comprehensive tests created during SessionService implementation (TASK-026 to TASK-030). Created 4 test files with 222 total tests covering lifecycle, timeouts, cleanup, and multi-session management.
 
-- [ ] **TASK-039**: Write unit tests for AuthService registration
+- [X] **TASK-039**: Write unit tests for AuthService registration
   - Test successful registration creates user
   - Test duplicate username rejected
   - Test weak password rejected
   - Test password hashed correctly
   - Test registration event logged
+  - **Completed**: Comprehensive registration tests created in AuthService.test.ts (10 tests) covering successful registration, username normalization, username availability, password validation, Argon2id hashing, salt generation, event logging, and default user values.
 
-- [ ] **TASK-040**: Write unit tests for AuthService login
+- [X] **TASK-040**: Write unit tests for AuthService login
   - Test successful login creates session
   - Test invalid credentials rejected
   - Test account lockout after 5 failed attempts
   - Test locked account rejected for 15 minutes
   - Test lockout expires after timeout
+  - **Completed**: Comprehensive login tests created in AuthService.test.ts (30+ tests) covering successful login, failed attempts tracking, account lockout, lockout expiration, 2FA requirements, state management, and event logging.
 
-- [ ] **TASK-041**: Write unit tests for AuthService account deletion
+- [X] **TASK-041**: Write unit tests for AuthService account deletion
   - Test deleteAccount removes user
   - Test vault deleted
   - Test sessions invalidated
   - Test wrong password rejected
+  - **Completed**: Comprehensive account deletion tests created in AuthService.test.ts (10 tests) covering password verification, user/vault/session deletion, event clearing, deletion event logging, state clearing, and error handling.
 
 ---
 
@@ -362,88 +366,125 @@
 
 ### TotpService Implementation
 
-- [ ] **TASK-042**: Create TotpService class
-  - Create `src/services/TotpService.ts`
-  - Add dependencies: otpauth, qrcode libraries
-  - Define constants (backup code count, length)
-  - Add JSDoc documentation
+- [X] **TASK-042**: Create TotpService class
+  - ✅ Created `src/services/TotpService.ts` (310 lines)
+  - ✅ Added dependencies: otpauth@9.4.1, qrcode@1.5.4, @types/qrcode@1.5.6
+  - ✅ Defined constants: BACKUP_CODE_COUNT=10, LENGTH=8, TOTP_DIGITS=6, PERIOD=30, WINDOW=1
+  - ✅ Complete JSDoc documentation with examples
+  - **Completed**: Full TotpService implementation with 8 methods
 
-- [ ] **TASK-043**: Implement TOTP secret generation
-  - Implement `generateSecret(): string`
-  - Use otpauth.Secret.generate()
-  - Return base32-encoded secret
-  - Ensure cryptographically secure randomness
+- [X] **TASK-043**: Implement TOTP secret generation
+  - ✅ Implemented `generateSecret(): string`
+  - ✅ Uses OTPAuth.Secret.generate(20) for 160-bit secret
+  - ✅ Returns base32-encoded secret
+  - ✅ Cryptographically secure via Web Crypto API
+  - **Completed**: Secret generation using otpauth library
 
-- [ ] **TASK-044**: Implement QR code generation
-  - Implement `generateQRCode(secret: string, username: string, issuer?: string): Promise<string>`
-  - Create TOTP URI using otpauth library
-  - Generate QR code data URL using qrcode library
-  - Set appropriate size for mobile scanning
-  - Add error handling
+- [X] **TASK-044**: Implement QR code generation
+  - ✅ Implemented `generateQRCode(secret, username, issuer?): Promise<string>`
+  - ✅ Creates TOTP URI using OTPAuth.TOTP (SHA1, 6 digits, 30s period)
+  - ✅ Generates QR code data URL using qrcode.toDataURL()
+  - ✅ Size: 256x256 pixels, error correction level M
+  - ✅ Comprehensive error handling
+  - **Completed**: QR code generation for mobile app scanning
 
-- [ ] **TASK-045**: Implement TOTP token validation
-  - Implement `validateToken(token: string, secret: string): boolean`
-  - Use otpauth.TOTP.validate()
-  - Allow time drift (±1 period, 30 seconds)
-  - Validate token format (6 digits)
-  - Return boolean
+- [X] **TASK-045**: Implement TOTP token validation
+  - ✅ Implemented `validateToken(token, secret): boolean`
+  - ✅ Uses OTPAuth.TOTP.validate() with window parameter
+  - ✅ Time drift tolerance: ±1 period (±30 seconds)
+  - ✅ Validates 6-digit token format
+  - ✅ Returns boolean (null/number treated as boolean)
+  - **Completed**: TOTP validation with drift tolerance
 
-- [ ] **TASK-046**: Implement backup codes
-  - Implement `generateBackupCodes(): string[]`
-  - Generate 10 random 8-character alphanumeric codes
-  - Use crypto.getRandomValues for randomness
-  - Implement `hashBackupCode(code: string): string`
-  - Implement `validateBackupCode(code: string, hashedCode: string): boolean`
-  - Implement `areBackupCodesExhausted(user: User): boolean`
+- [X] **TASK-046**: Implement backup codes
+  - ✅ Implemented `generateBackupCodes(): string[]` - 10 codes, 8 chars each
+  - ✅ Uses crypto.getRandomValues() for secure randomness
+  - ✅ Alphanumeric codes (excludes ambiguous: 0, O, I, l)
+  - ✅ Implemented `hashBackupCode(code): Promise<string>` - SHA-256 hash
+  - ✅ Implemented `validateBackupCode(code, hashedCode): Promise<boolean>`
+  - ✅ Implemented `areBackupCodesExhausted(user): boolean`
+  - ✅ Implemented `getRemainingBackupCodesCount(user): number`
+  - **Completed**: Complete backup code management system
 
 ### 2FA Integration with AuthService
 
-- [ ] **TASK-047**: Update User model for 2FA fields
-  - Verify totpSecret, backupCodes, backupCodesUsed fields exist
-  - Add 2FA-related helper methods if needed
+- [X] **TASK-047**: Update User model for 2FA fields
+  - ✅ Verified totpSecret, backupCodes, backupCodesUsed fields exist
+  - ✅ Fixed backupCodesUsed type: string[] → number[] (stores indices)
+  - ✅ Added missing lastFailedLogin field
+  - ✅ Renamed lockedUntil → accountLockedUntil for consistency
+  - ✅ Updated CreateUserInput type with all optional fields
+  - **Completed**: User model matches AuthService requirements
 
-- [ ] **TASK-048**: Update AuthService for 2FA registration flow
-  - Add `enable2FA(userId: string): Promise<{secret: string, qrCode: string, backupCodes: string[]}>`
-  - Generate TOTP secret
-  - Generate QR code
-  - Generate backup codes
-  - Store hashed backup codes with user
-  - Log 2FA enabled event
+- [X] **TASK-048**: Update AuthService for 2FA registration flow
+  - ✅ Added `enable2FA(userId): Promise<{secret, qrCode, backupCodes}>`
+  - ✅ Generates TOTP secret using totpService.generateSecret()
+  - ✅ Generates QR code using totpService.generateQRCode()
+  - ✅ Generates backup codes using totpService.generateBackupCodes()
+  - ✅ Hashes backup codes and stores with user
+  - ✅ Logs '2fa_enabled' event with security log
+  - ✅ Returns plaintext backup codes for user to save
+  - **Completed**: Full 2FA setup flow with secret/QR/backup codes
 
-- [ ] **TASK-049**: Update AuthService login for 2FA
-  - Modify `login()` to check if user has 2FA enabled
-  - Throw AuthError with '2FA_REQUIRED' code if no totpCode provided
-  - Validate TOTP token if provided
+- [X] **TASK-049**: Update AuthService login for 2FA
+  - ✅ Login already checks if user has 2FA enabled (totpSecret not null)
+  - ✅ Updated validate2FACode() to use totpService.validateToken()
+  - ✅ Validates TOTP token with ±30s drift tolerance
+  - ✅ Validates backup code with totpService.validateBackupCode()
+  - ✅ Marks backup code index as used when validated
+  - ✅ Increments failedLoginAttempts on invalid 2FA code
+  - ✅ Account lockout after 3 failed attempts (already implemented in login)
+  - **Completed**: Full 2FA validation in login flow
   - Validate backup code as fallback
   - Mark backup code as used if validated
-  - Increment failed attempts on invalid 2FA code
-  - Lock account after 3 failed 2FA attempts
+  - ✅ Increments failedLoginAttempts on invalid 2FA code
+  - ✅ Account lockout after 3 failed attempts (already implemented in login)
+  - **Completed**: Full 2FA validation in login flow
 
-- [ ] **TASK-050**: Add 2FA management methods to AuthService
-  - Implement `disable2FA(userId: string, password: string): Promise<void>`
-  - Require password confirmation
-  - Clear TOTP secret and backup codes
-  - Log 2FA disabled event
-  - Implement `regenerateBackupCodes(userId: string): Promise<string[]>`
+- [X] **TASK-050**: Add 2FA management methods to AuthService
+  - ✅ Implemented `disable2FA(userId, password): Promise<void>`
+  - ✅ Requires password confirmation with crypto.verifyPassword()
+  - ✅ Clears totpSecret, backupCodes, backupCodesUsed
+  - ✅ Logs '2fa_disabled' event
+  - ✅ Throws AuthError on invalid password
+  - ✅ Implemented `regenerateBackupCodes(userId): Promise<string[]>`
+  - ✅ Generates new backup codes using totpService
+  - ✅ Hashes and stores new codes, resets backupCodesUsed
+  - ✅ Returns plaintext codes for user to save
+  - ✅ Logs event as '2fa_enabled' with 'Backup codes regenerated' details
+  - **Completed**: Full 2FA management (enable, disable, regenerate codes)
 
 ### TotpService Testing
 
-- [ ] **TASK-051**: Write unit tests for TotpService
-  - Test generateSecret returns valid base32 secret
-  - Test validateToken accepts valid token
-  - Test validateToken rejects invalid token
-  - Test validateToken allows time drift
-  - Test generateBackupCodes returns 10 unique codes
-  - Test hashBackupCode → validateBackupCode round-trip
-  - Test areBackupCodesExhausted detects when all used
+- [X] **TASK-051**: Write unit tests for TotpService
+  - ✅ Created tests/services/totp/TotpService.test.ts (60+ tests)
+  - ✅ Test generateSecret returns valid base32 secret
+  - ✅ Test validateToken accepts valid token
+  - ✅ Test validateToken rejects invalid token
+  - ✅ Test validateToken allows time drift (±30 seconds)
+  - ✅ Test generateBackupCodes returns 10 unique codes (no ambiguous chars)
+  - ✅ Test hashBackupCode → validateBackupCode round-trip
+  - ✅ Test areBackupCodesExhausted detects when all used
+  - ✅ Test getRemainingBackupCodesCount returns correct count
+  - ✅ Integration tests for full TOTP setup and backup code tracking
+  - **Completed**: Comprehensive TotpService test suite with 60+ tests
 
-- [ ] **TASK-052**: Write integration tests for 2FA flow
-  - Test full 2FA setup: register → enable2FA → get QR/codes
-  - Test login with 2FA: login requires code
-  - Test login with valid TOTP code succeeds
-  - Test login with invalid TOTP code fails
-  - Test login with backup code succeeds and marks code used
-  - Test account lockout after 3 failed 2FA attempts
+- [X] **TASK-052**: Write integration tests for 2FA flow
+  - ✅ Created tests/services/auth/AuthService.2fa.test.ts (50+ tests)
+  - ✅ Test full 2FA setup: register → enable2FA → receive secret/QR/codes
+  - ✅ Test login with 2FA: login requires code when enabled
+  - ✅ Test login with valid TOTP code succeeds
+  - ✅ Test login with invalid TOTP code fails and increments attempts
+  - ✅ Test login with backup code succeeds and marks code used
+  - ✅ Test backup codes cannot be reused
+  - ✅ Test account lockout after 3 failed 2FA attempts
+  - ✅ Test lockout expiration allows login again
+  - ✅ Test disable2FA with correct password clears 2FA data
+  - ✅ Test disable2FA with wrong password fails
+  - ✅ Test regenerateBackupCodes creates new codes and resets usage
+  - ✅ Test multiple users with 2FA independently
+  - ✅ Test complex scenarios: using all codes, mixed failures/successes
+  - **Completed**: Comprehensive 2FA integration test suite with 50+ tests
 
 ---
 

@@ -9,6 +9,7 @@ import { AuthService, ValidationError, AuthError, SessionExpiredError } from '..
 import { CryptoService } from '../../../src/services/CryptoService';
 import { SessionService } from '../../../src/services/SessionService';
 import { SecurityLogService } from '../../../src/services/SecurityLogService';
+import { TotpService } from '../../../src/services/TotpService';
 import { Database } from '../../../src/services/database';
 
 describe('AuthService', () => {
@@ -16,6 +17,7 @@ describe('AuthService', () => {
   let crypto: CryptoService;
   let sessionService: SessionService;
   let securityLog: SecurityLogService;
+  let totpService: TotpService;
   let database: Database;
 
   beforeEach(async () => {
@@ -27,9 +29,10 @@ describe('AuthService', () => {
     await database.initialize();
 
     crypto = new CryptoService();
-    sessionService = new SessionService(database, crypto);
+    sessionService = new SessionService(database);
     securityLog = new SecurityLogService(database);
-    authService = new AuthService(crypto, sessionService, securityLog, database);
+    totpService = new TotpService();
+    authService = new AuthService(crypto, sessionService, securityLog, totpService, database);
   });
 
   afterEach(async () => {
@@ -43,30 +46,36 @@ describe('AuthService', () => {
 
   describe('constructor', () => {
     it('should create instance with all dependencies', () => {
-      const service = new AuthService(crypto, sessionService, securityLog, database);
+      const service = new AuthService(crypto, sessionService, securityLog, totpService, database);
       expect(service).toBeDefined();
     });
 
     it('should throw error if CryptoService is missing', () => {
-      expect(() => new AuthService(null as any, sessionService, securityLog, database)).toThrow(
+      expect(() => new AuthService(null as any, sessionService, securityLog, totpService, database)).toThrow(
         'CryptoService is required'
       );
     });
 
     it('should throw error if SessionService is missing', () => {
-      expect(() => new AuthService(crypto, null as any, securityLog, database)).toThrow(
+      expect(() => new AuthService(crypto, null as any, securityLog, totpService, database)).toThrow(
         'SessionService is required'
       );
     });
 
     it('should throw error if SecurityLogService is missing', () => {
-      expect(() => new AuthService(crypto, sessionService, null as any, database)).toThrow(
+      expect(() => new AuthService(crypto, sessionService, null as any, totpService, database)).toThrow(
         'SecurityLogService is required'
       );
     });
 
+    it('should throw error if TotpService is missing', () => {
+      expect(() => new AuthService(crypto, sessionService, securityLog, null as any, database)).toThrow(
+        'TotpService is required'
+      );
+    });
+
     it('should throw error if Database is missing', () => {
-      expect(() => new AuthService(crypto, sessionService, securityLog, null as any)).toThrow(
+      expect(() => new AuthService(crypto, sessionService, securityLog, totpService, null as any)).toThrow(
         'Database is required'
       );
     });

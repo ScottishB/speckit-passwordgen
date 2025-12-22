@@ -12,6 +12,7 @@ import type { Session } from '../models/Session';
 import { CryptoService } from './CryptoService';
 import { SessionService } from './SessionService';
 import { SecurityLogService } from './SecurityLogService';
+import { TotpService } from './TotpService';
 import { Database } from './database';
 
 /**
@@ -62,6 +63,7 @@ export class AuthService {
   private crypto: CryptoService;
   private sessionService: SessionService;
   private securityLog: SecurityLogService;
+  private totpService: TotpService;
   private database: Database;
   private currentUser: User | null = null;
   private currentSession: Session | null = null;
@@ -77,6 +79,7 @@ export class AuthService {
    * @param crypto - CryptoService instance for password hashing/verification
    * @param sessionService - SessionService instance for session management
    * @param securityLog - SecurityLogService instance for audit logging
+   * @param totpService - TotpService instance for 2FA functionality
    * @param database - Database instance for user storage
    * @throws Error if any required dependency is missing
    */
@@ -84,6 +87,7 @@ export class AuthService {
     crypto: CryptoService,
     sessionService: SessionService,
     securityLog: SecurityLogService,
+    totpService: TotpService,
     database: Database
   ) {
     if (!crypto) {
@@ -95,6 +99,9 @@ export class AuthService {
     if (!securityLog) {
       throw new Error('SecurityLogService is required');
     }
+    if (!totpService) {
+      throw new Error('TotpService is required');
+    }
     if (!database) {
       throw new Error('Database is required');
     }
@@ -102,6 +109,7 @@ export class AuthService {
     this.crypto = crypto;
     this.sessionService = sessionService;
     this.securityLog = securityLog;
+    this.totpService = totpService;
     this.database = database;
   }
 
@@ -154,10 +162,12 @@ export class AuthService {
       const passwordHash = await this.crypto.hashPassword(password);
 
       // Generate salt for key derivation
-      const salt = this.crypto.generateSalt();
+      const saltBytes = this.crypto.generateSalt();
+      const salt = btoa(String.fromCharCode(...saltBytes));
 
       // Create user object
-      const userInput: CreateUserInput = {
+      const user: User = {
+        id: crypto.randomUUID(),
         username: normalizedUsername,
         passwordHash,
         salt,
@@ -172,18 +182,18 @@ export class AuthService {
       };
 
       // Save user to database
-      const user = await this.database.saveUser(userInput);
+      const savedUser = await this.database.saveUser(user);
 
       // Log registration event
       await this.securityLog.logEvent({
-        userId: user.id,
+        userId: savedUser.id,
         eventType: 'registration',
         ipAddress: 'local',
         details: 'User account created',
       });
 
       // Return user without sensitive data
-      const { passwordHash: _, ...userWithoutPassword } = user;
+      const { passwordHash: _, ...userWithoutPassword } = savedUser;
       return userWithoutPassword as User;
     } catch (error) {
       if (error instanceof ValidationError) {
@@ -375,11 +385,15 @@ export class AuthService {
    * @returns Promise resolving to true if valid, false otherwise
    */
   private async validate2FACode(user: User, code: string): Promise<boolean> {
-    // TODO: Implement TOTP validation using otpauth library (TASK-045)
-    // For now, this is a placeholder that will be implemented in Phase 3
-    // when TotpService is created
+    // First try TOTP validation if secret exists
+    if (user.totpSecret) {
+      const isValidTotp = this.totpService.validateToken(code, user.totpSecret);
+      if (isValidTotp) {
+        return true;
+      }
+    }
 
-    // Check if code is a backup code
+    // If TOTP failed or not available, try backup codes
     if (user.backupCodes && user.backupCodes.length > 0) {
       for (let i = 0; i < user.backupCodes.length; i++) {
         const hashedBackupCode = user.backupCodes[i];
@@ -390,9 +404,9 @@ export class AuthService {
           continue;
         }
 
-        // TODO: Implement backup code validation using CryptoService (TASK-046)
-        // For now, we'll do a simple comparison (will be replaced with hash validation)
-        if (hashedBackupCode === code) {
+        // Validate backup code
+        const isValidBackupCode = await this.totpService.validateBackupCode(code, hashedBackupCode);
+        if (isValidBackupCode) {
           // Mark backup code as used
           const backupCodesUsed = user.backupCodesUsed || [];
           backupCodesUsed.push(i);
@@ -402,8 +416,6 @@ export class AuthService {
       }
     }
 
-    // If not a valid backup code, validate as TOTP
-    // TODO: Implement TOTP validation (will be done in Phase 3)
     return false;
   }
 
@@ -676,6 +688,198 @@ export class AuthService {
         throw error;
       }
       throw new Error(`Account deletion failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Enable two-factor authentication for a user
+   * 
+   * Generates a TOTP secret, QR code, and backup codes.
+   * Updates the user record with the secret and hashed backup codes.
+   * Returns the plaintext backup codes for the user to save.
+   * 
+   * @param userId - The user ID to enable 2FA for
+   * @returns Promise resolving to secret, QR code data URL, and backup codes
+   * @throws Error if user not found or 2FA setup fails
+   * 
+   * @example
+   * ```typescript
+   * const { secret, qrCode, backupCodes } = await authService.enable2FA(userId);
+   * console.log('Scan this QR code:', qrCode);
+   * console.log('Backup codes:', backupCodes);
+   * ```
+   */
+  async enable2FA(userId: string): Promise<{ secret: string; qrCode: string; backupCodes: string[] }> {
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+
+    try {
+      // Retrieve user
+      const user = await this.database.getUser(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Generate TOTP secret
+      const secret = this.totpService.generateSecret();
+
+      // Generate QR code
+      const qrCode = await this.totpService.generateQRCode(secret, user.username);
+
+      // Generate backup codes
+      const backupCodes = this.totpService.generateBackupCodes();
+
+      // Hash backup codes for storage
+      const hashedBackupCodes = await Promise.all(
+        backupCodes.map(code => this.totpService.hashBackupCode(code))
+      );
+
+      // Update user with TOTP secret and hashed backup codes
+      await this.database.updateUser(userId, {
+        totpSecret: secret,
+        backupCodes: hashedBackupCodes,
+        backupCodesUsed: [],
+      });
+
+      // Log 2FA enabled event
+      await this.securityLog.logEvent({
+        userId,
+        eventType: '2fa_enabled',
+        ipAddress: 'local',
+        details: 'Two-factor authentication enabled',
+      });
+
+      // Return secret, QR code, and plaintext backup codes
+      return {
+        secret,
+        qrCode,
+        backupCodes,
+      };
+    } catch (error) {
+      throw new Error(`2FA setup failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Disable two-factor authentication for a user
+   * 
+   * Requires password confirmation for security.
+   * Clears TOTP secret and backup codes.
+   * 
+   * @param userId - The user ID to disable 2FA for
+   * @param password - Password for confirmation
+   * @returns Promise resolving when 2FA is disabled
+   * @throws AuthError if password is invalid
+   * @throws Error if user not found or disable fails
+   * 
+   * @example
+   * ```typescript
+   * await authService.disable2FA(userId, 'password123');
+   * ```
+   */
+  async disable2FA(userId: string, password: string): Promise<void> {
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+
+    if (!password) {
+      throw new AuthError('Password is required to disable 2FA');
+    }
+
+    try {
+      // Retrieve user
+      const user = await this.database.getUser(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Verify password
+      const passwordValid = await this.crypto.verifyPassword(password, user.passwordHash);
+      if (!passwordValid) {
+        throw new AuthError('Invalid password');
+      }
+
+      // Clear TOTP secret and backup codes
+      await this.database.updateUser(userId, {
+        totpSecret: null,
+        backupCodes: [],
+        backupCodesUsed: [],
+      });
+
+      // Log 2FA disabled event
+      await this.securityLog.logEvent({
+        userId,
+        eventType: '2fa_disabled',
+        ipAddress: 'local',
+        details: 'Two-factor authentication disabled',
+      });
+    } catch (error) {
+      if (error instanceof AuthError) {
+        throw error;
+      }
+      throw new Error(`Disable 2FA failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Regenerate backup codes for a user
+   * 
+   * Generates new backup codes and replaces the old ones.
+   * Returns the plaintext backup codes for the user to save.
+   * 
+   * @param userId - The user ID to regenerate backup codes for
+   * @returns Promise resolving to new backup codes
+   * @throws Error if user not found or regeneration fails
+   * 
+   * @example
+   * ```typescript
+   * const backupCodes = await authService.regenerateBackupCodes(userId);
+   * console.log('New backup codes:', backupCodes);
+   * ```
+   */
+  async regenerateBackupCodes(userId: string): Promise<string[]> {
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+
+    try {
+      // Retrieve user
+      const user = await this.database.getUser(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Check if 2FA is enabled
+      if (!user.totpSecret) {
+        throw new Error('Two-factor authentication is not enabled');
+      }
+
+      // Generate new backup codes
+      const backupCodes = this.totpService.generateBackupCodes();
+
+      // Hash backup codes for storage
+      const hashedBackupCodes = await Promise.all(
+        backupCodes.map(code => this.totpService.hashBackupCode(code))
+      );
+
+      // Update user with new backup codes
+      await this.database.updateUser(userId, {
+        backupCodes: hashedBackupCodes,
+        backupCodesUsed: [],
+      });
+
+      // Log backup code regeneration event
+      await this.securityLog.logEvent({
+        userId,
+        eventType: '2fa_enabled', // Reuse 2fa_enabled for backup code updates
+        ipAddress: 'local',
+        details: 'Backup codes regenerated',
+      });
+
+      return backupCodes;
+    } catch (error) {
+      throw new Error(`Backup code regeneration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }
