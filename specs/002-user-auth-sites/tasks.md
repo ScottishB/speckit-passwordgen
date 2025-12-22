@@ -845,14 +845,15 @@
 
 ### SiteAssignModal Component
 
-- [ ] **TASK-079**: Create SiteAssignModal component structure
+- [X] **TASK-079**: Create SiteAssignModal component structure ✅
   - Create `src/components/SiteAssignModal.ts`
   - Add modal overlay and dialog
   - Add form with fields: Site Name, URL/IP, Username, Notes
   - Add pre-filled password (read-only)
   - Add "Assign" and "Skip" buttons
+  **Completion Notes**: Created 585-line component with modal overlay, complete form structure, accessibility attributes (aria-modal, aria-label, aria-required, aria-describedby), password field pre-filled and readonly, Assign/Skip buttons
 
-- [ ] **TASK-080**: Implement SiteAssignModal logic
+- [X] **TASK-080**: Implement SiteAssignModal logic ✅
   - Receive generated password as prop
   - Implement form validation
   - Validate URL/IP format (show inline error)
@@ -861,12 +862,14 @@
   - Handle 5-minute inactivity timeout
   - Close modal on success or skip
   - Show success message
+  **Completion Notes**: Implemented complete validation (required fields, URL/IP format), password reuse checking with warning display, SiteService.createSite() integration, 5-minute inactivity timeout with automatic close, loading states, error handling, skip confirmation, event dispatching (assign-complete, assign-skip)
 
-- [ ] **TASK-081**: Integrate SiteAssignModal with generator forms
+- [X] **TASK-081**: Integrate SiteAssignModal with generator forms ✅
   - Update PasswordFormComponent to show "Assign to Site" button after generation
   - Update PassphraseFormComponent to show "Assign to Site" button
   - Open SiteAssignModal with generated password
   - Update password history to show assignment status
+  **Completion Notes**: Updated PasswordForm.ts with assignToSite() method and button event listener, updated PassphraseForm.ts similarly, added "Assign to Site" buttons to index.html (hidden by default, shown after generation), updated main.ts with SiteService initialization and openSiteAssignModal() method, added 'open-assign-modal' event listener, modal styling added to sites.css (310 lines), complete integration with success/skip event handling
 
 ### SiteDetailModal Component
 

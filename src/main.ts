@@ -5,12 +5,14 @@ import { SessionService } from './services/SessionService';
 import { SecurityLogService } from './services/SecurityLogService';
 import { TotpService } from './services/TotpService';
 import { AuthService } from './services/AuthService';
+import { SiteService } from './services/SiteService';
 import { PasswordFormComponent } from './components/PasswordForm';
 import { PassphraseFormComponent } from './components/PassphraseForm';
 import { HistoryListComponent } from './components/HistoryList';
 import { LoginForm } from './components/LoginForm';
 import { RegisterForm } from './components/RegisterForm';
 import { TotpSetupModal } from './components/TotpSetupModal';
+import { SiteAssignModal } from './components/SiteAssignModal';
 
 class AppComponent {
   private database: Database;
@@ -19,6 +21,7 @@ class AppComponent {
   private securityLogService: SecurityLogService;
   private totpService: TotpService;
   private authService: AuthService;
+  private siteService: SiteService;
   private historyService: HistoryService;
   private passwordForm: PasswordFormComponent | null = null;
   private passphraseForm: PassphraseFormComponent | null = null;
@@ -26,6 +29,7 @@ class AppComponent {
   private loginForm: LoginForm | null = null;
   private registerForm: RegisterForm | null = null;
   private totpSetupModal: TotpSetupModal | null = null;
+  private siteAssignModal: SiteAssignModal | null = null;
   private activeTab: 'password' | 'passphrase' = 'password';
   private isAuthenticated: boolean = false;
   private currentUser: string | null = null;
@@ -45,6 +49,7 @@ class AppComponent {
       this.totpService,
       this.database
     );
+    this.siteService = new SiteService(this.cryptoService, this.authService, this.database);
     this.historyService = new HistoryService(this.database);
   }
 
@@ -403,6 +408,51 @@ class AppComponent {
       console.log('[App] Session expired, redirecting to login');
       this.handleSessionExpired();
     });
+
+    // Listen for open-assign-modal events from generator forms
+    window.addEventListener('open-assign-modal', ((e: CustomEvent) => {
+      const password = e.detail?.password;
+      if (password && this.isAuthenticated) {
+        this.openSiteAssignModal(password);
+      }
+    }) as EventListener);
+  }
+
+  private openSiteAssignModal(generatedPassword: string): void {
+    const appContainer = document.querySelector('.app-container');
+    if (!appContainer) {
+      console.error('[App] Cannot find app container');
+      return;
+    }
+
+    // Clean up existing modal if any
+    if (this.siteAssignModal) {
+      this.siteAssignModal.destroy();
+      this.siteAssignModal = null;
+    }
+
+    // Create and show new modal
+    this.siteAssignModal = new SiteAssignModal(
+      appContainer as HTMLElement,
+      this.siteService,
+      this.authService,
+      generatedPassword
+    );
+
+    // Listen for modal events
+    appContainer.addEventListener('assign-complete', ((e: CustomEvent) => {
+      console.log('[App] Site assigned:', e.detail.site);
+      this.showSuccessMessage(`Password assigned to ${e.detail.site.siteName}`);
+      
+      // Refresh history
+      window.dispatchEvent(new CustomEvent('credential-generated'));
+    }) as EventListener, { once: true });
+
+    appContainer.addEventListener('assign-skip', () => {
+      console.log('[App] Site assignment skipped');
+    }, { once: true });
+
+    this.siteAssignModal.show();
   }
 
   private async handleSessionExpired(): Promise<void> {

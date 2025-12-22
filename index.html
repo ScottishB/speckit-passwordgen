@@ -154,14 +154,25 @@
           <div class="result-display" id="password-result" aria-live="polite" aria-atomic="true">
             <span class="result-placeholder">Click "Generate Password" to create a password</span>
           </div>
-          <button 
-            type="button" 
-            id="password-copy-btn" 
-            class="btn btn-copy" 
-            disabled
-            aria-label="Copy password to clipboard">
-            Copy
-          </button>
+          <div class="result-actions">
+            <button 
+              type="button" 
+              id="password-copy-btn" 
+              class="btn btn-copy" 
+              disabled
+              aria-label="Copy password to clipboard">
+              Copy
+            </button>
+            <button 
+              type="button" 
+              id="password-assign-btn" 
+              class="btn btn-primary" 
+              disabled
+              aria-label="Assign password to a site"
+              style="display: none;">
+              Assign to Site
+            </button>
+          </div>
         </div>
         <div class="copy-feedback" id="password-copy-feedback" role="status" aria-live="polite"></div>
       </section>
@@ -243,14 +254,25 @@
           <div class="result-display" id="passphrase-result" aria-live="polite" aria-atomic="true">
             <span class="result-placeholder">Click "Generate Passphrase" to create a passphrase</span>
           </div>
-          <button 
-            type="button" 
-            id="passphrase-copy-btn" 
-            class="btn btn-copy" 
-            disabled
-            aria-label="Copy passphrase to clipboard">
-            Copy
-          </button>
+          <div class="result-actions">
+            <button 
+              type="button" 
+              id="passphrase-copy-btn" 
+              class="btn btn-copy" 
+              disabled
+              aria-label="Copy passphrase to clipboard">
+              Copy
+            </button>
+            <button 
+              type="button" 
+              id="passphrase-assign-btn" 
+              class="btn btn-primary" 
+              disabled
+              aria-label="Assign passphrase to a site"
+              style="display: none;">
+              Assign to Site
+            </button>
+          </div>
         </div>
         <div class="copy-feedback" id="passphrase-copy-feedback" role="status" aria-live="polite"></div>
       </section>
