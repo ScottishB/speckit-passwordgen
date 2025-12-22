@@ -1115,12 +1115,13 @@
   - Log errors to console (dev) or external service (prod)
   - **Completed**: Created ErrorBoundary class (330 lines) with global error handling for window 'error' and 'unhandledrejection' events. Categorizes errors into 5 types (crypto/security, storage quota, session, network, generic) with appropriate user-friendly messages. Displays modal UI with error icon (SVG), title, message, technical details (dev only), and recovery actions (Reload always, Logout conditional). Logs last 10 errors with full context (message, stack, timestamp, userAgent, url). Supports dev/prod modes (stack traces in dev only). Created responsive, accessible CSS with WCAG 2.1 AA contrast, focus management, ARIA attributes, reduced-motion support. Integrated with main.ts AppComponent, initializes early to catch initialization errors. Security: HTML escaping to prevent XSS. Methods: initialize(), handleError(), displayErrorUI(), categorizeError(), getErrorLog(), clearErrorLog(), triggerError(), dismissError(), destroy(). (Commit fe71b65)
 
-- [ ] **TASK-107**: Add error handling for common scenarios
+- [X] **TASK-107**: Add error handling for common scenarios
   - Handle crypto operations failing
   - Handle localStorage quota exceeded
   - Handle network errors (if any future API calls)
   - Handle session expiration gracefully
   - Show appropriate user messages
+  - **Completed**: Integrated StorageQuotaService with Database persistence methods. Added quota checking to persistUsers(), persistSessions(), persistSecurityEvents(), and persistVault() - each method now calculates data size, checks quota before save, throws descriptive error if quota exceeded, and logs warning if approaching 80% capacity. Crypto operations already have comprehensive error handling in CryptoService with try-catch blocks and CryptoError exceptions. Session expiration handled by SessionService automatic cleanup (TASK-029) and ErrorBoundary session error categorization (TASK-106). Network errors will be caught by ErrorBoundary when needed. Storage quota errors will display user-friendly messages via ErrorBoundary's storage error category. (Commit 49196a8)
 
 ### Performance Optimization
 
