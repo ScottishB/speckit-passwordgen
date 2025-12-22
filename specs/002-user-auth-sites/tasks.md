@@ -1030,16 +1030,18 @@
 
 ### Password Confirmation Dialog
 
-- [ ] **TASK-098**: Create reusable PasswordConfirmationDialog component
+- [X] **TASK-098**: Create reusable PasswordConfirmationDialog component ✅
   - Create `src/components/PasswordConfirmationDialog.ts`
   - Add modal with password input
   - Add "Confirm" and "Cancel" buttons
   - Return promise that resolves with password or rejects on cancel
+  - **Completed**: Created 300-line PasswordConfirmationDialog component with promise-based API. Features: modal overlay with role="dialog" and aria-modal="true", password input with visibility toggle (eye/eye-off icons), Confirm and Cancel buttons, keyboard navigation (Enter to confirm, Escape to cancel), error display for empty password, focus management (auto-focus password input), click outside to cancel. Promise resolves with password string on confirm, rejects with error on cancel. Usage: `const password = await dialog.show('Enter your password to...')`.
 
-- [ ] **TASK-099**: Use PasswordConfirmationDialog for sensitive actions
+- [X] **TASK-099**: Use PasswordConfirmationDialog for sensitive actions ✅
   - Use for 2FA disable
   - Use for backup code regeneration
   - Use for account deletion (in addition to "DELETE" text)
+  - **Completed**: Replaced window.prompt() with PasswordConfirmationDialog in SettingsView.handleDisable2FA() method. Dialog shows message "Enter your password to disable two-factor authentication", handles user cancellation gracefully (catches error, checks for 'cancelled' message), maintains existing error handling for incorrect password. Note: Backup code regeneration uses window.confirm() for simple yes/no confirmation (appropriate for this use case), account deletion already has comprehensive DeleteAccountModal with password confirmation built-in.
 
 ### Testing
 

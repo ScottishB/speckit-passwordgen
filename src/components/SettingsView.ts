@@ -3,6 +3,7 @@ import type { Session } from '../models/Session';
 import type { AuthService } from '../services/AuthService';
 import type { SessionService } from '../services/SessionService';
 import type { TotpService } from '../services/TotpService';
+import { PasswordConfirmationDialog } from './PasswordConfirmationDialog';
 
 /**
  * SettingsView Component
@@ -402,10 +403,10 @@ export class SettingsView {
   private async handleDisable2FA(): Promise<void> {
     if (!this.currentUser) return;
 
-    const password = prompt('Enter your password to disable two-factor authentication:');
-    if (!password) return;
-
     try {
+      const dialog = new PasswordConfirmationDialog(this.container);
+      const password = await dialog.show('Enter your password to disable two-factor authentication');
+      
       await this.authService.disable2FA(this.currentUser.id, password);
       
       // Refresh view
@@ -414,6 +415,10 @@ export class SettingsView {
       // Show success message
       this.showSuccessMessage('Two-factor authentication has been disabled');
     } catch (error) {
+      // Check if user cancelled
+      if (error instanceof Error && error.message.includes('cancelled')) {
+        return; // User cancelled, do nothing
+      }
       console.error('[SettingsView] Failed to disable 2FA:', error);
       alert('Failed to disable two-factor authentication. Please check your password and try again.');
     }
