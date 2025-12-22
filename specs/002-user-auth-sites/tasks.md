@@ -114,11 +114,12 @@
   - Return CryptoKey suitable for AES-GCM
   - **Completed**: Implemented deriveEncryptionKey with PBKDF2-SHA256, 100K iterations, non-extractable keys
 
-- [ ] **TASK-012**: Implement data encryption methods
+- [X] **TASK-012**: Implement data encryption methods
   - Implement `encryptData(data: any, key: CryptoKey): Promise<{encrypted: string, iv: string, salt: string}>`
   - Use AES-GCM via Web Crypto API
   - JSON stringify data before encryption
   - Base64 encode encrypted output
+  - **Completed**: Implemented encryptData with AES-256-GCM, unique IV generation, comprehensive validation and error handling
 
 - [ ] **TASK-013**: Implement data decryption methods
   - Implement `decryptData(encrypted: string, iv: string, key: CryptoKey): Promise<any>`

@@ -524,26 +524,118 @@ export class CryptoService {
   }
 
   // ==========================================================================
-  // Data Encryption (AES-256-GCM) - To be implemented in TASK-012
+  // Data Encryption (AES-256-GCM)
   // ==========================================================================
 
   /**
    * Encrypts data using AES-256-GCM
    * 
-   * This method will be implemented in TASK-012
+   * Uses AES-256-GCM (Galois/Counter Mode) which provides both confidentiality
+   * (encryption) and authenticity (tamper detection). Any modification to the
+   * ciphertext will cause decryption to fail.
+   * 
+   * Process:
+   * 1. JSON stringify the data
+   * 2. Generate random IV (96 bits for GCM)
+   * 3. Encrypt with AES-GCM
+   * 4. Base64 encode ciphertext, IV, and salt
    * 
    * @param data - Data to encrypt (will be JSON stringified)
-   * @param key - CryptoKey for encryption
-   * @param options - Optional encryption options
+   * @param key - CryptoKey for encryption (from deriveEncryptionKey)
+   * @param options - Optional encryption options (custom salt)
    * @returns Promise resolving to EncryptedData structure
    * @throws {CryptoError} If encryption fails
+   * 
+   * @example
+   * ```typescript
+   * const salt = crypto.generateSalt();
+   * const key = await crypto.deriveEncryptionKey('master_password', salt);
+   * const encrypted = await crypto.encryptData({ secret: 'data' }, key, { salt });
+   * 
+   * // encrypted = {
+   * //   ciphertext: "base64...",
+   * //   iv: "base64...",
+   * //   salt: "base64..."
+   * // }
+   * ```
    */
   public async encryptData(
     data: any,
     key: CryptoKey,
     options?: EncryptionOptions
   ): Promise<EncryptedData> {
-    throw new Error('Not implemented yet - TASK-012');
+    // Validate key
+    if (!key || !(key instanceof CryptoKey)) {
+      throw new CryptoError(
+        'Invalid key: must be a CryptoKey instance',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    // Validate key is suitable for encryption
+    if (key.type !== 'secret') {
+      throw new CryptoError(
+        'Invalid key type: must be a secret key',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    if (!key.usages.includes('encrypt')) {
+      throw new CryptoError(
+        'Invalid key usage: key must support encryption',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    // Validate data is provided
+    if (data === undefined || data === null) {
+      throw new CryptoError(
+        'Data cannot be undefined or null',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    try {
+      // Step 1: JSON stringify the data
+      const plaintext = JSON.stringify(data);
+      const plaintextBytes = new TextEncoder().encode(plaintext);
+
+      // Step 2: Generate random IV (96 bits for GCM)
+      const iv = this.generateIV();
+      const ivBuffer = new Uint8Array(iv);
+
+      // Step 3: Encrypt with AES-GCM
+      const ciphertextBuffer = await crypto.subtle.encrypt(
+        {
+          name: 'AES-GCM',
+          iv: ivBuffer,
+        },
+        key,
+        plaintextBytes
+      );
+
+      // Step 4: Convert to Uint8Array and base64 encode
+      const ciphertextBytes = new Uint8Array(ciphertextBuffer);
+      const ciphertext = this.bytesToBase64(ciphertextBytes);
+      const ivBase64 = this.bytesToBase64(iv);
+
+      // Get salt (either from options or generate new one)
+      // Note: In practice, salt should be passed from deriveEncryptionKey
+      const salt = options?.salt || this.generateSalt();
+      const saltBase64 = this.bytesToBase64(salt);
+
+      return {
+        ciphertext,
+        iv: ivBase64,
+        salt: saltBase64,
+      };
+    } catch (error) {
+      throw new CryptoError(
+        'Failed to encrypt data',
+        CryptoErrorCode.ENCRYPTION_FAILED,
+        error as Error
+      );
+    }
   }
 
   // ==========================================================================
