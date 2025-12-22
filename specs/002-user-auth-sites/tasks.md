@@ -955,37 +955,42 @@
 
 ### SettingsView Component
 
-- [ ] **TASK-091**: Create SettingsView component structure
+- [X] **TASK-091**: Create SettingsView component structure ✅
   - Create `src/components/SettingsView.ts`
   - Add sections: 2FA, Active Sessions, Account
   - Add appropriate headings and ARIA landmarks
+  - **Completed**: Created 661-line SettingsView component with three main sections (2FA management, active sessions, account info), proper ARIA landmarks (section with aria-labelledby), semantic HTML structure, responsive design, and comprehensive event handling.
 
-- [ ] **TASK-092**: Implement 2FA management section
+- [X] **TASK-092**: Implement 2FA management section ✅
   - Display 2FA status (Enabled/Disabled)
   - Add "Enable 2FA" button (if disabled) → opens TotpSetupModal
   - Add "Disable 2FA" button (if enabled) → requires password confirmation
   - Add "View Backup Codes" button (if enabled) → shows remaining codes
   - Add "Regenerate Backup Codes" button → requires password, shows new codes
+  - **Completed**: Implemented complete 2FA management with status badge (green/yellow), enable button dispatching 'open-totp-setup' event, disable with password prompt calling authService.disable2FA(), view backup codes showing used/unused with masked display, regenerate with confirmation calling authService.regenerateBackupCodes(), backup codes display with copy/print functionality, remaining codes count indicator, and warning badges for low/no codes.
 
-- [ ] **TASK-093**: Implement active sessions section
+- [X] **TASK-093**: Implement active sessions section ✅
   - Load active sessions from SessionService
   - Display list of sessions with device info and last activity
   - Highlight current session
   - Add "Revoke" button for each session
   - Implement session revocation
   - Refresh list after revocation
+  - **Completed**: Implemented session loading via sessionService.getUserSessions(), session list rendering with device info (or "Unknown Device"), relative time formatting ("Just now", "X minutes/hours/days ago"), current session highlighting with badge and blue styling, revoke buttons (hidden for current session), handleRevokeSession() with confirmation and sessionService.invalidateSession(), automatic list refresh after revocation, error handling, empty state, and loading spinner.
 
-- [ ] **TASK-094**: Implement account section
+- [X] **TASK-094**: Implement account section ✅
   - Display username and account creation date
   - Add "Delete Account" button → opens DeleteAccountModal
   - Style with appropriate warning colors
+  - **Completed**: Implemented account info display with username and formatted creation date (e.g., "January 15, 2024"), danger zone section with red background (#fef2f2), red border, warning text about permanent deletion, delete account button dispatching 'open-delete-account' event, button styled with red outline (btn-danger--outline) that fills red on hover.
 
-- [ ] **TASK-095**: Style SettingsView component
+- [X] **TASK-095**: Style SettingsView component ✅
   - Create `src/styles/settings.css`
   - Style sections with clear separation
   - Style session list
   - Style buttons with appropriate colors (danger for delete)
   - Ensure responsive layout
+  - **Completed**: Created comprehensive 586-line settings.css with mobile-first responsive design, section cards with white background and gray borders, badge components for status (success/warning/danger with green/yellow/red colors), info boxes with appropriate color coding, backup codes grid (2-column desktop, 1-column mobile), sessions list with hover effects, current session highlighting, danger zone styling with red theme, print styles (shows only backup codes), reduced motion support, high contrast mode support, responsive breakpoints (@media max-width 640px).
 
 ### DeleteAccountModal Component
 

@@ -1,0 +1,539 @@
+/* Settings View Styles */
+
+.settings-view {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.settings-view__header {
+  margin-bottom: 2.5rem;
+}
+
+.settings-view__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.settings-view__section {
+  margin-bottom: 2rem;
+}
+
+/* Settings Section */
+
+.settings-section {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.settings-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.settings-section__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.settings-section__description {
+  padding: 1rem 1.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.settings-section__content {
+  padding: 1.5rem;
+}
+
+/* Settings Badge */
+
+.settings-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.settings-badge--success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.settings-badge--warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.settings-badge--danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Settings Info */
+
+.settings-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  color: #1e40af;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.settings-info__icon {
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.settings-info--warning {
+  background: #fef3c7;
+  border-color: #fde047;
+  color: #92400e;
+}
+
+.settings-info--danger {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+/* Settings Actions */
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.settings-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Settings Divider */
+
+.settings-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 2rem 0;
+}
+
+/* Backup Codes Display */
+
+.backup-codes-display {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.backup-codes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.backup-codes-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.btn-close:hover {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.backup-codes-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
+}
+
+.backup-codes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.backup-code-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+
+.backup-code-item--used {
+  opacity: 0.5;
+}
+
+.backup-code-number {
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 1.5rem;
+}
+
+.backup-code-value {
+  flex: 1;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+  letter-spacing: 0.05em;
+  background: transparent;
+  padding: 0;
+}
+
+.backup-code-status {
+  font-size: 0.75rem;
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.backup-codes-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Sessions List */
+
+.sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sessions-empty,
+.sessions-error {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.sessions-error {
+  color: #ef4444;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.session-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.session-item:hover {
+  background: #f3f4f6;
+}
+
+.session-item--current {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+
+.session-item__icon {
+  flex-shrink: 0;
+  color: #6b7280;
+}
+
+.session-item--current .session-item__icon {
+  color: #3b82f6;
+}
+
+.session-item__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.session-item__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.session-item__device {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.875rem;
+}
+
+.session-badge {
+  display: inline-flex;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+}
+
+.session-badge--current {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.session-item__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.session-item__separator {
+  color: #d1d5db;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.revoke-session-btn {
+  flex-shrink: 0;
+}
+
+/* Account Info */
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.account-info__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.account-info__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.account-info__value {
+  font-size: 1rem;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+/* Danger Zone */
+
+.danger-zone {
+  padding: 1.5rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+}
+
+.danger-zone__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #991b1b;
+  margin: 0 0 0.5rem 0;
+}
+
+.danger-zone__description {
+  font-size: 0.875rem;
+  color: #7f1d1d;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.btn-danger--outline {
+  background: transparent;
+  border: 2px solid #ef4444;
+  color: #ef4444;
+}
+
+.btn-danger--outline:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* Responsive Design */
+
+@media (max-width: 640px) {
+  .settings-view {
+    padding: 1rem 0.5rem;
+  }
+
+  .settings-view__title {
+    font-size: 1.5rem;
+  }
+
+  .settings-section__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .settings-section__content {
+    padding: 1rem;
+  }
+
+  .settings-actions {
+    flex-direction: column;
+  }
+
+  .settings-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .backup-codes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .backup-codes-actions {
+    flex-direction: column;
+  }
+
+  .backup-codes-actions .btn {
+    width: 100%;
+  }
+
+  .session-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .session-item__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .revoke-session-btn {
+    width: 100%;
+  }
+
+  .account-info {
+    gap: 1rem;
+  }
+}
+
+/* Print Styles */
+
+@media print {
+  .settings-view {
+    max-width: 100%;
+  }
+
+  .settings-section__header,
+  .settings-section__description,
+  .settings-actions,
+  .backup-codes-actions,
+  .sessions-list,
+  .danger-zone {
+    display: none !important;
+  }
+
+  .backup-codes-display {
+    border: none;
+    background: white;
+    padding: 0;
+  }
+
+  .backup-codes-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .backup-codes-grid {
+    display: block;
+  }
+
+  .backup-code-item {
+    border: 1px solid #000;
+    margin-bottom: 0.5rem;
+    page-break-inside: avoid;
+  }
+}
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  .session-item,
+  .btn-close {
+    transition: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .settings-section {
+    border-width: 2px;
+  }
+
+  .session-item {
+    border-width: 2px;
+  }
+
+  .backup-code-item {
+    border-width: 2px;
+  }
+}
