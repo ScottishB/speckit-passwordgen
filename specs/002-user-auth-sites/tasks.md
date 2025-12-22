@@ -994,15 +994,16 @@
 
 ### DeleteAccountModal Component
 
-- [ ] **TASK-096**: Create DeleteAccountModal component structure
+- [X] **TASK-096**: Create DeleteAccountModal component structure ✅
   - Create `src/components/DeleteAccountModal.ts`
   - Add modal overlay and dialog
   - Add warning text
   - Add text input for "DELETE" confirmation
   - Add password confirmation input
   - Add "Confirm Deletion" and "Cancel" buttons
+  - **Completed**: Created 480-line DeleteAccountModal component with modal overlay and dialog (role="dialog", aria-modal="true"), comprehensive warning box explaining permanent deletion (account, passwords, history, 2FA settings, sessions), text input with case-sensitive "DELETE" confirmation requirement, password confirmation input (type="password", autocomplete="current-password"), "Confirm Deletion" button (disabled until both fields valid) and "Cancel" button, field-level and global error containers with role="alert" and aria-live attributes.
 
-- [ ] **TASK-097**: Implement DeleteAccountModal logic
+- [X] **TASK-097**: Implement DeleteAccountModal logic ✅
   - Validate "DELETE" text typed exactly
   - Validate password confirmation
   - Disable "Confirm Deletion" button until both valid
@@ -1010,6 +1011,7 @@
   - Show loading state during deletion
   - Redirect to login page on success
   - Show success message: "Account deleted successfully"
+  - **Completed**: Implemented complete validation logic: validateConfirmationText() checks exact "DELETE" match (case-sensitive), validatePassword() checks non-empty password, updateButtonState() enables/disables confirm button based on both validations. Implemented handleConfirm() method: validates both fields, calls authService.deleteAccount(userId, password), shows loading state with "Deleting..." button text and spinner, dispatches 'account-deleted' CustomEvent on success, closes modal. Error handling: catches AuthError for incorrect password (shows field-level error), handles generic errors (shows global error). Additional features: handleCancel() dispatches 'account-delete-cancelled' event, keyboard navigation (Enter to submit, Escape to cancel), loading state disables all inputs and buttons, field-level error clearing on input change, focus management (confirmation input focused on show).
 
 ### Password Confirmation Dialog
 

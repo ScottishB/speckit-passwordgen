@@ -15,6 +15,7 @@ import { TotpSetupModal } from './components/TotpSetupModal';
 import { SiteAssignModal } from './components/SiteAssignModal';
 import { SiteDetailModal } from './components/SiteDetailModal';
 import { SiteEditModal } from './components/SiteEditModal';
+import { DeleteAccountModal } from './components/DeleteAccountModal';
 
 class AppComponent {
   private database: Database;
@@ -34,6 +35,7 @@ class AppComponent {
   private siteAssignModal: SiteAssignModal | null = null;
   private siteDetailModal: SiteDetailModal | null = null;
   private siteEditModal: SiteEditModal | null = null;
+  private deleteAccountModal: DeleteAccountModal | null = null;
   private activeTab: 'password' | 'passphrase' = 'password';
   private isAuthenticated: boolean = false;
   private currentUser: string | null = null;
@@ -428,6 +430,25 @@ class AppComponent {
         this.openSiteDetailModal(siteId);
       }
     }) as EventListener);
+
+    // Listen for open-delete-account events from settings
+    window.addEventListener('open-delete-account', ((e: CustomEvent) => {
+      const userId = e.detail?.userId;
+      if (userId && this.isAuthenticated) {
+        this.openDeleteAccountModal(userId);
+      }
+    }) as EventListener);
+
+    // Listen for account-deleted events
+    window.addEventListener('account-deleted', ((e: CustomEvent) => {
+      console.log('[App] Account deleted, logging out');
+      this.showSuccessMessage('Account deleted successfully');
+      // Force logout and return to auth UI
+      this.isAuthenticated = false;
+      this.currentUser = null;
+      this.stopActivityTracking();
+      this.showAuthUI();
+    }) as EventListener);
   }
 
   private openSiteAssignModal(generatedPassword: string): void {
@@ -547,6 +568,34 @@ class AppComponent {
     }, { once: true });
 
     this.siteEditModal.show();
+  }
+
+  private openDeleteAccountModal(userId: string): void {
+    const appContainer = document.querySelector('.app-container');
+    if (!appContainer) {
+      console.error('[App] Cannot find app container');
+      return;
+    }
+
+    // Clean up existing modal if any
+    if (this.deleteAccountModal) {
+      this.deleteAccountModal.destroy();
+      this.deleteAccountModal = null;
+    }
+
+    // Create and show new modal
+    this.deleteAccountModal = new DeleteAccountModal(
+      appContainer as HTMLElement,
+      this.authService,
+      userId
+    );
+
+    // Listen for modal events
+    appContainer.addEventListener('account-delete-cancelled', () => {
+      console.log('[App] Account deletion cancelled');
+    }, { once: true });
+
+    this.deleteAccountModal.show();
   }
 
   private async handleSessionExpired(): Promise<void> {
