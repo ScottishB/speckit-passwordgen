@@ -350,6 +350,114 @@ export class Database {
   }
 
   // ==========================================================================
+  // Session Methods
+  // ==========================================================================
+
+  /**
+   * Saves a new session or updates an existing session
+   * 
+   * @param session - Session object to save
+   * @returns Saved session object
+   * @throws {Error} If database not initialized or save fails
+   */
+  async saveSession(session: Session): Promise<Session> {
+    if (!this.initialized) {
+      throw new Error('Database not initialized');
+    }
+
+    // Check if session already exists
+    const existingIndex = this.sessions.findIndex(s => s.id === session.id);
+    
+    if (existingIndex >= 0) {
+      // Update existing session
+      this.sessions[existingIndex] = session;
+    } else {
+      // Add new session
+      this.sessions.push(session);
+    }
+
+    this.persistSessions();
+    return session;
+  }
+
+  /**
+   * Retrieves a session by ID
+   * 
+   * @param sessionId - Session ID to lookup
+   * @returns Session object or null if not found
+   * @throws {Error} If database not initialized
+   */
+  async getSession(sessionId: string): Promise<Session | null> {
+    if (!this.initialized) {
+      throw new Error('Database not initialized');
+    }
+
+    return this.sessions.find(s => s.id === sessionId) || null;
+  }
+
+  /**
+   * Deletes a session by ID
+   * 
+   * @param sessionId - Session ID to delete
+   * @throws {Error} If database not initialized
+   */
+  async deleteSession(sessionId: string): Promise<void> {
+    if (!this.initialized) {
+      throw new Error('Database not initialized');
+    }
+
+    const sessionIndex = this.sessions.findIndex(s => s.id === sessionId);
+    
+    if (sessionIndex === -1) {
+      // Session not found - silently succeed (idempotent operation)
+      return;
+    }
+
+    this.sessions.splice(sessionIndex, 1);
+    this.persistSessions();
+  }
+
+  /**
+   * Retrieves all sessions for a specific user
+   * 
+   * @param userId - User ID to lookup sessions for
+   * @returns Array of session objects for the user
+   * @throws {Error} If database not initialized
+   */
+  async getUserSessions(userId: string): Promise<Session[]> {
+    if (!this.initialized) {
+      throw new Error('Database not initialized');
+    }
+
+    return this.sessions.filter(s => s.userId === userId);
+  }
+
+  /**
+   * Deletes all sessions for a specific user
+   * 
+   * Useful for:
+   * - Force logout from all devices
+   * - Security incident response
+   * - Account deletion cleanup
+   * 
+   * @param userId - User ID whose sessions should be deleted
+   * @throws {Error} If database not initialized
+   */
+  async deleteAllUserSessions(userId: string): Promise<void> {
+    if (!this.initialized) {
+      throw new Error('Database not initialized');
+    }
+
+    const initialLength = this.sessions.length;
+    this.sessions = this.sessions.filter(s => s.userId !== userId);
+    
+    // Only persist if sessions were actually deleted
+    if (this.sessions.length !== initialLength) {
+      this.persistSessions();
+    }
+  }
+
+  // ==========================================================================
   // Legacy Methods (for backwards compatibility - will be removed)
   // ==========================================================================
 
