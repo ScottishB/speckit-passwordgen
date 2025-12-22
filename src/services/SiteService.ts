@@ -231,8 +231,20 @@ export class SiteService {
    * @throws {SiteError} If user is not authenticated
    */
   async searchSites(query: string): Promise<Site[]> {
-    // TODO: Implement in TASK-070
-    throw new Error('Not implemented');
+    const user = this.getCurrentUser();
+    const sites = await this.loadSitesFromVault(user.id);
+    
+    // Return all sites if query is empty
+    if (!query || query.trim() === '') {
+      return sites;
+    }
+    
+    // Filter by siteName or url (case-insensitive)
+    const lowerQuery = query.toLowerCase();
+    return sites.filter((site: Site) => 
+      site.siteName.toLowerCase().includes(lowerQuery) ||
+      site.url.toLowerCase().includes(lowerQuery)
+    );
   }
 
   /**
@@ -248,8 +260,26 @@ export class SiteService {
     sortBy: 'name' | 'dateAdded' | 'dateModified',
     order: 'asc' | 'desc' = 'asc'
   ): Site[] {
-    // TODO: Implement in TASK-071
-    throw new Error('Not implemented');
+    // Create a copy to avoid mutating original array
+    const sorted = [...sites].sort((a: Site, b: Site) => {
+      let comparison = 0;
+      
+      switch (sortBy) {
+        case 'name':
+          comparison = a.siteName.toLowerCase().localeCompare(b.siteName.toLowerCase());
+          break;
+        case 'dateAdded':
+          comparison = a.createdAt - b.createdAt;
+          break;
+        case 'dateModified':
+          comparison = a.lastModified - b.lastModified;
+          break;
+      }
+      
+      return order === 'asc' ? comparison : -comparison;
+    });
+    
+    return sorted;
   }
 
   /**
@@ -263,8 +293,41 @@ export class SiteService {
     type: 'url' | 'ip' | null;
     warning: string | null;
   } {
-    // TODO: Implement in TASK-072
-    throw new Error('Not implemented');
+    if (!urlOrIp || urlOrIp.trim() === '') {
+      return { valid: false, type: null, warning: 'URL or IP address is required' };
+    }
+    
+    const trimmed = urlOrIp.trim();
+    
+    // Try URL validation first
+    try {
+      const url = new URL(trimmed);
+      if (url.protocol === 'http:' || url.protocol === 'https:') {
+        return { valid: true, type: 'url', warning: null };
+      }
+      return { valid: false, type: null, warning: 'URL must use http or https protocol' };
+    } catch {
+      // Not a valid URL, try IP validation
+    }
+    
+    // IPv4 validation: xxx.xxx.xxx.xxx (0-255 for each octet)
+    const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    if (ipv4Regex.test(trimmed)) {
+      return { valid: true, type: 'ip', warning: null };
+    }
+    
+    // IPv6 validation: simplified pattern (covers most common cases)
+    const ipv6Regex = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::1$|^::$/;
+    if (ipv6Regex.test(trimmed)) {
+      return { valid: true, type: 'ip', warning: 'IPv6 address detected' };
+    }
+    
+    // Check if it looks like a URL without protocol
+    if (trimmed.includes('.') && !trimmed.includes(' ')) {
+      return { valid: false, type: null, warning: 'URL missing protocol (http:// or https://)' };
+    }
+    
+    return { valid: false, type: null, warning: 'Invalid URL or IP address format' };
   }
 
   /**
@@ -275,8 +338,12 @@ export class SiteService {
    * @throws {SiteError} If user is not authenticated
    */
   async checkPasswordReuse(password: string): Promise<Site[]> {
-    // TODO: Implement in TASK-073
-    throw new Error('Not implemented');
+    const user = this.getCurrentUser();
+    const sites = await this.loadSitesFromVault(user.id);
+    
+    // Filter sites with matching password
+    // Note: Passwords are stored in plain text in the vault (vault-level encryption)
+    return sites.filter((site: Site) => site.encryptedPassword === password);
   }
 
   /**

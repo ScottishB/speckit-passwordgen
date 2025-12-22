@@ -1,10 +1,14 @@
 import { HistoryService } from '../services/historyService';
+import { AuthService } from '../services/AuthService';
 import { copyToClipboard } from '../services/clipboard';
 
 export class HistoryListComponent {
   private currentFilter: 'all' | 'password' | 'passphrase' = 'all';
 
-  constructor(private historyService: HistoryService) {
+  constructor(
+    private historyService: HistoryService,
+    private authService: AuthService
+  ) {
     this.setupEventListeners();
   }
 
@@ -33,7 +37,13 @@ export class HistoryListComponent {
 
   async loadHistory(limit = 50): Promise<void> {
     try {
-      const entries = await this.historyService.getHistory(limit);
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        this.renderError('Please log in to view history');
+        return;
+      }
+      
+      const entries = await this.historyService.getHistory(user.id, limit);
       this.renderHistory(entries);
     } catch (error) {
       console.error('Failed to load history:', error);
@@ -55,11 +65,17 @@ export class HistoryListComponent {
     }
 
     try {
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        this.renderError('Please log in to view history');
+        return;
+      }
+
       let entries;
       if (type === 'all') {
-        entries = await this.historyService.getHistory();
+        entries = await this.historyService.getHistory(user.id);
       } else {
-        entries = await this.historyService.getHistoryByType(type);
+        entries = await this.historyService.getHistoryByType(user.id, type);
       }
       this.renderHistory(entries);
     } catch (error) {
@@ -70,7 +86,13 @@ export class HistoryListComponent {
 
   async copyHistoryItem(id: number): Promise<void> {
     try {
-      const entries = await this.historyService.getHistory(1000);
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        console.error('No user logged in');
+        return;
+      }
+
+      const entries = await this.historyService.getHistory(user.id, 1000);
       const entry = entries.find(e => e.id === id);
       
       if (entry) {

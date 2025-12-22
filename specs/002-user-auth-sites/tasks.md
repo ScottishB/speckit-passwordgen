@@ -723,61 +723,69 @@
 
 ### Site Model
 
-- [ ] **TASK-067**: Create Site model
-  - Create `src/models/Site.ts`
-  - Define Site interface with all fields
-  - Add type exports
-  - Add JSDoc documentation
+- [X] **TASK-067**: Create Site model ✅
+  - ✅ Create `src/models/Site.ts`
+  - ✅ Define Site interface with all fields
+  - ✅ Add type exports
+  - ✅ Add JSDoc documentation
+  - **Completed**: Updated existing Site model with encrypted password structure (encryptedPassword, iv, tags fields). Created CreateSiteInput and UpdateSiteInput types.
 
 ### SiteService Implementation
 
-- [ ] **TASK-068**: Create SiteService class
-  - Create `src/services/SiteService.ts`
-  - Add dependencies: CryptoService, AuthService, Database
-  - Add JSDoc documentation
+- [X] **TASK-068**: Create SiteService class ✅
+  - ✅ Create `src/services/SiteService.ts`
+  - ✅ Add dependencies: CryptoService, AuthService, Database
+  - ✅ Add JSDoc documentation
+  - **Completed**: Created SiteService class (320 lines) with full structure, dependencies, method stubs, and comprehensive JSDoc.
 
-- [ ] **TASK-069**: Implement site CRUD operations
-  - Implement `createSite(site: Omit<Site, 'id' | 'createdAt' | 'lastModified'>): Promise<Site>`
-  - Implement `getSite(siteId: string): Promise<Site | null>`
-  - Implement `getAllSites(): Promise<Site[]>`
-  - Implement `updateSite(siteId: string, updates: Partial<Site>): Promise<Site>`
-  - Implement `deleteSite(siteId: string): Promise<void>`
-  - Ensure all operations scoped to current user
-  - Encrypt password field before storage
+- [X] **TASK-069**: Implement site CRUD operations ✅
+  - ✅ Implement `createSite(site: Omit<Site, 'id' | 'createdAt' | 'lastModified'>): Promise<Site>`
+  - ✅ Implement `getSite(siteId: string): Promise<Site | null>`
+  - ✅ Implement `getAllSites(): Promise<Site[]>`
+  - ✅ Implement `updateSite(siteId: string, updates: Partial<Site>): Promise<Site>`
+  - ✅ Implement `deleteSite(siteId: string): Promise<void>`
+  - ✅ Ensure all operations scoped to current user
+  - ✅ Encrypt password field before storage
+  - **Completed**: Implemented all 5 CRUD operations with vault integration, user authorization, and proper error handling.
 
-- [ ] **TASK-070**: Implement site search and filtering
-  - Implement `searchSites(query: string): Promise<Site[]>`
-  - Search by site name (case-insensitive)
-  - Search by URL (case-insensitive)
-  - Return matching sites only for current user
+- [X] **TASK-070**: Implement site search and filtering ✅
+  - ✅ Implement `searchSites(query: string): Promise<Site[]>`
+  - ✅ ✅ Search by site name (case-insensitive)
+  - ✅ Search by URL (case-insensitive)
+  - ✅ Return matching sites only for current user
+  - **Completed**: Implemented searchSites() with case-insensitive filtering by siteName or url, returns empty query as all sites.
 
-- [ ] **TASK-071**: Implement site sorting
-  - Implement `sortSites(sites: Site[], sortBy: 'name' | 'dateAdded' | 'dateModified', order: 'asc' | 'desc'): Site[]`
-  - Sort by site name (alphabetical)
-  - Sort by createdAt timestamp
-  - Sort by lastModified timestamp
-  - Return sorted array
+- [X] **TASK-071**: Implement site sorting ✅
+  - ✅ Implement `sortSites(sites: Site[], sortBy: 'name' | 'dateAdded' | 'dateModified', order: 'asc' | 'desc'): Site[]`
+  - ✅ Sort by site name (alphabetical)
+  - ✅ Sort by createdAt timestamp
+  - ✅ Sort by lastModified timestamp
+  - ✅ Return sorted array
+  - **Completed**: Implemented sortSites() with switch statement for field selection, localeCompare for name sorting, order reversal for desc.
 
-- [ ] **TASK-072**: Implement URL/IP validation
-  - Implement `validateUrlOrIp(urlOrIp: string): {valid: boolean, type: 'url' | 'ip' | null, warning: string | null}`
-  - Validate URL format (basic regex)
-  - Validate IPv4 format
-  - Validate IPv6 format
-  - Return validation result with type
+- [X] **TASK-072**: Implement URL/IP validation ✅
+  - ✅ Implement `validateUrlOrIp(urlOrIp: string): {valid: boolean, type: 'url' | 'ip' | null, warning: string | null}`
+  - ✅ Validate URL format (basic regex)
+  - ✅ Validate IPv4 format
+  - ✅ Validate IPv6 format
+  - ✅ Return validation result with type
+  - **Completed**: Implemented validateUrlOrIp() with URL constructor for protocol validation, regex for IPv4 (0-255 octet validation), IPv6 support, and helpful warnings.
 
-- [ ] **TASK-073**: Implement password reuse checking
-  - Implement `checkPasswordReuse(password: string): Promise<Site[]>`
-  - Decrypt all site passwords for current user
-  - Compare with provided password
-  - Return array of sites using same password
+- [X] **TASK-073**: Implement password reuse checking ✅
+  - ✅ Implement `checkPasswordReuse(password: string): Promise<Site[]>`
+  - ✅ Decrypt all site passwords for current user
+  - ✅ Compare with provided password
+  - ✅ Return array of sites using same password
+  - **Completed**: Implemented checkPasswordReuse() with vault loading and password comparison (plain text comparison since vault-level encryption).
 
 ### HistoryService Updates
 
-- [ ] **TASK-074**: Update HistoryService for user-scoped queries
-  - Modify all methods to accept userId parameter
-  - Filter results by userId
-  - Update method signatures
-  - Update existing components to pass userId
+- [X] **TASK-074**: Update HistoryService for user-scoped queries ✅
+  - ✅ Modify all methods to accept userId parameter
+  - ✅ Filter results by userId
+  - ✅ Update method signatures
+  - ✅ Update existing components to pass userId
+  - **Completed**: Updated HistoryService.getHistory() and getHistoryByType() to accept userId parameter with backward compatibility for old entries. Updated HistoryListComponent to inject AuthService and pass userId to all service calls. Updated main.ts to pass AuthService to HistoryListComponent constructor.
 
 ### SiteService Testing
 

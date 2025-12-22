@@ -317,7 +317,7 @@ class AppComponent {
       console.log('[App] Initializing components...');
       this.passwordForm = new PasswordFormComponent(this.database);
       this.passphraseForm = new PassphraseFormComponent(this.database);
-      this.historyList = new HistoryListComponent(this.historyService);
+      this.historyList = new HistoryListComponent(this.historyService, this.authService);
       console.log('[App] Components initialized');
 
       // Setup tab switching
