@@ -225,6 +225,51 @@ export class SessionService {
   }
 
   // ==========================================================================
+  // Session Timeout Logic
+  // ==========================================================================
+
+  /**
+   * Checks if a session has expired
+   * 
+   * A session is considered expired if either:
+   * - Idle timeout: No activity for 30 minutes (lastActivity + IDLE_TIMEOUT < now)
+   * - Absolute timeout: Session exists for 8 hours (expiresAt < now)
+   * 
+   * @param session - Session to check
+   * @returns True if session is expired, false otherwise
+   * @throws {Error} If session is not provided
+   * 
+   * @example
+   * ```typescript
+   * const session = await sessionService.getSession('session-123');
+   * if (session && sessionService.isSessionExpired(session)) {
+   *   await sessionService.invalidateSession(session.id);
+   *   throw new Error('Session expired');
+   * }
+   * ```
+   */
+  isSessionExpired(session: Session): boolean {
+    if (!session) {
+      throw new Error('Session is required');
+    }
+
+    const now = Date.now();
+
+    // Check absolute timeout (session exists too long)
+    if (now >= session.expiresAt) {
+      return true;
+    }
+
+    // Check idle timeout (no activity for too long)
+    const idleTime = now - session.lastActivity;
+    if (idleTime >= SESSION_TIMEOUTS.IDLE_TIMEOUT) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // ==========================================================================
   // Helper Methods
   // ==========================================================================
 

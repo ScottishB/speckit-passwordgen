@@ -241,11 +241,12 @@
   - Implement `invalidateSession(sessionId: string): Promise<void>`
   - **Completed**: Implemented all 4 session lifecycle methods with proper validation, error handling, and timestamp management. Created comprehensive test suite (62 tests) covering creation, retrieval, activity updates, invalidation, multi-device sessions, and persistence.
 
-- [ ] **TASK-028**: Implement session timeout logic
+- [X] **TASK-028**: Implement session timeout logic
   - Implement `isSessionExpired(session: Session): boolean`
   - Check idle timeout (30 minutes)
   - Check absolute timeout (8 hours)
   - Return true if either expired
+  - **Completed**: Implemented isSessionExpired method with dual timeout checking (idle: 30min, absolute: 8hr). Returns true if either timeout exceeded. Created comprehensive test suite (46 tests) covering boundary conditions, timeout combinations, authentication flows, and edge cases.
 
 - [ ] **TASK-029**: Implement automatic session cleanup
   - Implement `startExpirationCheck(): void`
