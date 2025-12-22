@@ -102,7 +102,7 @@ export class SiteService {
       siteName: input.siteName.trim(),
       url: input.url.trim(),
       username: input.username.trim(),
-      encryptedPassword: input.password, // Stored as-is, vault handles encryption
+      encryptedPassword: input.password.trim(), // Stored as-is, vault handles encryption
       iv: '', // Not used with vault-level encryption
       notes: input.notes?.trim(),
       createdAt: now,
@@ -155,35 +155,40 @@ export class SiteService {
    * 
    * @param siteId - Unique site identifier
    * @param updates - Partial site data to update
-   * @returns Updated site entry
-   * @throws {SiteError} If site not found, doesn't belong to user, or validation fails
+   * @returns Updated site entry or null if not found
+   * @throws {SiteError} If validation fails or site doesn't belong to user
    */
-  async updateSite(siteId: string, updates: UpdateSiteInput): Promise<Site> {
+  async updateSite(siteId: string, updates: UpdateSiteInput): Promise<Site | null> {
     const user = this.getCurrentUser();
     const sites = await this.loadSitesFromVault(user.id);
     
     const siteIndex = sites.findIndex((s: Site) => s.id === siteId);
     if (siteIndex === -1) {
-      throw new SiteError('Site not found');
+      return null;
     }
     
     const site = sites[siteIndex];
     if (!site) {
-      throw new SiteError('Site not found');
+      return null;
     }
     if (site.userId !== user.id) {
       throw new SiteError('Site does not belong to current user');
     }
     
-    // Apply updates
+    // Validate and trim inputs
+    if (updates.siteName !== undefined && updates.siteName.trim() === '') {
+      throw new SiteError('Site name is required');
+    }
+    
+    // Apply updates with trimming
     const updatedSite: Site = {
       ...site,
-      siteName: updates.siteName ?? site.siteName,
-      url: updates.url ?? site.url,
-      username: updates.username ?? site.username,
-      encryptedPassword: updates.password ?? site.encryptedPassword,
+      siteName: updates.siteName !== undefined ? updates.siteName.trim() : site.siteName,
+      url: updates.url !== undefined ? updates.url.trim() : site.url,
+      username: updates.username !== undefined ? updates.username.trim() : site.username,
+      encryptedPassword: updates.password !== undefined ? updates.password.trim() : site.encryptedPassword,
       iv: site.iv,
-      notes: updates.notes !== undefined ? updates.notes : site.notes,
+      notes: updates.notes !== undefined ? (updates.notes ? updates.notes.trim() : undefined) : site.notes,
       tags: updates.tags ?? site.tags,
       lastModified: Date.now(),
     };
@@ -199,20 +204,21 @@ export class SiteService {
    * Deletes a site entry
    * 
    * @param siteId - Unique site identifier
-   * @throws {SiteError} If site not found or doesn't belong to current user
+   * @returns True if deleted, false if not found
+   * @throws {SiteError} If site doesn't belong to current user
    */
-  async deleteSite(siteId: string): Promise<void> {
+  async deleteSite(siteId: string): Promise<boolean> {
     const user = this.getCurrentUser();
     const sites = await this.loadSitesFromVault(user.id);
     
     const siteIndex = sites.findIndex((s: Site) => s.id === siteId);
     if (siteIndex === -1) {
-      throw new SiteError('Site not found');
+      return false;
     }
     
     const site = sites[siteIndex];
     if (!site) {
-      throw new SiteError('Site not found');
+      return false;
     }
     if (site.userId !== user.id) {
       throw new SiteError('Site does not belong to current user');
@@ -221,6 +227,8 @@ export class SiteService {
     // Remove from vault
     sites.splice(siteIndex, 1);
     await this.saveSitesToVault(user.id, sites);
+    
+    return true;
   }
 
   /**

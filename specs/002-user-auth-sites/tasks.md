@@ -789,7 +789,7 @@
 
 ### SiteService Testing
 
-- [ ] **TASK-075**: Write unit tests for SiteService
+- [X] **TASK-075**: Write unit tests for SiteService ✅
   - Test createSite saves to current user's vault
   - Test getSite retrieves site by ID
   - Test getSite throws error if site belongs to different user
@@ -800,6 +800,12 @@
   - Test validateUrlOrIp accepts valid URLs and IPs
   - Test validateUrlOrIp rejects invalid formats
   - Test checkPasswordReuse finds matching passwords
+  **Completion Notes**: Created comprehensive test suite with 34 tests:
+  - CRUD: createSite (4), getAllSites (2), getSite (3), updateSite (5), deleteSite (3)
+  - Utilities: searchSites (2), sortSites (5), validateUrlOrIp (7), checkPasswordReuse (3)
+  - Mock AuthService pattern avoids argon2 WASM issues
+  - Fixed: password trimming, whitespace handling, return types
+  - All 34 tests pass (100%)
 
 ---
 
