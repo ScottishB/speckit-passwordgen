@@ -128,11 +128,12 @@
   - JSON parse decrypted data
   - **Completed**: Implemented decryptData with AES-256-GCM, tamper detection, comprehensive validation and error handling
 
-- [ ] **TASK-014**: Implement utility methods
+- [X] **TASK-014**: Implement utility methods
   - Implement `generateSalt(): string` (16 bytes, base64)
   - Implement `generateToken(): string` (32 bytes, base64)
   - Implement `generateUUID(): string` (UUID v4)
   - Use crypto.getRandomValues for all random generation
+  - **Completed**: Implemented generateToken (32 bytes base64), generateUUID (RFC 4122 v4), validatePasswordStrength (OWASP/NIST compliant), common password detection
 
 ### CryptoService Testing
 

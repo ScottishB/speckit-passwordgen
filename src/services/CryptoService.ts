@@ -782,22 +782,189 @@ export class CryptoService {
   }
 
   // ==========================================================================
-  // Utility Methods - To be implemented in TASK-014
+  // Utility Methods
   // ==========================================================================
 
   /**
-   * Validates password strength according to NIST guidelines
+   * Generates a cryptographically secure random token
    * 
-   * This method will be implemented in TASK-014
+   * Useful for session tokens, API keys, CSRF tokens, etc.
+   * Uses crypto.getRandomValues for cryptographic randomness.
+   * 
+   * @param length - Length of token in bytes (default: 32)
+   * @returns Base64-encoded token string
+   * 
+   * @example
+   * ```typescript
+   * const token = crypto.generateToken();
+   * // Returns: base64 string representing 32 random bytes
+   * ```
+   */
+  public generateToken(length: number = 32): string {
+    const bytes = crypto.getRandomValues(new Uint8Array(length));
+    return this.bytesToBase64(bytes);
+  }
+
+  /**
+   * Generates a UUID v4 (random UUID)
+   * 
+   * Creates a universally unique identifier using cryptographically secure
+   * random numbers. Follows RFC 4122 UUID v4 specification.
+   * 
+   * Format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+   * - x: any hexadecimal digit
+   * - 4: version 4 indicator
+   * - y: one of 8, 9, a, or b
+   * 
+   * @returns UUID v4 string
+   * 
+   * @example
+   * ```typescript
+   * const uuid = crypto.generateUUID();
+   * // Returns: "550e8400-e29b-41d4-a716-446655440000"
+   * ```
+   */
+  public generateUUID(): string {
+    // Generate 16 random bytes
+    const bytes = crypto.getRandomValues(new Uint8Array(16));
+
+    // Set version (4) and variant (RFC 4122) bits
+    // Version 4: set bits 4-7 of byte 6 to 0100
+    bytes[6] = (bytes[6]! & 0x0f) | 0x40;
+    
+    // Variant (RFC 4122): set bits 6-7 of byte 8 to 10
+    bytes[8] = (bytes[8]! & 0x3f) | 0x80;
+
+    // Convert to hex and format as UUID
+    const hex = Array.from(bytes)
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+  }
+
+  /**
+   * Validates password strength according to OWASP and NIST guidelines
+   * 
+   * Implements OWASP ASVS 4.0 V2.1.1 and NIST SP 800-63B requirements:
+   * - Minimum 8 characters (OWASP/NIST requirement)
+   * - Maximum 256 characters (we exceed NIST minimum of 128)
+   * - Check against common passwords (NIST recommendation)
+   * - NO composition rules (per OWASP guidance)
+   * 
+   * IMPORTANT: Per OWASP, we do NOT enforce "must contain uppercase, 
+   * lowercase, number, special character" rules as these:
+   * - Reduce password entropy
+   * - Lead to predictable patterns
+   * - Frustrate users
+   * - Are less effective than length requirements
    * 
    * @param password - Password to validate
    * @returns Validation result with isValid flag and error messages
+   * 
+   * @example
+   * ```typescript
+   * const result = crypto.validatePasswordStrength('mypassword');
+   * if (!result.isValid) {
+   *   console.log('Errors:', result.errors);
+   * }
+   * ```
    */
   public validatePasswordStrength(password: string): {
     isValid: boolean;
     errors: string[];
   } {
-    throw new Error('Not implemented yet - TASK-014');
+    const errors: string[] = [];
+
+    // Validate input
+    if (password === undefined || password === null) {
+      errors.push('Password is required');
+      return { isValid: false, errors };
+    }
+
+    if (typeof password !== 'string') {
+      errors.push('Password must be a string');
+      return { isValid: false, errors };
+    }
+
+    // OWASP ASVS 2.1.1: Minimum 8 characters
+    if (password.length < 8) {
+      errors.push('Password must be at least 8 characters');
+    }
+
+    // Allow up to 256 characters (exceeds OWASP minimum of 128)
+    if (password.length > 256) {
+      errors.push('Password must be less than 256 characters');
+    }
+
+    // NIST SP 800-63B: Check against common passwords
+    // Using a basic check for demonstration - in production, use a comprehensive list
+    if (this.isCommonPassword(password)) {
+      errors.push('Password is too common. Please choose a more unique password.');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
+  }
+
+  /**
+   * Checks if password is in common password list
+   * 
+   * Basic implementation checking against most common weak passwords.
+   * In production, this should check against a comprehensive list like
+   * HIBP (Have I Been Pwned) or NIST's banned password list.
+   * 
+   * @param password - Password to check
+   * @returns true if password is common, false otherwise
+   * @private
+   */
+  private isCommonPassword(password: string): boolean {
+    // Convert to lowercase for case-insensitive comparison
+    const lower = password.toLowerCase();
+
+    // Top 100 most common passwords (subset for demonstration)
+    const commonPasswords = [
+      'password', '123456', '123456789', '12345678', '12345', '1234567',
+      'password1', '123123', '1234567890', 'qwerty', 'abc123', 'million2',
+      'password123', '111111', 'iloveyou', 'welcome', 'monkey', 'dragon',
+      'master', 'sunshine', 'princess', 'football', 'qwerty123', 'admin',
+      'letmein', 'login', 'passw0rd', 'starwars', 'batman', 'trustno1',
+      'superman', 'hello', 'freedom', 'computer', 'whatever', 'test',
+      'solo', 'charlie', 'jordan', 'shadow', 'michael', 'jennifer',
+      'jessica', 'daniel', 'letmein', 'secret', 'welcome1', 'pass',
+      '123', '1234', 'root', 'admin123', 'administrator', 'user',
+      'guest', 'demo', 'test123', 'password!', 'qwertyuiop', 'asdfgh',
+      'zxcvbn', 'qazwsx', '123qwe', 'abc', 'abcd1234', 'temp', 'changeme',
+    ];
+
+    // Check exact matches
+    if (commonPasswords.includes(lower)) {
+      return true;
+    }
+
+    // Check simple patterns
+    if (/^[0-9]+$/.test(password) && password.length <= 10) {
+      return true; // All numbers (up to 10 digits) are considered weak
+    }
+
+    if (/^[a-zA-Z]+$/.test(password) && password.length <= 8) {
+      return true; // All letters (up to 8 chars) without numbers/symbols are weak
+    }
+
+    // Check keyboard patterns
+    const keyboardPatterns = [
+      'qwertyuiop', 'asdfghjkl', 'zxcvbnm', '1qaz2wsx', 'qazwsxedc'
+    ];
+    
+    for (const pattern of keyboardPatterns) {
+      if (lower.includes(pattern)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
 
