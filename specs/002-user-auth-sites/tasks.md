@@ -665,25 +665,40 @@
 
 ### Auth Routing in AppComponent
 
-- [ ] **TASK-062**: Update AppComponent for auth routing
-  - Add authentication state tracking
-  - Check AuthService.isAuthenticated() on app load
-  - Show LoginForm if not authenticated
-  - Show main app if authenticated
-  - Listen for login/logout/session-expired events
-  - Redirect to login on session expiration
+- [X] **TASK-062**: Update AppComponent for auth routing ✅
+  - Updated src/main.ts (AppComponent class) with authentication state tracking
+  - Added isAuthenticated boolean, currentUser string, activityThrottleTimeout, lastActivityUpdate fields
+  - Check AuthService.isAuthenticated() on app load in initialize() method
+  - Show LoginForm if not authenticated via showAuthUI() → showLogin()
+  - Show main app if authenticated via showMainApp() (initializes PasswordForm, PassphraseForm, HistoryList components)
+  - Listen for 'login-success' event from LoginForm → handleLoginSuccess() → showMainApp()
+  - Listen for 'register-success' event from RegisterForm → handleRegisterSuccess(userId) → show TotpSetupModal
+  - Listen for 'totp-setup-complete' event from TotpSetupModal → showMainApp()
+  - Listen for 'session-expired' window event → handleSessionExpired() → clear state, show auth UI
+  - Added setupAuthEventListeners() for session expiration handling
+  - **Flow**: initialize() → check auth → show LoginForm/RegisterForm OR showMainApp → listen for auth events
 
-- [ ] **TASK-063**: Implement session activity tracking
-  - Listen for user interactions (mouse, keyboard, touch)
-  - Call SessionService.updateActivity() on interaction
-  - Throttle activity updates (max once per minute)
-  - Add idle warning notification (optional, 5min before timeout)
+- [X] **TASK-063**: Implement session activity tracking ✅
+  - Listen for user interactions: mousedown, keydown, touchstart, scroll events
+  - Call SessionService.updateActivity(sessionId) on interaction via trackActivity() method
+  - Throttle activity updates to max once per minute (check lastActivityUpdate timestamp)
+  - Debounce updates with 500ms delay using activityThrottleTimeout
+  - setupActivityTracking() method adds event listeners after successful login/registration
+  - stopActivityTracking() method removes listeners and clears timeout on logout/session expiration
+  - Activity updates happen automatically in background, no user-facing UI
+  - **Pattern**: Event → trackActivity() → check if >1min since last → debounce 500ms → updateActivity(sessionId)
 
-- [ ] **TASK-064**: Add navigation for authenticated app
-  - Update tab navigation: Generator, Sites, Settings
-  - Add logout button to header
-  - Handle logout action
-  - Update active tab highlighting
+- [X] **TASK-064**: Add navigation for authenticated app ✅
+  - Existing tab navigation preserved: Password/Passphrase tabs with keyboard navigation (Arrow keys)
+  - Added logout button to header via addLogoutButton() method
+  - Logout button: Red background (#ef4444), "Logout" text, aria-label="Logout from account"
+  - handleLogout() shows confirmation dialog "Are you sure you want to log out?"
+  - On logout: calls authService.logout(sessionId), clears state, removes components, removes logout button, stops activity tracking, shows auth UI
+  - Tab highlighting preserved from existing switchTab() method (active class, aria-selected, hash routing)
+  - Added auth.css stylesheet to index.html for auth forms and logout button styles
+  - Added notification styles: success-message (green #10b981), error-message (red #ef4444) with slide-in/out animations
+  - showSuccessMessage() / showErrorMessage() methods display fixed position notifications with role="alert", auto-dismiss after 3s/5s
+  - **Components**: Logout button (header), success/error notifications (fixed position), auth container (centered flex layout)
 
 ### Accessibility Testing for Auth UI
 

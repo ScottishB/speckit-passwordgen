@@ -574,3 +574,84 @@
     transition-duration: 0.01ms !important;
   }
 }
+/* ============================================================================
+   Logout Button
+   ========================================================================= */
+
+.logout-button {
+  padding: 0.5rem 1rem;
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.logout-button:hover {
+  background: #dc2626;
+}
+
+.logout-button:focus {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
+
+/* ============================================================================
+   Notification Messages (Success/Error)
+   ========================================================================= */
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.success-message,
+.error-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  font-weight: 500;
+  color: #ffffff;
+  animation: slideIn 0.3s ease;
+}
+
+.success-message {
+  background: #10b981;
+}
+
+.error-message {
+  background: #ef4444;
+}
+
+/* Auth container positioning */
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  padding: 2rem 1rem;
+}

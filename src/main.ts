@@ -1,19 +1,50 @@
 import { Database } from './services/database';
 import { HistoryService } from './services/historyService';
+import { CryptoService } from './services/CryptoService';
+import { SessionService } from './services/SessionService';
+import { SecurityLogService } from './services/SecurityLogService';
+import { TotpService } from './services/TotpService';
+import { AuthService } from './services/AuthService';
 import { PasswordFormComponent } from './components/PasswordForm';
 import { PassphraseFormComponent } from './components/PassphraseForm';
 import { HistoryListComponent } from './components/HistoryList';
+import { LoginForm } from './components/LoginForm';
+import { RegisterForm } from './components/RegisterForm';
+import { TotpSetupModal } from './components/TotpSetupModal';
 
 class AppComponent {
   private database: Database;
+  private cryptoService: CryptoService;
+  private sessionService: SessionService;
+  private securityLogService: SecurityLogService;
+  private totpService: TotpService;
+  private authService: AuthService;
   private historyService: HistoryService;
   private passwordForm: PasswordFormComponent | null = null;
   private passphraseForm: PassphraseFormComponent | null = null;
   private historyList: HistoryListComponent | null = null;
+  private loginForm: LoginForm | null = null;
+  private registerForm: RegisterForm | null = null;
+  private totpSetupModal: TotpSetupModal | null = null;
   private activeTab: 'password' | 'passphrase' = 'password';
+  private isAuthenticated: boolean = false;
+  private currentUser: string | null = null;
+  private activityThrottleTimeout: NodeJS.Timeout | null = null;
+  private lastActivityUpdate: number = 0;
 
   constructor() {
     this.database = new Database();
+    this.cryptoService = new CryptoService();
+    this.sessionService = new SessionService(this.database);
+    this.securityLogService = new SecurityLogService(this.database);
+    this.totpService = new TotpService();
+    this.authService = new AuthService(
+      this.cryptoService,
+      this.sessionService,
+      this.securityLogService,
+      this.totpService,
+      this.database
+    );
     this.historyService = new HistoryService(this.database);
   }
 
@@ -28,20 +59,23 @@ class AppComponent {
       await this.database.initialize();
       console.log('[App] Database initialized');
 
-      // Initialize components
-      console.log('[App] Initializing components...');
-      this.passwordForm = new PasswordFormComponent(this.database);
-      this.passphraseForm = new PassphraseFormComponent(this.database);
-      this.historyList = new HistoryListComponent(this.historyService);
-      console.log('[App] Components initialized');
+      // Check authentication status
+      console.log('[App] Checking authentication status...');
+      this.isAuthenticated = await this.authService.isAuthenticated();
+      console.log('[App] Authenticated:', this.isAuthenticated);
 
-      // Setup tab switching
-      console.log('[App] Setting up tab switching...');
-      this.setupTabSwitching();
+      if (this.isAuthenticated) {
+        const user = this.authService.getCurrentUser();
+        this.currentUser = user?.username || null;
+        console.log('[App] Current user:', this.currentUser);
+        await this.showMainApp();
+      } else {
+        console.log('[App] Not authenticated, showing login screen');
+        await this.showAuthUI();
+      }
 
-      // Setup URL hash routing
-      console.log('[App] Setting up hash routing...');
-      this.setupHashRouting();
+      // Setup auth event listeners
+      this.setupAuthEventListeners();
 
       // Hide loading overlay
       console.log('[App] Hiding loading overlay...');
@@ -136,6 +170,374 @@ class AppComponent {
 
       window.location.hash = 'passphrase';
     }
+  }
+
+  private async showAuthUI(): Promise<void> {
+    // Hide main app if visible
+    const main = document.querySelector('main');
+    if (main) {
+      main.style.display = 'none';
+    }
+
+    // Create auth container if it doesn't exist
+    let authContainer = document.getElementById('auth-container');
+    if (!authContainer) {
+      authContainer = document.createElement('div');
+      authContainer.id = 'auth-container';
+      authContainer.className = 'auth-container';
+      document.getElementById('app')?.appendChild(authContainer);
+    }
+
+    // Show login form by default
+    this.showLogin();
+  }
+
+  private showLogin(): void {
+    const authContainer = document.getElementById('auth-container');
+    if (!authContainer) return;
+
+    // Clear container
+    authContainer.innerHTML = '';
+
+    // Initialize LoginForm
+    this.loginForm = new LoginForm(this.authService);
+    const loginContainer = this.loginForm.render();
+    authContainer.appendChild(loginContainer);
+
+    // Listen for login success
+    loginContainer.addEventListener('login-success', ((event: CustomEvent) => {
+      const { username } = event.detail;
+      this.currentUser = username;
+      this.isAuthenticated = true;
+      this.handleLoginSuccess();
+    }) as EventListener);
+
+    // Listen for switch to register
+    loginContainer.addEventListener('show-register', () => {
+      this.showRegister();
+    });
+  }
+
+  private showRegister(): void {
+    const authContainer = document.getElementById('auth-container');
+    if (!authContainer) return;
+
+    // Clear container
+    authContainer.innerHTML = '';
+
+    // Create register form container
+    const registerContainer = document.createElement('div');
+    registerContainer.id = 'register-container';
+    authContainer.appendChild(registerContainer);
+
+    // Initialize RegisterForm (it renders into the container automatically)
+    this.registerForm = new RegisterForm(registerContainer, this.authService);
+
+    // Listen for registration success
+    registerContainer.addEventListener('register-success', ((event: CustomEvent) => {
+      const { username, userId } = event.detail;
+      this.currentUser = username;
+      this.handleRegisterSuccess(userId);
+    }) as EventListener);
+
+    // Listen for switch to login
+    registerContainer.addEventListener('show-login', () => {
+      this.showLogin();
+    });
+  }
+
+  private handleLoginSuccess(): void {
+    console.log('[App] Login successful, showing main app');
+    this.showLoading(true);
+    
+    // Wait a moment before transitioning
+    setTimeout(async () => {
+      await this.showMainApp();
+      this.showLoading(false);
+      this.setupActivityTracking();
+    }, 100);
+  }
+
+  private handleRegisterSuccess(userId: string): void {
+    console.log('[App] Registration successful, showing TOTP setup');
+    
+    // Create modal container
+    const modalContainer = document.createElement('div');
+    modalContainer.id = 'totp-modal-container';
+    document.body.appendChild(modalContainer);
+
+    // Initialize TotpSetupModal
+    this.totpSetupModal = new TotpSetupModal(
+      modalContainer,
+      this.authService,
+      this.totpService,
+      userId
+    );
+
+    // Listen for TOTP setup completion
+    modalContainer.addEventListener('totp-setup-complete', ((event: CustomEvent) => {
+      const { isVerified } = event.detail;
+      console.log('[App] TOTP setup complete, verified:', isVerified);
+      
+      // Remove modal container
+      modalContainer.remove();
+      this.totpSetupModal = null;
+
+      // Show success message
+      if (isVerified) {
+        this.showSuccessMessage('Two-factor authentication enabled successfully!');
+      }
+
+      // Mark as authenticated and show main app
+      this.isAuthenticated = true;
+      this.showLoading(true);
+      setTimeout(async () => {
+        await this.showMainApp();
+        this.showLoading(false);
+        this.setupActivityTracking();
+      }, 100);
+    }) as EventListener);
+  }
+
+  private async showMainApp(): Promise<void> {
+    // Hide auth container
+    const authContainer = document.getElementById('auth-container');
+    if (authContainer) {
+      authContainer.style.display = 'none';
+    }
+
+    // Show main app
+    const main = document.querySelector('main');
+    if (main) {
+      main.style.display = 'block';
+    }
+
+    // Initialize components if not already done
+    if (!this.passwordForm) {
+      console.log('[App] Initializing components...');
+      this.passwordForm = new PasswordFormComponent(this.database);
+      this.passphraseForm = new PassphraseFormComponent(this.database);
+      this.historyList = new HistoryListComponent(this.historyService);
+      console.log('[App] Components initialized');
+
+      // Setup tab switching
+      console.log('[App] Setting up tab switching...');
+      this.setupTabSwitching();
+
+      // Setup URL hash routing
+      console.log('[App] Setting up hash routing...');
+      this.setupHashRouting();
+    }
+
+    // Add logout button to header if not present
+    this.addLogoutButton();
+  }
+
+  private addLogoutButton(): void {
+    const header = document.querySelector('header');
+    if (!header) return;
+
+    // Check if logout button already exists
+    if (document.getElementById('logout-button')) return;
+
+    // Create logout button
+    const logoutButton = document.createElement('button');
+    logoutButton.id = 'logout-button';
+    logoutButton.className = 'logout-button';
+    logoutButton.textContent = 'Logout';
+    logoutButton.setAttribute('aria-label', 'Logout from account');
+
+    // Add click handler
+    logoutButton.addEventListener('click', () => {
+      this.handleLogout();
+    });
+
+    // Insert at end of header
+    header.appendChild(logoutButton);
+  }
+
+  private async handleLogout(): Promise<void> {
+    // Show confirmation dialog
+    const confirmed = window.confirm('Are you sure you want to log out?');
+    if (!confirmed) return;
+
+    console.log('[App] Logging out...');
+    this.showLoading(true);
+
+    try {
+      const session = this.authService.getCurrentSession();
+      if (session) {
+        await this.authService.logout(session.id);
+      }
+      this.isAuthenticated = false;
+      this.currentUser = null;
+
+      // Clear components
+      this.passwordForm = null;
+      this.passphraseForm = null;
+      this.historyList = null;
+
+      // Remove logout button
+      const logoutButton = document.getElementById('logout-button');
+      if (logoutButton) {
+        logoutButton.remove();
+      }
+
+      // Stop activity tracking
+      this.stopActivityTracking();
+
+      // Show auth UI
+      await this.showAuthUI();
+      this.showLoading(false);
+      console.log('[App] Logged out successfully');
+    } catch (error) {
+      console.error('[App] Logout failed:', error);
+      this.showLoading(false);
+      this.handleError(error as Error);
+    }
+  }
+
+  private setupAuthEventListeners(): void {
+    // Listen for session expired events
+    window.addEventListener('session-expired', () => {
+      console.log('[App] Session expired, redirecting to login');
+      this.handleSessionExpired();
+    });
+  }
+
+  private async handleSessionExpired(): Promise<void> {
+    this.isAuthenticated = false;
+    this.currentUser = null;
+
+    // Show session expired message
+    this.showErrorMessage('Your session has expired. Please log in again.');
+
+    // Clear components
+    this.passwordForm = null;
+    this.passphraseForm = null;
+    this.historyList = null;
+
+    // Remove logout button
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) {
+      logoutButton.remove();
+    }
+
+    // Stop activity tracking
+    this.stopActivityTracking();
+
+    // Show auth UI
+    await this.showAuthUI();
+  }
+
+  private setupActivityTracking(): void {
+    const activityHandler = () => {
+      this.trackActivity();
+    };
+
+    // Track various user interactions
+    document.addEventListener('mousedown', activityHandler);
+    document.addEventListener('keydown', activityHandler);
+    document.addEventListener('touchstart', activityHandler);
+    document.addEventListener('scroll', activityHandler);
+  }
+
+  private stopActivityTracking(): void {
+    // Remove event listeners (need to store references to remove properly)
+    // For simplicity, we'll just clear the throttle timeout
+    if (this.activityThrottleTimeout) {
+      clearTimeout(this.activityThrottleTimeout);
+      this.activityThrottleTimeout = null;
+    }
+  }
+
+  private trackActivity(): void {
+    const now = Date.now();
+    const oneMinute = 60 * 1000;
+
+    // Throttle activity updates to max once per minute
+    if (now - this.lastActivityUpdate < oneMinute) {
+      return;
+    }
+
+    // Clear any existing timeout
+    if (this.activityThrottleTimeout) {
+      clearTimeout(this.activityThrottleTimeout);
+    }
+
+    // Debounce the activity update
+    this.activityThrottleTimeout = setTimeout(async () => {
+      try {
+        const session = this.authService.getCurrentSession();
+        if (session) {
+          await this.sessionService.updateActivity(session.id);
+          this.lastActivityUpdate = Date.now();
+          console.log('[App] Activity updated');
+        }
+      } catch (error) {
+        console.error('[App] Failed to update activity:', error);
+      }
+    }, 500); // Wait 500ms of inactivity before updating
+  }
+
+  private showSuccessMessage(message: string): void {
+    const successDiv = document.createElement('div');
+    successDiv.className = 'success-message';
+    successDiv.setAttribute('role', 'alert');
+    successDiv.setAttribute('aria-live', 'polite');
+    successDiv.textContent = message;
+    successDiv.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #10b981;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    `;
+
+    document.body.appendChild(successDiv);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+      successDiv.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => {
+        successDiv.remove();
+      }, 300);
+    }, 3000);
+  }
+
+  private showErrorMessage(message: string): void {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.setAttribute('role', 'alert');
+    errorDiv.setAttribute('aria-live', 'assertive');
+    errorDiv.textContent = message;
+    errorDiv.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ef4444;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    `;
+
+    document.body.appendChild(errorDiv);
+
+    // Remove after 5 seconds
+    setTimeout(() => {
+      errorDiv.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => {
+        errorDiv.remove();
+      }, 300);
+    }, 5000);
   }
 
   getActiveTab(): 'password' | 'passphrase' {

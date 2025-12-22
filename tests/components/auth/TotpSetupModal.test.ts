@@ -5,7 +5,7 @@ import { TotpService } from '../../../src/services/TotpService';
 import { CryptoService } from '../../../src/services/CryptoService';
 import { SessionService } from '../../../src/services/SessionService';
 import { SecurityLogService } from '../../../src/services/SecurityLogService';
-import { Database } from '../../../src/services/Database';
+import { Database } from '../../../src/services/database';
 
 describe('TotpSetupModal', () => {
   let container: HTMLElement;
