@@ -639,21 +639,146 @@ export class CryptoService {
   }
 
   // ==========================================================================
-  // Data Decryption (AES-256-GCM) - To be implemented in TASK-013
+  // Data Decryption (AES-256-GCM)
   // ==========================================================================
 
   /**
    * Decrypts data using AES-256-GCM
    * 
-   * This method will be implemented in TASK-013
+   * Uses AES-256-GCM (Galois/Counter Mode) to decrypt and authenticate data.
+   * GCM mode provides authenticated encryption, meaning any tampering with the
+   * ciphertext, IV, or authentication tag will cause decryption to fail.
+   * 
+   * Process:
+   * 1. Base64 decode ciphertext and IV
+   * 2. Decrypt with AES-GCM
+   * 3. JSON parse the decrypted plaintext
    * 
    * @param encrypted - EncryptedData structure from encryptData
    * @param key - CryptoKey for decryption (must match encryption key)
    * @returns Promise resolving to decrypted data (JSON parsed)
    * @throws {CryptoError} If decryption fails or data is tampered
+   * 
+   * @example
+   * ```typescript
+   * const salt = crypto.generateSalt();
+   * const key = await crypto.deriveEncryptionKey('master_password', salt);
+   * const encrypted = await crypto.encryptData({ secret: 'data' }, key, { salt });
+   * 
+   * // Later, with the same key:
+   * const decrypted = await crypto.decryptData(encrypted, key);
+   * // decrypted = { secret: 'data' }
+   * ```
    */
   public async decryptData(encrypted: EncryptedData, key: CryptoKey): Promise<any> {
-    throw new Error('Not implemented yet - TASK-013');
+    // Validate encrypted data structure
+    if (!encrypted || typeof encrypted !== 'object') {
+      throw new CryptoError(
+        'Invalid encrypted data: must be an object',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    if (!encrypted.ciphertext || typeof encrypted.ciphertext !== 'string') {
+      throw new CryptoError(
+        'Invalid encrypted data: ciphertext must be a non-empty string',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    if (!encrypted.iv || typeof encrypted.iv !== 'string') {
+      throw new CryptoError(
+        'Invalid encrypted data: iv must be a non-empty string',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    // Validate key
+    if (!key || !(key instanceof CryptoKey)) {
+      throw new CryptoError(
+        'Invalid key: must be a CryptoKey instance',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    // Validate key is suitable for decryption
+    if (key.type !== 'secret') {
+      throw new CryptoError(
+        'Invalid key type: must be a secret key',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    if (!key.usages.includes('decrypt')) {
+      throw new CryptoError(
+        'Invalid key usage: key must support decryption',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    try {
+      // Step 1: Base64 decode ciphertext and IV
+      const ciphertextBytes = this.base64ToBytes(encrypted.ciphertext);
+      const ivBytes = this.base64ToBytes(encrypted.iv);
+
+      // Validate IV length (must be 12 bytes for GCM)
+      if (ivBytes.length !== IV_LENGTH) {
+        throw new CryptoError(
+          `Invalid IV length: expected ${IV_LENGTH} bytes, got ${ivBytes.length}`,
+          CryptoErrorCode.INVALID_INPUT
+        );
+      }
+
+      // Convert to proper buffer types for Web Crypto API
+      const ivBuffer = new Uint8Array(ivBytes);
+      const ciphertextBuffer = new Uint8Array(ciphertextBytes);
+
+      // Step 2: Decrypt with AES-GCM
+      const plaintextBuffer = await crypto.subtle.decrypt(
+        {
+          name: 'AES-GCM',
+          iv: ivBuffer,
+        },
+        key,
+        ciphertextBuffer
+      );
+
+      // Step 3: Decode and JSON parse
+      const plaintextBytes = new Uint8Array(plaintextBuffer);
+      const plaintext = new TextDecoder().decode(plaintextBytes);
+      
+      // Parse JSON
+      try {
+        const data = JSON.parse(plaintext);
+        return data;
+      } catch (parseError) {
+        throw new CryptoError(
+          'Failed to parse decrypted data: invalid JSON',
+          CryptoErrorCode.DECRYPTION_FAILED,
+          parseError as Error
+        );
+      }
+    } catch (error) {
+      // Handle specific Web Crypto errors
+      if (error instanceof CryptoError) {
+        throw error;
+      }
+
+      // Web Crypto throws OperationError for authentication failures
+      if (error instanceof DOMException && error.name === 'OperationError') {
+        throw new CryptoError(
+          'Decryption failed: data may be corrupted or tampered, or wrong key used',
+          CryptoErrorCode.DECRYPTION_FAILED,
+          error
+        );
+      }
+
+      throw new CryptoError(
+        'Failed to decrypt data',
+        CryptoErrorCode.DECRYPTION_FAILED,
+        error as Error
+      );
+    }
   }
 
   // ==========================================================================
