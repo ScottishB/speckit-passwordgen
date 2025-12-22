@@ -14,6 +14,8 @@
  * @module CryptoService
  */
 
+import * as argon2 from 'argon2-browser';
+
 // ============================================================================
 // Constants
 // ============================================================================
@@ -269,34 +271,136 @@ export class CryptoService {
   }
 
   // ==========================================================================
-  // Password Hashing (Argon2id) - To be implemented in TASK-010
+  // Password Hashing (Argon2id)
   // ==========================================================================
 
   /**
    * Hashes a password using Argon2id
    * 
-   * This method will be implemented in TASK-010
+   * Uses Argon2id algorithm (winner of Password Hashing Competition 2015)
+   * with parameters recommended by OWASP and validated in TASK-005.
+   * 
+   * Parameters:
+   * - Time (iterations): 3
+   * - Memory: 64 MiB (65536 KiB)
+   * - Parallelism: 1 (browser limitation)
+   * - Hash length: 32 bytes (256 bits)
+   * 
+   * Performance: ~500-1200ms on desktop, ~1200-2000ms on mobile
    * 
    * @param password - Plain text password to hash
    * @returns Promise resolving to Argon2 encoded hash string
-   * @throws {CryptoError} If hashing fails
+   * @throws {CryptoError} If hashing fails or password is empty
+   * 
+   * @example
+   * ```typescript
+   * const hash = await crypto.hashPassword('user_password');
+   * // Returns: $argon2id$v=19$m=65536,t=3,p=1$<salt>$<hash>
+   * ```
    */
   public async hashPassword(password: string): Promise<string> {
-    throw new Error('Not implemented yet - TASK-010');
+    // Validate input
+    if (!password || typeof password !== 'string') {
+      throw new CryptoError(
+        'Password must be a non-empty string',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    if (password.length === 0) {
+      throw new CryptoError(
+        'Password cannot be empty',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    try {
+      // Generate random salt
+      const salt = this.generateSalt();
+
+      // Hash password with Argon2id
+      const result = await argon2.hash({
+        pass: password,
+        salt: salt,
+        time: ARGON2_CONFIG.time,
+        mem: ARGON2_CONFIG.mem,
+        hashLen: ARGON2_CONFIG.hashLen,
+        parallelism: ARGON2_CONFIG.parallelism,
+        type: argon2.ArgonType.Argon2id,
+      });
+
+      // Return encoded hash string
+      // Format: $argon2id$v=19$m=65536,t=3,p=1$<base64_salt>$<base64_hash>
+      return result.encoded;
+    } catch (error) {
+      throw new CryptoError(
+        'Failed to hash password',
+        CryptoErrorCode.HASH_FAILED,
+        error as Error
+      );
+    }
   }
 
   /**
    * Verifies a password against an Argon2 hash
    * 
-   * This method will be implemented in TASK-010
+   * Uses constant-time comparison to prevent timing attacks.
+   * The Argon2 verification function handles this internally.
    * 
    * @param password - Plain text password to verify
-   * @param hash - Argon2 encoded hash string
+   * @param hash - Argon2 encoded hash string (from hashPassword)
    * @returns Promise resolving to true if password matches, false otherwise
-   * @throws {CryptoError} If verification fails
+   * @throws {CryptoError} If verification fails due to invalid inputs
+   * 
+   * @example
+   * ```typescript
+   * const isValid = await crypto.verifyPassword('user_password', storedHash);
+   * if (isValid) {
+   *   // Password correct, proceed with login
+   * } else {
+   *   // Password incorrect, deny access
+   * }
+   * ```
    */
   public async verifyPassword(password: string, hash: string): Promise<boolean> {
-    throw new Error('Not implemented yet - TASK-010');
+    // Validate inputs
+    if (!password || typeof password !== 'string') {
+      throw new CryptoError(
+        'Password must be a non-empty string',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    if (!hash || typeof hash !== 'string') {
+      throw new CryptoError(
+        'Hash must be a non-empty string',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    // Validate hash format (should start with $argon2)
+    if (!hash.startsWith('$argon2')) {
+      throw new CryptoError(
+        'Invalid hash format: must be Argon2 encoded string',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    try {
+      // Verify password against hash
+      // This function uses constant-time comparison internally
+      const result = await argon2.verify({
+        pass: password,
+        encoded: hash,
+      });
+
+      // Return verification result
+      return result;
+    } catch (error) {
+      // If verification throws, password is incorrect or hash is invalid
+      // Return false instead of throwing to avoid information leakage
+      return false;
+    }
   }
 
   // ==========================================================================
