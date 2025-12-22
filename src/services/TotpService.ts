@@ -270,8 +270,9 @@ export class TotpService {
    * ```
    */
   areBackupCodesExhausted(user: User): boolean {
+    // If user has no backup codes set up, they're not exhausted (just not enabled)
     if (!user.backupCodes || user.backupCodes.length === 0) {
-      return true;
+      return false;
     }
 
     if (!user.backupCodesUsed || user.backupCodesUsed.length === 0) {

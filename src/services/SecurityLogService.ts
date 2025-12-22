@@ -99,12 +99,15 @@ export class SecurityLogService {
       details: event.details,
     };
 
-    // Get existing events
-    const events = await this.getUserEvents(securityEvent.userId);
-    events.push(securityEvent);
+    // Get ALL existing events from storage (not just user's events)
+    const stored = localStorage.getItem('pwgen_security_events');
+    const allEvents: SecurityEvent[] = stored ? JSON.parse(stored) : [];
+    
+    // Add new event
+    allEvents.push(securityEvent);
 
-    // Store events in localStorage
-    await this.saveEvents(events);
+    // Store all events back to localStorage
+    await this.saveEvents(allEvents);
   }
 
   /**

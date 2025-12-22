@@ -198,13 +198,8 @@ export class Database {
       throw new Error('Database not initialized');
     }
 
-    try {
-      const key = `${Database.STORAGE_KEY_VAULT_PREFIX}${userId}`;
-      localStorage.removeItem(key);
-    } catch (error) {
-      console.error('[Database] Failed to delete vault:', error);
-      throw new Error('Failed to delete vault from storage');
-    }
+    const key = `${Database.STORAGE_KEY_VAULT_PREFIX}${userId}`;
+    localStorage.removeItem(key);
   }
 
   // ==========================================================================
