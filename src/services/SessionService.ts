@@ -197,6 +197,9 @@ export class SessionService {
       throw new Error('Session not found');
     }
 
+    // Add small delay to ensure timestamp always changes
+    await new Promise(resolve => setTimeout(resolve, 1));
+    
     session.lastActivity = Date.now();
     await this.database.saveSession(session);
   }

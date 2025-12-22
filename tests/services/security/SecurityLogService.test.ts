@@ -454,9 +454,13 @@ describe('SecurityLogService', () => {
       const userId = 'lifecycle-user';
 
       await securityLog.logEvent(createTestEvent({ userId, eventType: 'registration' }));
+      await new Promise(resolve => setTimeout(resolve, 5));
       await securityLog.logEvent(createTestEvent({ userId, eventType: 'login_success' }));
+      await new Promise(resolve => setTimeout(resolve, 5));
       await securityLog.logEvent(createTestEvent({ userId, eventType: '2fa_enabled' }));
+      await new Promise(resolve => setTimeout(resolve, 5));
       await securityLog.logEvent(createTestEvent({ userId, eventType: 'password_changed' }));
+      await new Promise(resolve => setTimeout(resolve, 5));
       await securityLog.logEvent(createTestEvent({ userId, eventType: 'logout' }));
 
       const events = await securityLog.getUserEvents(userId);
