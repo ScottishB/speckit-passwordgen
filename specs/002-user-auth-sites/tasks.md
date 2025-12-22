@@ -263,17 +263,19 @@
 
 ### SecurityLogService Implementation
 
-- [ ] **TASK-031**: Create SecurityLogService class
+- [X] **TASK-031**: Create SecurityLogService class
   - Create `src/services/SecurityLogService.ts`
   - Add constructor accepting Database dependency
   - Add JSDoc documentation
+  - **Completed**: Created SecurityLogService class with Database dependency and comprehensive JSDoc documentation.
 
-- [ ] **TASK-032**: Implement security logging methods
+- [X] **TASK-032**: Implement security logging methods
   - Implement `logEvent(event: Omit<SecurityEvent, 'id' | 'timestamp'>): Promise<void>`
   - Implement `getUserEvents(userId: string, limit?: number): Promise<SecurityEvent[]>`
   - Implement `getEventsByType(userId: string, eventType: SecurityEventType, limit?: number): Promise<SecurityEvent[]>`
   - Implement `clearUserEvents(userId: string): Promise<void>`
   - Store events in user's encrypted vault
+  - **Completed**: Implemented all security logging methods with comprehensive validation, auto ID/timestamp generation, descending sort, filtering by event type, and user-scoped event storage. Created comprehensive test suite (60 tests) covering event lifecycle, concurrent logging, multi-user isolation, and audit trail scenarios.
 
 ### AuthService Implementation
 
