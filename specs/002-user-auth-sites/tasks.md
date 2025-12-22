@@ -137,23 +137,26 @@
 
 ### CryptoService Testing
 
-- [ ] **TASK-015**: Write unit tests for password hashing
+- [X] **TASK-015**: Write unit tests for password hashing
   - Test hashPassword generates valid Argon2id hash
   - Test verifyPassword with correct password returns true
   - Test verifyPassword with wrong password returns false
   - Test error handling for invalid inputs
+  - **Completed**: Comprehensive test suite created in CryptoService.hash.test.ts (24 tests) during TASK-010 implementation
 
-- [ ] **TASK-016**: Write unit tests for encryption/decryption
+- [X] **TASK-016**: Write unit tests for encryption/decryption
   - Test encryptData → decryptData round-trip
   - Test same data + key produces different ciphertext (different IV)
   - Test decryption with wrong key fails
   - Test encryption of various data types (string, object, array)
+  - **Completed**: Comprehensive test suites created in CryptoService.encryption.test.ts (59 tests) and CryptoService.decryption.test.ts (68 tests) during TASK-012 and TASK-013 implementation
 
-- [ ] **TASK-017**: Write unit tests for key derivation
+- [X] **TASK-017**: Write unit tests for key derivation
   - Test same password + salt produces same key
   - Test different salts produce different keys
   - Test key derivation performance (<3 seconds)
   - Test error handling
+  - **Completed**: Comprehensive test suite created in CryptoService.keyderivation.test.ts (27 tests) during TASK-011 implementation
 
 ### Database Refactoring
 
