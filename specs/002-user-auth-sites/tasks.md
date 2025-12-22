@@ -1098,7 +1098,8 @@
   - Prevent new entries at 95% capacity
   - Show helpful message with size breakdown
 
-- [ ] **TASK-105**: Add data export feature (optional)
+- [x] **TASK-105**: Add data export feature (optional)
+  - **Completed**: Created VaultExportService (480 lines) with complete export/import functionality. Exports vault to encrypted JSON with sites and optionally history, encrypts with user's master password using AES-256-GCM, provides downloadExport() for browser file download with timestamp, validates export files with validateExportFile(), estimates sizes with estimateExportSize()/formatSize(), supports options for includeHistory/includeNotes/prettyPrint, uses version 1 export format for future compatibility. Implementation complete (commit 9194403), tests pending due to encryption API refactor.
   - Implement export vault to JSON
   - Include sites and password history
   - Encrypt export with user password
