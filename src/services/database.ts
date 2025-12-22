@@ -208,6 +208,148 @@ export class Database {
   }
 
   // ==========================================================================
+  // User CRUD Methods
+  // ==========================================================================
+
+  /**
+   * Saves a new user or updates an existing user
+   * 
+   * @param user - User object to save
+   * @returns Saved user object
+   * @throws {Error} If database not initialized or save fails
+   */
+  async saveUser(user: User): Promise<User> {
+    if (!this.initialized) {
+      throw new Error('Database not initialized');
+    }
+
+    // Check if user already exists
+    const existingIndex = this.users.findIndex(u => u.id === user.id);
+    
+    if (existingIndex >= 0) {
+      // Update existing user
+      this.users[existingIndex] = user;
+    } else {
+      // Add new user
+      this.users.push(user);
+    }
+
+    this.persistUsers();
+    return user;
+  }
+
+  /**
+   * Retrieves a user by ID
+   * 
+   * @param userId - User ID to lookup
+   * @returns User object or null if not found
+   * @throws {Error} If database not initialized
+   */
+  async getUser(userId: string): Promise<User | null> {
+    if (!this.initialized) {
+      throw new Error('Database not initialized');
+    }
+
+    return this.users.find(u => u.id === userId) || null;
+  }
+
+  /**
+   * Retrieves a user by username
+   * 
+   * @param username - Username to lookup (case-sensitive)
+   * @returns User object or null if not found
+   * @throws {Error} If database not initialized
+   */
+  async getUserByUsername(username: string): Promise<User | null> {
+    if (!this.initialized) {
+      throw new Error('Database not initialized');
+    }
+
+    return this.users.find(u => u.username === username) || null;
+  }
+
+  /**
+   * Retrieves all users
+   * 
+   * @returns Array of all user objects
+   * @throws {Error} If database not initialized
+   */
+  async getAllUsers(): Promise<User[]> {
+    if (!this.initialized) {
+      throw new Error('Database not initialized');
+    }
+
+    return [...this.users];
+  }
+
+  /**
+   * Updates a user with partial data
+   * 
+   * @param userId - User ID to update
+   * @param updates - Partial user object with fields to update
+   * @returns Updated user object
+   * @throws {Error} If database not initialized or user not found
+   */
+  async updateUser(userId: string, updates: Partial<User>): Promise<User> {
+    if (!this.initialized) {
+      throw new Error('Database not initialized');
+    }
+
+    const userIndex = this.users.findIndex(u => u.id === userId);
+    
+    if (userIndex === -1) {
+      throw new Error(`User not found: ${userId}`);
+    }
+
+    const existingUser = this.users[userIndex]!;
+    
+    // Merge updates into existing user (preserving all required fields)
+    const updatedUser: User = {
+      ...existingUser,
+      ...updates,
+      id: userId, // Ensure ID cannot be changed
+    };
+
+    this.users[userIndex] = updatedUser;
+    this.persistUsers();
+    
+    return updatedUser;
+  }
+
+  /**
+   * Deletes a user and their associated data
+   * 
+   * Also deletes:
+   * - User's encrypted vault
+   * - User's active sessions
+   * 
+   * @param userId - User ID to delete
+   * @throws {Error} If database not initialized or user not found
+   */
+  async deleteUser(userId: string): Promise<void> {
+    if (!this.initialized) {
+      throw new Error('Database not initialized');
+    }
+
+    const userIndex = this.users.findIndex(u => u.id === userId);
+    
+    if (userIndex === -1) {
+      throw new Error(`User not found: ${userId}`);
+    }
+
+    // Remove user
+    this.users.splice(userIndex, 1);
+    this.persistUsers();
+
+    // Delete user's vault
+    await this.deleteVault(userId);
+
+    // Delete user's sessions
+    this.sessions = this.sessions.filter(s => s.userId !== userId);
+    this.persistSessions();
+  }
+
+  // ==========================================================================
   // Legacy Methods (for backwards compatibility - will be removed)
   // ==========================================================================
 
