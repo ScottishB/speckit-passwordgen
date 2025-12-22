@@ -3,6 +3,7 @@ import type { User } from '../models/User';
 import type { Session } from '../models/Session';
 import type { Site } from '../models/Site';
 import type { SecurityEvent } from '../models/SecurityEvent';
+import { StorageQuotaService } from './StorageQuotaService';
 
 /**
  * Database service for managing user data with localStorage
@@ -28,6 +29,7 @@ export class Database {
   private nextId = 1;
   
   private initialized = false;
+  private storageQuotaService: StorageQuotaService;
 
   // Storage keys
   private static readonly STORAGE_KEY_USERS = 'pwgen_users';
@@ -37,6 +39,10 @@ export class Database {
   
   // Legacy storage key
   private static readonly LEGACY_STORAGE_KEY = 'password-gen-credentials';
+
+  constructor() {
+    this.storageQuotaService = new StorageQuotaService();
+  }
 
   /**
    * Initializes the database by loading data from localStorage
@@ -105,12 +111,29 @@ export class Database {
   /**
    * Persists users to localStorage
    * @private
+   * @throws {Error} If quota check fails or save fails
    */
   private persistUsers(): void {
     try {
-      localStorage.setItem(Database.STORAGE_KEY_USERS, JSON.stringify(this.users));
+      const data = JSON.stringify(this.users);
+      const estimatedSize = this.storageQuotaService.calculateSize(data);
+      const quotaCheck = this.storageQuotaService.checkQuota(estimatedSize);
+      
+      if (!quotaCheck.canProceed) {
+        throw new Error(`Storage quota exceeded: ${quotaCheck.error}`);
+      }
+      
+      if (quotaCheck.warning) {
+        console.warn('[Database] Storage quota warning:', quotaCheck.warning);
+      }
+      
+      localStorage.setItem(Database.STORAGE_KEY_USERS, data);
     } catch (error) {
       console.error('[Database] Failed to persist users:', error);
+      // Re-throw with more context
+      if (error instanceof Error && error.message.includes('quota')) {
+        throw error; // Preserve quota error message
+      }
       throw new Error('Failed to save users to storage');
     }
   }
@@ -118,12 +141,28 @@ export class Database {
   /**
    * Persists sessions to localStorage
    * @private
+   * @throws {Error} If quota check fails or save fails
    */
   private persistSessions(): void {
     try {
-      localStorage.setItem(Database.STORAGE_KEY_SESSIONS, JSON.stringify(this.sessions));
+      const data = JSON.stringify(this.sessions);
+      const estimatedSize = this.storageQuotaService.calculateSize(data);
+      const quotaCheck = this.storageQuotaService.checkQuota(estimatedSize);
+      
+      if (!quotaCheck.canProceed) {
+        throw new Error(`Storage quota exceeded: ${quotaCheck.error}`);
+      }
+      
+      if (quotaCheck.warning) {
+        console.warn('[Database] Storage quota warning:', quotaCheck.warning);
+      }
+      
+      localStorage.setItem(Database.STORAGE_KEY_SESSIONS, data);
     } catch (error) {
       console.error('[Database] Failed to persist sessions:', error);
+      if (error instanceof Error && error.message.includes('quota')) {
+        throw error;
+      }
       throw new Error('Failed to save sessions to storage');
     }
   }
@@ -131,12 +170,28 @@ export class Database {
   /**
    * Persists security events to localStorage
    * @private
+   * @throws {Error} If quota check fails or save fails
    */
   private persistSecurityEvents(): void {
     try {
-      localStorage.setItem(Database.STORAGE_KEY_SECURITY_EVENTS, JSON.stringify(this.securityEvents));
+      const data = JSON.stringify(this.securityEvents);
+      const estimatedSize = this.storageQuotaService.calculateSize(data);
+      const quotaCheck = this.storageQuotaService.checkQuota(estimatedSize);
+      
+      if (!quotaCheck.canProceed) {
+        throw new Error(`Storage quota exceeded: ${quotaCheck.error}`);
+      }
+      
+      if (quotaCheck.warning) {
+        console.warn('[Database] Storage quota warning:', quotaCheck.warning);
+      }
+      
+      localStorage.setItem(Database.STORAGE_KEY_SECURITY_EVENTS, data);
     } catch (error) {
       console.error('[Database] Failed to persist security events:', error);
+      if (error instanceof Error && error.message.includes('quota')) {
+        throw error;
+      }
       throw new Error('Failed to save security events to storage');
     }
   }
@@ -146,13 +201,28 @@ export class Database {
    * @param userId - User ID
    * @param encryptedData - Encrypted vault data (JSON string)
    * @private
+   * @throws {Error} If quota check fails or save fails
    */
   private persistVault(userId: string, encryptedData: string): void {
     try {
+      const estimatedSize = this.storageQuotaService.calculateSize(encryptedData);
+      const quotaCheck = this.storageQuotaService.checkQuota(estimatedSize);
+      
+      if (!quotaCheck.canProceed) {
+        throw new Error(`Storage quota exceeded: ${quotaCheck.error}`);
+      }
+      
+      if (quotaCheck.warning) {
+        console.warn('[Database] Storage quota warning:', quotaCheck.warning);
+      }
+      
       const key = `${Database.STORAGE_KEY_VAULT_PREFIX}${userId}`;
       localStorage.setItem(key, encryptedData);
     } catch (error) {
       console.error('[Database] Failed to persist vault:', error);
+      if (error instanceof Error && error.message.includes('quota')) {
+        throw error;
+      }
       throw new Error('Failed to save vault to storage');
     }
   }
