@@ -551,6 +551,82 @@
 
 ### Register Form Component
 
+- [X] **TASK-056**: Create RegisterForm component structure ✅
+  - ✅ Created `src/components/RegisterForm.ts` (693 lines)
+  - ✅ HTML template with complete registration form:
+    * Username input with label, autocomplete="username", aria-required="true"
+    * Password input with label, type="password", autocomplete="new-password", aria-required="true"
+    * Confirm password input with label, type="password", autocomplete="new-password", aria-required="true"
+    * Password strength indicator with progress bar and 5 requirement checkboxes
+    * Username availability indicator (shows checking/available/unavailable status)
+    * Submit button "Create Account" with loading states
+    * Error display containers for each field with role="alert", aria-live="polite"
+    * Help text for each field with proper aria-describedby linkage
+  - ✅ Proper semantic HTML: form novalidate, proper input types, name attributes
+  - ✅ Comprehensive ARIA attributes: aria-labelledby, aria-describedby, aria-invalid, aria-required, role="progressbar"
+  - ✅ Password strength indicator: Visual progress bar (0-100%), 5 requirement items with ○/✓ icons
+  - **Completed**: Full RegisterForm component structure with accessibility
+
+- [X] **TASK-057**: Implement RegisterForm logic ✅
+  - ✅ Username validation: 3-20 characters, alphanumeric + underscore/hyphen only, required field check
+  - ✅ Username availability checking: Debounced 500ms with window.setTimeout, clears previous timeout
+    * Calls authService.isUsernameAvailable(username) asynchronously
+    * Shows "Checking availability..." indicator during check
+    * Displays "✓ Username is available" or "✗ Username is already taken"
+    * Only checks usernames ≥3 characters (minimum length requirement)
+  - ✅ Password strength validation: Real-time updatePasswordStrength() on every input event
+    * 5 requirements: length (12+), uppercase, lowercase, number, special character
+    * Visual feedback: ○ (unmet) → ✓ (met), requirement text stays visible
+    * Progress bar updates: 0% → 20% → 40% → 60% → 80% → 100% (aria-valuenow synced)
+    * Color coding: weak class (<3 requirements, red), medium class (3-4, yellow), strong class (5/5, green)
+    * Strength label text: "Password Strength: Weak/Medium/Strong" for screen readers
+  - ✅ Confirm password validation: validateConfirmPassword() checks empty and matching
+    * Shows "Please confirm your password" if empty
+    * Shows "Passwords do not match" if password !== confirmPassword
+    * Re-validates automatically when password changes (handlePasswordInput calls validateConfirmPassword)
+  - ✅ Form submission: handleSubmit() with async/await
+    * Validates all fields (username, password, confirmPassword)
+    * Checks username availability (blocks submit if unavailable)
+    * Calls authService.register(username, password)
+    * Error handling: ValidationError → field-level errors (username/password), generic errors → form-level
+    * Case-insensitive error message matching: error.message.toLowerCase().includes('username')
+    * Success: Dispatches 'register-success' CustomEvent with {username, userId}
+    * Resets form after successful registration
+  - ✅ Loading state: setLoading(true) disables all inputs and button, shows "Creating Account..." text
+  - ✅ Additional features: reset(), destroy(), clearError(), clearFieldError(), showFieldError()
+  - **Completed**: Full RegisterForm logic with debounced availability, real-time strength indicator, validation
+
+- [X] **TASK-058**: Implement password strength indicator ✅
+  - ✅ Visual components:
+    * Progress bar: <div role="progressbar" aria-valuenow="0-100" aria-valuemin="0" aria-valuemax="100">
+    * 5 requirement items: <li data-requirement="length|uppercase|lowercase|number|special">
+    * Icons: <span class="password-strength__icon">○</span> → ✓ when met
+    * Requirement text: "At least 12 characters", "One uppercase letter", etc.
+  - ✅ Real-time updates: On every password input event via handlePasswordInput() → updatePasswordStrength()
+    * Checks each requirement: length (password.length >= 12), uppercase (/[A-Z]/), lowercase (/[a-z]/), number (/\d/), special (/[^A-Za-z0-9]/)
+    * Updates icons: Removes 'password-strength__icon' class, adds 'password-strength__icon--met', changes text to ✓
+    * Updates progress bar: width = `${(requirementsMet / 5) * 100}%`, aria-valuenow = `${(requirementsMet / 5) * 100}`
+    * Updates color class: Removes old, adds weak/medium/strong based on requirements met
+    * Updates label text: "Password Strength: Weak" (0-2), "Medium" (3-4), "Strong" (5)
+  - ✅ Accessibility: aria-live="polite" on container, progress bar role, no color-only indicators (text labels)
+  - ✅ Reset functionality: resetPasswordStrength() clears all indicators, resets progress to 0%, icons to ○
+  - **Completed**: Password strength indicator with real-time visual feedback and full accessibility
+  - **Created comprehensive test suite**: tests/components/auth/RegisterForm.test.ts (58 tests, 100% pass rate ✅)
+    * Constructor tests (3): instance creation, null container, null authService
+    * Render tests (8): form title, username input attributes, password input attributes, confirm password attributes, strength indicator, requirements list, submit button, error containers with ARIA
+    * Username validation tests (5): empty error, too short (< 3), too long (> 20), invalid characters, clear error
+    * Username availability tests (4, 2.7s): debounced check after 600ms wait, unavailable display, no check for short usernames, cancel previous check
+    * Password strength indicator tests (11): initial unmet state, each requirement update, progress bar width (0-100%), color classes (weak/medium/strong), label text updates
+    * Password validation tests (3): empty password error, weak password error, clear error on strong password
+    * Confirm password validation tests (4): empty error, mismatch error, clear error when match, re-validate on password change
+    * Form submission tests (8, 4.9s): register() call, loading state, success event dispatch, block if username unavailable, block if validation fails, ValidationError username handling, ValidationError password handling, generic error handling
+    * Reset tests (4): clear fields, clear errors, reset strength indicator, focus username
+    * Accessibility tests (6): ARIA labels, aria-invalid on errors, role="alert" and aria-live, autocomplete attributes, aria-describedby linkage, strength indicator ARIA
+    * Destroy tests (2, 605ms): clear container, clear pending timeout
+
+
+### Register Form Component
+
 - [ ] **TASK-056**: Create RegisterForm component structure
   - Create `src/components/RegisterForm.ts`
   - Add HTML template with form structure
