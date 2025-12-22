@@ -404,24 +404,123 @@ export class CryptoService {
   }
 
   // ==========================================================================
-  // Key Derivation (PBKDF2) - To be implemented in TASK-011
+  // Key Derivation (PBKDF2)
   // ==========================================================================
 
   /**
    * Derives an encryption key from a master password using PBKDF2
    * 
-   * This method will be implemented in TASK-011
+   * Uses PBKDF2-HMAC-SHA256 with 100,000 iterations per NIST SP 800-63B
+   * and OWASP recommendations. The derived key is suitable for AES-256-GCM
+   * encryption and is marked non-extractable for security.
+   * 
+   * Parameters:
+   * - Iterations: 100,000 (exceeds NIST minimum of 10,000)
+   * - Hash: SHA-256
+   * - Key length: 256 bits (for AES-256)
+   * 
+   * Performance: ~500-1500ms on desktop, ~1500-3000ms on mobile
    * 
    * @param masterPassword - Master password to derive key from
    * @param salt - Salt for key derivation (Uint8Array or base64 string)
-   * @returns Promise resolving to CryptoKey suitable for AES-GCM
+   * @returns Promise resolving to non-extractable CryptoKey for AES-GCM
    * @throws {CryptoError} If key derivation fails
+   * 
+   * @example
+   * ```typescript
+   * const salt = crypto.generateSalt();
+   * const key = await crypto.deriveEncryptionKey('user_master_password', salt);
+   * 
+   * // Use key for encryption
+   * const encrypted = await crypto.encryptData(data, key);
+   * ```
    */
   public async deriveEncryptionKey(
     masterPassword: string,
     salt: Uint8Array | string
   ): Promise<CryptoKey> {
-    throw new Error('Not implemented yet - TASK-011');
+    // Validate master password
+    if (!masterPassword || typeof masterPassword !== 'string') {
+      throw new CryptoError(
+        'Master password must be a non-empty string',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    if (masterPassword.length === 0) {
+      throw new CryptoError(
+        'Master password cannot be empty',
+        CryptoErrorCode.INVALID_INPUT
+      );
+    }
+
+    // Convert salt to Uint8Array if it's a base64 string
+    let saltBytes: Uint8Array;
+    if (typeof salt === 'string') {
+      try {
+        saltBytes = this.base64ToBytes(salt);
+      } catch (error) {
+        throw new CryptoError(
+          'Invalid salt: must be Uint8Array or valid base64 string',
+          CryptoErrorCode.INVALID_SALT,
+          error as Error
+        );
+      }
+    } else if (salt instanceof Uint8Array) {
+      saltBytes = salt;
+    } else {
+      throw new CryptoError(
+        'Invalid salt type: must be Uint8Array or base64 string',
+        CryptoErrorCode.INVALID_SALT
+      );
+    }
+
+    // Validate salt length (NIST minimum: 16 bytes, we use 32 bytes)
+    if (saltBytes.length < 16) {
+      throw new CryptoError(
+        `Salt too short: minimum 16 bytes required, got ${saltBytes.length} bytes`,
+        CryptoErrorCode.INVALID_SALT
+      );
+    }
+
+    try {
+      // Step 1: Import master password as key material
+      const passwordKey = await crypto.subtle.importKey(
+        'raw',
+        new TextEncoder().encode(masterPassword),
+        'PBKDF2',
+        false, // not extractable
+        ['deriveKey']
+      );
+
+      // Step 2: Derive AES-GCM key using PBKDF2
+      // Create a new Uint8Array with ArrayBuffer to satisfy TypeScript
+      const saltBuffer = new Uint8Array(saltBytes);
+      
+      const derivedKey = await crypto.subtle.deriveKey(
+        {
+          name: 'PBKDF2',
+          salt: saltBuffer,
+          iterations: PBKDF2_ITERATIONS, // 100,000
+          hash: 'SHA-256',
+        },
+        passwordKey,
+        {
+          name: 'AES-GCM',
+          length: KEY_LENGTH, // 256 bits
+        },
+        false, // not extractable (key cannot be exported)
+        ['encrypt', 'decrypt']
+      );
+
+      return derivedKey;
+    } catch (error) {
+      throw new CryptoError(
+        'Failed to derive encryption key',
+        CryptoErrorCode.KEY_DERIVATION_FAILED,
+        error as Error
+      );
+    }
   }
 
   // ==========================================================================

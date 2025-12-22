@@ -107,11 +107,12 @@
   - Add error handling
   - **Completed**: Implemented hashPassword and verifyPassword with Argon2id, input validation, error handling
 
-- [ ] **TASK-011**: Implement key derivation method
+- [x] **TASK-011**: Implement key derivation method ✅
   - Implement `deriveEncryptionKey(masterPassword: string, salt: string): Promise<CryptoKey>`
   - Use PBKDF2 with 100,000 iterations
   - Use SHA-256 as hash function
   - Return CryptoKey suitable for AES-GCM
+  - **Completed**: Implemented deriveEncryptionKey with PBKDF2-SHA256, 100K iterations, non-extractable keys
 
 - [ ] **TASK-012**: Implement data encryption methods
   - Implement `encryptData(data: any, key: CryptoKey): Promise<{encrypted: string, iv: string, salt: string}>`
