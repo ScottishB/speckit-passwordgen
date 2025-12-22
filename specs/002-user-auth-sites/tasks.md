@@ -1013,6 +1013,21 @@
   - Show success message: "Account deleted successfully"
   - **Completed**: Implemented complete validation logic: validateConfirmationText() checks exact "DELETE" match (case-sensitive), validatePassword() checks non-empty password, updateButtonState() enables/disables confirm button based on both validations. Implemented handleConfirm() method: validates both fields, calls authService.deleteAccount(userId, password), shows loading state with "Deleting..." button text and spinner, dispatches 'account-deleted' CustomEvent on success, closes modal. Error handling: catches AuthError for incorrect password (shows field-level error), handles generic errors (shows global error). Additional features: handleCancel() dispatches 'account-delete-cancelled' event, keyboard navigation (Enter to submit, Escape to cancel), loading state disables all inputs and buttons, field-level error clearing on input change, focus management (confirmation input focused on show).
 
+### SettingsView Integration (additional work)
+
+- [X] **Integrate SettingsView with navigation** ✅
+  - Added SettingsView import to main.ts
+  - Added settings button to header alongside logout button
+  - Created openSettings() method to display SettingsView in overlay container
+  - Created closeSettings() method to remove overlay
+  - Added openTotpSetup() method to handle 'open-totp-setup' event from SettingsView
+  - Integrated DeleteAccountModal via 'open-delete-account' event listener
+  - Added 'account-deleted' event handler to logout and redirect to auth UI
+  - Added settings.css and sites.css to index.html
+  - Updated SettingsView template to include close button in header
+  - Updated settings.css and auth.css with button and overlay styles
+  - **Completed**: Full settings integration with navigation buttons, modal overlay, event-driven communication between components, proper lifecycle management (cleanup on logout).
+
 ### Password Confirmation Dialog
 
 - [ ] **TASK-098**: Create reusable PasswordConfirmationDialog component
