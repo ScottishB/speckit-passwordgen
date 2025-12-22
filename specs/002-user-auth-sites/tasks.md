@@ -873,13 +873,14 @@
 
 ### SiteDetailModal Component
 
-- [ ] **TASK-082**: Create SiteDetailModal component structure
+- [X] **TASK-082**: Create SiteDetailModal component structure ✅
   - Create `src/components/SiteDetailModal.ts`
   - Add modal overlay and dialog
   - Display all site fields (read-only)
   - Add "Edit", "Delete", "Copy Password", "Regenerate Password" buttons
+  - **Completed**: Created 423-line SiteDetailModal component with modal overlay, dialog structure, read-only display of all site fields (siteName, URL with clickable link, username, password with show/hide toggle, notes, timestamps), and four action buttons with icons. Added comprehensive CSS styling for .site-detail, .site-detail__field, .site-detail__password, .btn-icon, .modal-footer--actions classes with mobile responsive layout.
 
-- [ ] **TASK-083**: Implement SiteDetailModal logic
+- [X] **TASK-083**: Implement SiteDetailModal logic ✅
   - Receive siteId as prop
   - Load site from SiteService
   - Display site details
@@ -887,6 +888,7 @@
   - Handle "Edit" button → open SiteEditModal
   - Handle "Delete" button → show confirmation → delete site
   - Handle "Regenerate Password" → open generator → update site
+  - **Completed**: Implemented async show() method loading site via SiteService.getSite(), togglePassword() for show/hide password functionality, copyPassword() using navigator.clipboard with visual feedback, handleEdit() dispatching 'detail-edit' event with siteId, handleDelete() with window.confirm() confirmation and SiteService.deleteSite() call dispatching 'detail-delete' event, handleRegenerate() dispatching 'detail-regenerate' event. Added comprehensive error handling, keyboard navigation (Escape to close), click-outside-to-close, and proper event cleanup.
 
 ### SiteEditModal Component
 
