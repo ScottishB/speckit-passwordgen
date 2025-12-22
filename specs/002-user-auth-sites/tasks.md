@@ -176,18 +176,20 @@
   - Implement `deleteUser(userId: string): Promise<void>`
   - **Completed**: Implemented all 6 user CRUD methods with proper error handling, persistence, and cascade deletion of user data (vault, sessions). Created comprehensive test suite (68 tests) covering all operations.
 
-- [ ] **TASK-020**: Implement session methods in Database
+- [X] **TASK-020**: Implement session methods in Database
   - Implement `saveSession(session: Session): Promise<Session>`
   - Implement `getSession(sessionId: string): Promise<Session | null>`
   - Implement `deleteSession(sessionId: string): Promise<void>`
   - Implement `getUserSessions(userId: string): Promise<Session[]>`
   - Implement `deleteAllUserSessions(userId: string): Promise<void>`
+  - **Completed**: Implemented all 5 session management methods with proper error handling, persistence to localStorage, and idempotent operations. Created comprehensive test suite (64 tests) covering CRUD operations, multi-device sessions, session lifecycle, and persistence.
 
-- [ ] **TASK-021**: Implement encrypted vault methods in Database
+- [X] **TASK-021**: Implement encrypted vault methods in Database
   - Implement `saveVault(vault: EncryptedVault): Promise<void>`
   - Implement `getVault(userId: string): Promise<EncryptedVault | null>`
   - Implement `deleteVault(userId: string): Promise<void>`
   - Use storage key pattern: `pwgen_vault_${userId}`
+  - **Completed**: Vault methods were already implemented in TASK-018 (getVault, saveVault, deleteVault). Created comprehensive test suite (56 tests) covering CRUD operations, multi-user vaults, persistence, cascade deletion, and complex vault structures.
 
 ---
 
