@@ -1,4 +1,4 @@
-# Password Generator
+# Password Manager
 
 A secure, privacy-focused password manager with local-only encryption. Generate strong passwords, manage your sites, and keep your credentials safe—all in your browser. Built with Vite, TypeScript, and browser-based SQLite.
 

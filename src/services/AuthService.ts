@@ -240,9 +240,12 @@ export class AuthService {
     const normalizedUsername = username.trim().toLowerCase();
 
     try {
+      console.log('[AuthService.login] Attempting login for username:', normalizedUsername);
+      
       // Retrieve user by username
       const user = await this.database.getUserByUsername(normalizedUsername);
       if (!user) {
+        console.log('[AuthService.login] User not found');
         // Log failed login attempt (username not found)
         await this.securityLog.logEvent({
           userId: 'unknown',
@@ -252,6 +255,9 @@ export class AuthService {
         });
         throw new AuthError('Invalid username or password');
       }
+      
+      console.log('[AuthService.login] User found:', user.username);
+      console.log('[AuthService.login] Password hash:', user.passwordHash.substring(0, 50) + '...');
 
       // Check if account is locked
       if (user.accountLockedUntil && user.accountLockedUntil > Date.now()) {
@@ -360,6 +366,9 @@ export class AuthService {
       this.currentUser = user;
       this.currentSession = session;
 
+      // Store session ID in localStorage for persistence across page refreshes
+      localStorage.setItem('pwgen_current_session', session.id);
+
       // Log successful login
       await this.securityLog.logEvent({
         userId: user.id,
@@ -459,6 +468,9 @@ export class AuthService {
       if (this.currentSession?.id === sessionId) {
         this.currentUser = null;
         this.currentSession = null;
+        
+        // Remove stored session ID from localStorage
+        localStorage.removeItem('pwgen_current_session');
       }
     } catch (error) {
       throw new Error(`Logout failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -500,6 +512,72 @@ export class AuthService {
   }
 
   /**
+   * Restore session from localStorage
+   * Attempts to restore the user's session on app initialization
+   * 
+   * @returns Promise that resolves to true if session restored successfully, false otherwise
+   * 
+   * @example
+   * ```typescript
+   * await authService.restoreSession();
+   * if (authService.isAuthenticated()) {
+   *   // Session restored, show main app
+   * }
+   * ```
+   */
+  async restoreSession(): Promise<boolean> {
+    try {
+      // Check if there's a stored session ID
+      const storedSessionId = localStorage.getItem('pwgen_current_session');
+      if (!storedSessionId) {
+        console.log('[AuthService.restoreSession] No stored session found');
+        return false;
+      }
+
+      console.log('[AuthService.restoreSession] Found stored session ID, attempting to restore...');
+
+      // Retrieve session from database
+      const session = await this.sessionService.getSession(storedSessionId);
+      if (!session) {
+        console.log('[AuthService.restoreSession] Session not found in database');
+        localStorage.removeItem('pwgen_current_session');
+        return false;
+      }
+
+      // Check if session is expired
+      if (this.sessionService.isSessionExpired(session)) {
+        console.log('[AuthService.restoreSession] Session expired');
+        localStorage.removeItem('pwgen_current_session');
+        await this.sessionService.invalidateSession(storedSessionId);
+        return false;
+      }
+
+      // Retrieve user from database
+      const user = await this.database.getUser(session.userId);
+      if (!user) {
+        console.log('[AuthService.restoreSession] User not found');
+        localStorage.removeItem('pwgen_current_session');
+        await this.sessionService.invalidateSession(storedSessionId);
+        return false;
+      }
+
+      // Restore user and session
+      this.currentUser = user;
+      this.currentSession = session;
+
+      // Update session activity
+      await this.sessionService.updateActivity(session.id);
+
+      console.log('[AuthService.restoreSession] Session restored successfully for user:', user.username);
+      return true;
+    } catch (error) {
+      console.error('[AuthService.restoreSession] Error restoring session:', error);
+      localStorage.removeItem('pwgen_current_session');
+      return false;
+    }
+  }
+
+  /**
    * Check if user is authenticated
    * 
    * @returns True if user is authenticated with a valid session, false otherwise
@@ -522,6 +600,7 @@ export class AuthService {
     if (this.sessionService.isSessionExpired(this.currentSession)) {
       this.currentUser = null;
       this.currentSession = null;
+      localStorage.removeItem('pwgen_current_session');
       return false;
     }
 
@@ -715,20 +794,27 @@ export class AuthService {
     }
 
     try {
+      console.log('[AuthService.enable2FA] Starting 2FA setup for userId:', userId);
+      
       // Retrieve user
       const user = await this.database.getUser(userId);
       if (!user) {
         throw new Error('User not found');
       }
+      console.log('[AuthService.enable2FA] User found:', user.username);
 
       // Generate TOTP secret
       const secret = this.totpService.generateSecret();
+      console.log('[AuthService.enable2FA] Secret generated, length:', secret?.length);
 
       // Generate QR code
       const qrCode = await this.totpService.generateQRCode(secret, user.username);
+      console.log('[AuthService.enable2FA] QR code generated, length:', qrCode?.length);
+      console.log('[AuthService.enable2FA] QR code starts with:', qrCode?.substring(0, 30));
 
       // Generate backup codes
       const backupCodes = this.totpService.generateBackupCodes();
+      console.log('[AuthService.enable2FA] Backup codes generated:', backupCodes.length);
 
       // Hash backup codes for storage
       const hashedBackupCodes = await Promise.all(
@@ -741,6 +827,12 @@ export class AuthService {
         backupCodes: hashedBackupCodes,
         backupCodesUsed: [],
       });
+      console.log('[AuthService.enable2FA] User updated with 2FA settings');
+
+      // Refresh currentUser if this is the logged-in user
+      if (this.currentUser && this.currentUser.id === userId) {
+        this.currentUser = await this.database.getUser(userId);
+      }
 
       // Log 2FA enabled event
       await this.securityLog.logEvent({
@@ -757,12 +849,56 @@ export class AuthService {
         backupCodes,
       };
     } catch (error) {
+      console.error('[AuthService.enable2FA] Error:', error);
       throw new Error(`2FA setup failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
-  /**
-   * Disable two-factor authentication for a user
+  /**   * Clears 2FA setup data when user skips setup during registration
+   * 
+   * Used when user declines to set up 2FA during initial registration.
+   * Does not require password confirmation since it's part of registration flow.
+   * 
+   * @param userId - The user ID to clear 2FA setup for
+   * @returns Promise resolving when 2FA setup is cleared
+   * @throws Error if user not found or clear fails
+   * 
+   * @example
+   * ```typescript
+   * await authService.clear2FASetup(userId);
+   * ```
+   */
+  async clear2FASetup(userId: string): Promise<void> {
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+
+    try {
+      // Retrieve user
+      const user = await this.database.getUser(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Clear TOTP secret and backup codes
+      await this.database.updateUser(userId, {
+        totpSecret: null,
+        backupCodes: [],
+        backupCodesUsed: [],
+      });
+
+      // Refresh currentUser if this is the logged-in user
+      if (this.currentUser && this.currentUser.id === userId) {
+        this.currentUser = await this.database.getUser(userId);
+      }
+
+      console.log('[AuthService.clear2FASetup] 2FA setup cleared for user:', userId);
+    } catch (error) {
+      throw new Error(`Clear 2FA setup failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**   * Disable two-factor authentication for a user
    * 
    * Requires password confirmation for security.
    * Clears TOTP secret and backup codes.
@@ -806,6 +942,11 @@ export class AuthService {
         backupCodes: [],
         backupCodesUsed: [],
       });
+
+      // Refresh currentUser if this is the logged-in user
+      if (this.currentUser && this.currentUser.id === userId) {
+        this.currentUser = await this.database.getUser(userId);
+      }
 
       // Log 2FA disabled event
       await this.securityLog.logEvent({
@@ -868,6 +1009,11 @@ export class AuthService {
         backupCodes: hashedBackupCodes,
         backupCodesUsed: [],
       });
+
+      // Refresh currentUser if this is the logged-in user
+      if (this.currentUser && this.currentUser.id === userId) {
+        this.currentUser = await this.database.getUser(userId);
+      }
 
       // Log backup code regeneration event
       await this.securityLog.logEvent({

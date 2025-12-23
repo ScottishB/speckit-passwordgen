@@ -3,17 +3,18 @@
  * 
  * This is a minimal type definition for the argon2-browser library
  * based on its actual API usage in the application.
+ * 
+ * argon2-browser is a UMD module that exports an object containing
+ * hash and verify functions.
  */
 
 declare module 'argon2-browser' {
   /**
-   * Argon2 algorithm types
+   * Argon2 algorithm type codes
+   * Note: argon2-browser uses numeric codes
+   * 0 = Argon2d, 1 = Argon2i, 2 = Argon2id
    */
-  export enum ArgonType {
-    Argon2d = 0,
-    Argon2i = 1,
-    Argon2id = 2,
-  }
+  export type ArgonType = 0 | 1 | 2;
 
   /**
    * Options for Argon2 hash operation
@@ -31,7 +32,7 @@ declare module 'argon2-browser' {
     hashLen: number;
     /** Degree of parallelism */
     parallelism: number;
-    /** Argon2 variant (Argon2d, Argon2i, or Argon2id) */
+    /** Argon2 variant: 0=Argon2d, 1=Argon2i, 2=Argon2id */
     type: ArgonType;
   }
 
@@ -43,7 +44,7 @@ declare module 'argon2-browser' {
     encoded: string;
     /** Raw hash bytes */
     hash: Uint8Array;
-    /** Hash length in bytes */
+    /** Hex-encoded hash */
     hashHex: string;
   }
 
@@ -58,13 +59,19 @@ declare module 'argon2-browser' {
   }
 
   /**
-   * Hash a password with Argon2
+   * The argon2-browser module exports an object with these functions
    */
-  export function hash(options: Argon2HashOptions): Promise<Argon2HashResult>;
+  interface Argon2Module {
+    ArgonType: {
+      Argon2d: 0;
+      Argon2i: 1;
+      Argon2id: 2;
+    };
+    hash(options: Argon2HashOptions): Promise<Argon2HashResult>;
+    verify(options: Argon2VerifyOptions): Promise<boolean>;
+    unloadRuntime(): void;
+  }
 
-  /**
-   * Verify a password against an Argon2 hash
-   * @returns true if password matches, false otherwise
-   */
-  export function verify(options: Argon2VerifyOptions): Promise<boolean>;
+  const argon2: Argon2Module;
+  export default argon2;
 }

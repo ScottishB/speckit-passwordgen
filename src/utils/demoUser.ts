@@ -29,10 +29,6 @@ export async function initializeDemoUser(
   database: Database
 ): Promise<void> {
   try {
-    // Small delay to ensure argon2-browser WASM is loaded
-    // Argon2 requires WASM initialization which may not be ready immediately
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
     // Check if demo user already exists
     const existingUser = await database.getUserByUsername(DEMO_USER.username);
     

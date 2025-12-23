@@ -88,6 +88,10 @@ export class PasswordConfirmationDialog {
    * Renders the dialog HTML
    */
   private render(message: string): void {
+    // Remove any existing password confirmation modals before creating a new one
+    const existingModals = this.container.querySelectorAll('.modal-overlay[aria-labelledby="password-confirm-title"]');
+    existingModals.forEach(modal => modal.remove());
+
     const html = `
       <div class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="password-confirm-title">
         <div class="modal-dialog">
@@ -157,7 +161,10 @@ export class PasswordConfirmationDialog {
    * Caches DOM element references
    */
   private cacheElements(): void {
-    this.modal = this.container.querySelector('.modal-overlay');
+    // Get all password confirmation modals and use the last one (most recently added)
+    const modals = this.container.querySelectorAll('.modal-overlay[aria-labelledby="password-confirm-title"]');
+    this.modal = modals[modals.length - 1] as HTMLElement;
+    
     this.passwordInput = this.modal?.querySelector('#password-confirm-input') as HTMLInputElement;
     this.confirmButton = this.modal?.querySelector('[data-action="confirm"]') as HTMLButtonElement;
     this.cancelButton = this.modal?.querySelector('[data-action="cancel"]') as HTMLButtonElement;

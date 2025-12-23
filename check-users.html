@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check Users in localStorage</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-top: 0;
+    }
+    .user-card {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      padding: 15px;
+      margin: 10px 0;
+    }
+    .user-card h3 {
+      margin: 0 0 10px 0;
+      color: #495057;
+    }
+    .user-info {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: #666;
+    }
+    .user-info div {
+      margin: 5px 0;
+    }
+    .label {
+      font-weight: bold;
+      color: #333;
+    }
+    .empty {
+      color: #999;
+      font-style: italic;
+      text-align: center;
+      padding: 40px;
+    }
+    .stats {
+      background: #e7f3ff;
+      border: 1px solid #b3d9ff;
+      border-radius: 4px;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .stats h2 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+      color: #0056b3;
+    }
+    button {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #c82333;
+    }
+    .success {
+      color: #28a745;
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      padding: 12px;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 User Data Inspector</h1>
+    <div id="results"></div>
+  </div>
+
+  <script>
+    function formatDate(timestamp) {
+      if (!timestamp) return 'Never';
+      return new Date(timestamp).toLocaleString();
+    }
+
+    function checkUsers() {
+      const resultsDiv = document.getElementById('results');
+      
+      try {
+        // Get users from localStorage
+        const usersData = localStorage.getItem('pwgen_users');
+        const sessionsData = localStorage.getItem('pwgen_sessions');
+        
+        if (!usersData) {
+          resultsDiv.innerHTML = '<div class="empty">No users found in localStorage</div>';
+          return;
+        }
+
+        const users = JSON.parse(usersData);
+        const sessions = sessionsData ? JSON.parse(sessionsData) : [];
+
+        // Display stats
+        let html = `
+          <div class="stats">
+            <h2>📊 Statistics</h2>
+            <div><span class="label">Total Users:</span> ${users.length}</div>
+            <div><span class="label">Active Sessions:</span> ${sessions.length}</div>
+            <div><span class="label">Storage Keys:</span> ${Object.keys(localStorage).filter(k => k.startsWith('pwgen_')).length}</div>
+          </div>
+        `;
+
+        // Display each user
+        if (users.length === 0) {
+          html += '<div class="empty">No users registered</div>';
+        } else {
+          users.forEach((user, index) => {
+            const userSessions = sessions.filter(s => s.userId === user.id);
+            const hasVault = localStorage.getItem(`pwgen_vault_${user.id}`) !== null;
+            
+            html += `
+              <div class="user-card">
+                <h3>👤 ${user.username}</h3>
+                <div class="user-info">
+                  <div><span class="label">User ID:</span> ${user.id}</div>
+                  <div><span class="label">Created:</span> ${formatDate(user.createdAt)}</div>
+                  <div><span class="label">Last Login:</span> ${formatDate(user.lastLogin)}</div>
+                  <div><span class="label">Failed Attempts:</span> ${user.failedLoginAttempts || 0}</div>
+                  <div><span class="label">2FA Enabled:</span> ${user.totpSecret ? 'Yes ✅' : 'No ❌'}</div>
+                  <div><span class="label">Active Sessions:</span> ${userSessions.length}</div>
+                  <div><span class="label">Has Vault:</span> ${hasVault ? 'Yes ✅' : 'No ❌'}</div>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        // Add clear button
+        html += `
+          <button onclick="clearAllData()">🗑️ Clear All User Data</button>
+          <div style="color: #666; font-size: 12px; margin-top: 10px;">
+            ⚠️ Warning: This will delete all users, sessions, and vaults
+          </div>
+        `;
+
+        resultsDiv.innerHTML = html;
+      } catch (error) {
+        resultsDiv.innerHTML = `
+          <div style="color: red; padding: 20px;">
+            <strong>Error reading localStorage:</strong><br>
+            ${error.message}
+          </div>
+        `;
+      }
+    }
+
+    function clearAllData() {
+      if (!confirm('Are you sure you want to delete ALL user data? This cannot be undone!')) {
+        return;
+      }
+
+      // Remove all pwgen_ keys
+      const keys = Object.keys(localStorage).filter(k => k.startsWith('pwgen_'));
+      keys.forEach(key => localStorage.removeItem(key));
+
+      document.getElementById('results').innerHTML = 
+        '<div class="success">✅ All user data cleared! Refresh the page to see the demo user recreated.</div>';
+      
+      setTimeout(checkUsers, 2000);
+    }
+
+    // Run on load
+    checkUsers();
+
+    // Add refresh button
+    const container = document.querySelector('.container');
+    const refreshBtn = document.createElement('button');
+    refreshBtn.textContent = '🔄 Refresh';
+    refreshBtn.style.background = '#007bff';
+    refreshBtn.style.marginRight = '10px';
+    refreshBtn.onclick = checkUsers;
+    container.querySelector('h1').after(refreshBtn);
+  </script>
+</body>
+</html>

@@ -252,7 +252,11 @@ export class TotpSetupModal {
    */
   private async initializeTotp(): Promise<void> {
     try {
+      console.log('[TotpSetupModal] Initializing TOTP...');
       const result = await this.authService.enable2FA(this.userId);
+      console.log('[TotpSetupModal] TOTP initialized, secret length:', result.secret?.length);
+      console.log('[TotpSetupModal] QR code data URL length:', result.qrCode?.length);
+      console.log('[TotpSetupModal] Backup codes count:', result.backupCodes?.length);
       
       this.secret = result.secret;
       this.qrCode = result.qrCode;
@@ -262,16 +266,21 @@ export class TotpSetupModal {
       const qrImage = document.getElementById('qr-code-image') as HTMLImageElement;
       const qrLoading = document.getElementById('qr-loading');
       
+      console.log('[TotpSetupModal] QR image element found:', !!qrImage);
+      console.log('[TotpSetupModal] QR loading element found:', !!qrLoading);
+      
       if (qrImage && qrLoading) {
         qrImage.src = this.qrCode;
         qrImage.style.display = 'block';
         qrLoading.style.display = 'none';
+        console.log('[TotpSetupModal] QR code image source set');
       }
       
       // Display manual entry secret
       const manualSecret = document.getElementById('manual-secret');
       if (manualSecret) {
         manualSecret.textContent = this.secret;
+        console.log('[TotpSetupModal] Manual secret displayed');
       }
       
       // Focus on verification input
@@ -279,7 +288,7 @@ export class TotpSetupModal {
         this.verificationInput.focus();
       }
     } catch (error) {
-      console.error('Failed to initialize TOTP:', error);
+      console.error('[TotpSetupModal] Failed to initialize TOTP:', error);
       this.showError('Failed to initialize two-factor authentication. Please try again.');
     }
   }
@@ -426,13 +435,20 @@ export class TotpSetupModal {
   /**
    * Handles skip button click with confirmation
    */
-  private handleSkip(): void {
+  private async handleSkip(): Promise<void> {
     const confirmed = window.confirm(
       'Are you sure you want to skip two-factor authentication?\n\n' +
       'This will leave your account less secure. You can enable 2FA later from your account settings.'
     );
     
     if (confirmed) {
+      try {
+        // Clear the 2FA setup that was initialized
+        await this.authService.clear2FASetup(this.userId);
+        console.log('[TotpSetupModal] 2FA setup cleared after skip');
+      } catch (error) {
+        console.error('[TotpSetupModal] Failed to clear 2FA setup:', error);
+      }
       this.close();
     }
   }

@@ -166,6 +166,10 @@ export class RegisterForm {
           <button type="submit" class="register-form__submit">
             Create Account
           </button>
+
+          <div class="register-form__links">
+            <a href="#login" class="register-form__link">Already have an account? Sign in</a>
+          </div>
         </form>
       </div>
     `;
@@ -203,6 +207,13 @@ export class RegisterForm {
       this.confirmPasswordInput.addEventListener('input', () => this.handleConfirmPasswordInput());
       this.confirmPasswordInput.addEventListener('blur', () => this.validateConfirmPassword());
     }
+
+    // Switch to login form
+    const loginLink = this.container.querySelector('.register-form__link');
+    loginLink?.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.dispatchEvent(new CustomEvent('show-login', { bubbles: true }));
+    });
   }
   
   /**
@@ -604,27 +615,32 @@ export class RegisterForm {
       return;
     }
     
-    // Check username availability
-    if (!this.isUsernameAvailable) {
-      this.showFieldError('username', 'Username is not available');
-      return;
-    }
-    
     const username = this.usernameInput?.value.trim() || '';
     const password = this.passwordInput?.value || '';
     
     this.setLoading(true);
     
     try {
+      // Check username availability if not already checked
+      if (!this.isUsernameAvailable) {
+        const available = await this.authService.isUsernameAvailable(username);
+        if (!available) {
+          this.showFieldError('username', 'Username is already taken');
+          this.setLoading(false);
+          return;
+        }
+      }
+      
       // Register the user
       const user = await this.authService.register(username, password);
       
-      // Dispatch success event with user details
+      // Dispatch success event with user details and password for auto-login
       const successEvent = new CustomEvent('register-success', {
         bubbles: true,
         detail: {
           username: user.username,
-          userId: user.id
+          userId: user.id,
+          password: password // Pass password for auto-login after TOTP setup
         }
       });
       

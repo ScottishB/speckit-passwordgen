@@ -8,7 +8,7 @@ Templates requiring updates: ✅ All templates aligned
 Follow-up TODOs: None
 -->
 
-# Password Generator Constitution
+# Password Manager Constitution
 
 ## Core Principles
 

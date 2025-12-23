@@ -56,7 +56,7 @@ export class TotpService {
    * 
    * @param secret - The base32-encoded TOTP secret
    * @param username - The username for display in authenticator app
-   * @param issuer - Optional issuer name (default: "Password Generator")
+   * @param issuer - Optional issuer name (default: "Password Manager")
    * @returns Promise resolving to QR code data URL
    * @throws Error if QR code generation fails
    * 
@@ -66,7 +66,7 @@ export class TotpService {
    * // Display: <img src={qrCode} alt="TOTP QR Code" />
    * ```
    */
-  async generateQRCode(secret: string, username: string, issuer: string = 'Password Generator'): Promise<string> {
+  async generateQRCode(secret: string, username: string, issuer: string = 'Password Manager'): Promise<string> {
     if (!secret) {
       throw new Error('Secret is required for QR code generation');
     }

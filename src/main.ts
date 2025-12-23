@@ -17,6 +17,7 @@ import { SiteDetailModal } from './components/SiteDetailModal';
 import { SiteEditModal } from './components/SiteEditModal';
 import { DeleteAccountModal } from './components/DeleteAccountModal';
 import { SettingsView } from './components/SettingsView';
+import { SitesListView } from './components/SitesListView';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { initializeDemoUser } from './utils/demoUser';
 
@@ -41,6 +42,7 @@ class AppComponent {
   private siteEditModal: SiteEditModal | null = null;
   private deleteAccountModal: DeleteAccountModal | null = null;
   private settingsView: SettingsView | null = null;
+  private sitesListView: SitesListView | null = null;
   private activeTab: 'password' | 'passphrase' = 'password';
   private isAuthenticated: boolean = false;
   private currentUser: string | null = null;
@@ -95,9 +97,14 @@ class AppComponent {
       // Initialize demo user for testing/demo purposes
       await this.initializeDemoUser();
 
+      // Attempt to restore session from previous login
+      console.log('[App] Attempting to restore session...');
+      const sessionRestored = await this.authService.restoreSession();
+      console.log('[App] Session restored:', sessionRestored);
+
       // Check authentication status
       console.log('[App] Checking authentication status...');
-      this.isAuthenticated = await this.authService.isAuthenticated();
+      this.isAuthenticated = this.authService.isAuthenticated();
       console.log('[App] Authenticated:', this.isAuthenticated);
 
       if (this.isAuthenticated) {
@@ -226,6 +233,7 @@ class AppComponent {
     const main = document.querySelector('main');
     if (main) {
       main.style.display = 'none';
+      main.setAttribute('hidden', '');
     }
 
     // Create auth container if it doesn't exist
@@ -236,6 +244,10 @@ class AppComponent {
       authContainer.className = 'auth-container';
       document.getElementById('app')?.appendChild(authContainer);
     }
+
+    // Make sure auth container is visible
+    authContainer.style.display = 'block';
+    authContainer.removeAttribute('hidden');
 
     // Show login form by default
     this.showLogin();
@@ -262,9 +274,11 @@ class AppComponent {
     }) as EventListener);
 
     // Listen for switch to register
-    loginContainer.addEventListener('show-register', () => {
+    const showRegisterHandler = () => {
       this.showRegister();
-    });
+      window.removeEventListener('show-register', showRegisterHandler);
+    };
+    window.addEventListener('show-register', showRegisterHandler);
   }
 
   private showRegister(): void {
@@ -284,15 +298,17 @@ class AppComponent {
 
     // Listen for registration success
     registerContainer.addEventListener('register-success', ((event: CustomEvent) => {
-      const { username, userId } = event.detail;
+      const { username, userId, password } = event.detail;
       this.currentUser = username;
-      this.handleRegisterSuccess(userId);
+      this.handleRegisterSuccess(userId, password);
     }) as EventListener);
 
     // Listen for switch to login
-    registerContainer.addEventListener('show-login', () => {
+    const showLoginHandler = () => {
       this.showLogin();
-    });
+      window.removeEventListener('show-login', showLoginHandler);
+    };
+    window.addEventListener('show-login', showLoginHandler);
   }
 
   private handleLoginSuccess(): void {
@@ -307,7 +323,7 @@ class AppComponent {
     }, 100);
   }
 
-  private handleRegisterSuccess(userId: string): void {
+  private handleRegisterSuccess(userId: string, password: string): void {
     console.log('[App] Registration successful, showing TOTP setup');
     
     // Create modal container
@@ -324,8 +340,9 @@ class AppComponent {
     );
 
     // Listen for TOTP setup completion
-    modalContainer.addEventListener('totp-setup-complete', ((event: CustomEvent) => {
-      const { isVerified } = event.detail;
+    modalContainer.addEventListener('totp-setup-complete', ((event: Event) => {
+      const customEvent = event as CustomEvent;
+      const { isVerified } = customEvent.detail;
       console.log('[App] TOTP setup complete, verified:', isVerified);
       
       // Remove modal container
@@ -337,6 +354,27 @@ class AppComponent {
         this.showSuccessMessage('Two-factor authentication enabled successfully!');
       }
 
+      // Automatically log the user in after registration
+      this.autoLoginAfterRegistration(userId, password);
+    }) as EventListener);
+  }
+
+  private async autoLoginAfterRegistration(userId: string, password: string): Promise<void> {
+    try {
+      // Get the user to retrieve username for auto-login
+      const user = await this.database.getUser(userId);
+      if (!user) {
+        console.error('[App] Failed to retrieve user for auto-login');
+        this.showErrorMessage('Registration successful. Please log in.');
+        this.showLogin();
+        return;
+      }
+
+      // Automatically log the user in after registration
+      console.log('[App] Auto-logging in user after registration');
+      const session = await this.authService.login(user.username, password);
+      console.log('[App] Auto-login successful, session:', session.id);
+      
       // Mark as authenticated and show main app
       this.isAuthenticated = true;
       this.showLoading(true);
@@ -345,7 +383,11 @@ class AppComponent {
         this.showLoading(false);
         this.setupActivityTracking();
       }, 100);
-    }) as EventListener);
+    } catch (error) {
+      console.error('[App] Auto-login failed:', error);
+      this.showErrorMessage('Registration successful. Please log in.');
+      this.showLogin();
+    }
   }
 
   private async showMainApp(): Promise<void> {
@@ -359,6 +401,13 @@ class AppComponent {
     const main = document.querySelector('main');
     if (main) {
       main.style.display = 'block';
+      main.removeAttribute('hidden');
+    }
+
+    // Add app-container class to #app for modals
+    const app = document.getElementById('app');
+    if (app && !app.classList.contains('app-container')) {
+      app.classList.add('app-container');
     }
 
     // Initialize components if not already done
@@ -383,6 +432,9 @@ class AppComponent {
 
     // Add settings button to header if not present
     this.addSettingsButton();
+
+    // Add sites button to header if not present
+    this.addSitesButton();
   }
 
   private addLogoutButton(): void {
@@ -436,6 +488,39 @@ class AppComponent {
     }
   }
 
+  private addSitesButton(): void {
+    const header = document.querySelector('header');
+    if (!header) return;
+
+    // Check if sites button already exists
+    if (document.getElementById('sites-button')) return;
+
+    // Create sites button
+    const sitesButton = document.createElement('button');
+    sitesButton.id = 'sites-button';
+    sitesButton.className = 'sites-button';
+    sitesButton.textContent = 'Sites';
+    sitesButton.setAttribute('aria-label', 'View saved sites');
+
+    // Add click handler
+    sitesButton.addEventListener('click', () => {
+      this.openSites();
+    });
+
+    // Insert before settings button
+    const settingsButton = document.getElementById('settings-button');
+    if (settingsButton) {
+      header.insertBefore(sitesButton, settingsButton);
+    } else {
+      const logoutButton = document.getElementById('logout-button');
+      if (logoutButton) {
+        header.insertBefore(sitesButton, logoutButton);
+      } else {
+        header.appendChild(sitesButton);
+      }
+    }
+  }
+
   private async handleLogout(): Promise<void> {
     // Show confirmation dialog
     const confirmed = window.confirm('Are you sure you want to log out?');
@@ -457,16 +542,27 @@ class AppComponent {
       this.passphraseForm = null;
       this.historyList = null;
 
-      // Remove logout button
+      // Remove all header buttons
       const logoutButton = document.getElementById('logout-button');
       if (logoutButton) {
         logoutButton.remove();
       }
 
-      // Remove settings button
       const settingsButton = document.getElementById('settings-button');
       if (settingsButton) {
         settingsButton.remove();
+      }
+
+      const sitesButton = document.getElementById('sites-button');
+      if (sitesButton) {
+        sitesButton.remove();
+      }
+
+      // Hide main app
+      const main = document.querySelector('main');
+      if (main) {
+        main.style.display = 'none';
+        main.setAttribute('hidden', '');
       }
 
       // Stop activity tracking
@@ -712,13 +808,10 @@ class AppComponent {
 
     this.settingsView.render();
 
-    // Add close button handler
-    const closeButton = settingsContainer.querySelector('[data-action="close-settings"]');
-    if (closeButton) {
-      closeButton.addEventListener('click', () => {
-        this.closeSettings();
-      }, { once: true });
-    }
+    // Listen for close-settings event
+    window.addEventListener('close-settings', () => {
+      this.closeSettings();
+    }, { once: true });
   }
 
   private closeSettings(): void {
@@ -727,6 +820,68 @@ class AppComponent {
       settingsContainer.remove();
     }
     this.settingsView = null;
+  }
+
+  private openSites(): void {
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      console.error('[App] No current user found');
+      return;
+    }
+
+    // Create a container for sites list if it doesn't exist
+    let sitesContainer = document.getElementById('sites-container');
+    if (!sitesContainer) {
+      sitesContainer = document.createElement('div');
+      sitesContainer.id = 'sites-container';
+      sitesContainer.className = 'sites-container';
+      document.body.appendChild(sitesContainer);
+    }
+
+    // Clean up existing sites view if any
+    if (this.sitesListView) {
+      sitesContainer.innerHTML = '';
+    }
+
+    // Create and render sites list view
+    this.sitesListView = new SitesListView(
+      sitesContainer,
+      this.siteService
+    );
+
+    this.sitesListView.render();
+
+    // Add close button handler
+    const closeButton = sitesContainer.querySelector('[data-action="close-sites"]');
+    if (closeButton) {
+      closeButton.addEventListener('click', () => {
+        this.closeSites();
+      }, { once: true });
+    }
+
+    // Listen for site edit events
+    sitesContainer.addEventListener('site-edit', ((e: CustomEvent) => {
+      const siteId = e.detail?.siteId;
+      if (siteId) {
+        this.openSiteEditModal(siteId);
+      }
+    }) as EventListener);
+
+    // Listen for site detail view events
+    sitesContainer.addEventListener('site-detail', ((e: CustomEvent) => {
+      const siteId = e.detail?.siteId;
+      if (siteId) {
+        this.openSiteDetailModal(siteId);
+      }
+    }) as EventListener);
+  }
+
+  private closeSites(): void {
+    const sitesContainer = document.getElementById('sites-container');
+    if (sitesContainer) {
+      sitesContainer.remove();
+    }
+    this.sitesListView = null;
   }
 
   private openTotpSetup(userId: string): void {

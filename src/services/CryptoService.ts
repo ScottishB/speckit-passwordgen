@@ -14,7 +14,12 @@
  * @module CryptoService
  */
 
-import * as argon2 from 'argon2-browser';
+// Access argon2 from global scope (loaded via script tag)
+declare global {
+  interface Window {
+    argon2: any;
+  }
+}
 
 // ============================================================================
 // Constants
@@ -170,12 +175,54 @@ export interface EncryptionOptions {
  * ```
  */
 export class CryptoService {
+  private argon2Ready: Promise<void>;
+
   /**
    * Creates a new CryptoService instance
    * @throws {CryptoError} If Web Crypto API is not available
    */
   constructor() {
     this.validateEnvironment();
+    // Initialize argon2-browser WASM module (non-blocking)
+    // If this fails, hashPassword will handle it gracefully
+    this.argon2Ready = this.initializeArgon2().catch(error => {
+      console.warn('[CryptoService] Argon2 initialization failed, will retry on first use:', error);
+    });
+  }
+
+  /**
+   * Initializes argon2-browser WASM module
+   * @private
+   */
+  private async initializeArgon2(): Promise<void> {
+    try {
+      console.log('[CryptoService] Initializing Argon2 WASM module...');
+      
+      // Check if argon2 is available on window (loaded via script tag)
+      if (!window.argon2) {
+        throw new Error('argon2-browser not loaded. Make sure the script tag is included in index.html');
+      }
+      
+      console.log('[CryptoService] window.argon2:', window.argon2);
+      console.log('[CryptoService] window.argon2.hash:', window.argon2.hash);
+      
+      // Perform a dummy hash to trigger WASM initialization
+      const dummySalt = new Uint8Array(16);
+      await window.argon2.hash({
+        pass: 'init',
+        salt: dummySalt,
+        time: 1,
+        mem: 1024,
+        hashLen: 32,
+        parallelism: 1,
+        type: 2, // Argon2id type code (0=Argon2d, 1=Argon2i, 2=Argon2id)
+      });
+      console.log('[CryptoService] Argon2 WASM module initialized successfully');
+    } catch (error) {
+      // Initialization failure - log it but don't throw
+      console.error('[CryptoService] Argon2 WASM initialization failed:', error);
+      throw error; // Re-throw so hashPassword knows initialization failed
+    }
   }
 
   // ==========================================================================
@@ -314,19 +361,40 @@ export class CryptoService {
       );
     }
 
+    // Wait for argon2 to be ready
+    try {
+      console.log('[CryptoService] Waiting for Argon2 initialization...');
+      await this.argon2Ready;
+      console.log('[CryptoService] Argon2 ready, proceeding with hash');
+    } catch (error) {
+      // If initialization failed, try again now
+      console.log('[CryptoService] Retrying Argon2 initialization...');
+      try {
+        await this.initializeArgon2();
+        console.log('[CryptoService] Argon2 initialized successfully on retry');
+      } catch (retryError) {
+        console.error('[CryptoService] Argon2 initialization failed on retry:', retryError);
+        throw new CryptoError(
+          'Argon2 WASM module failed to initialize',
+          CryptoErrorCode.ARGON2_UNAVAILABLE,
+          retryError as Error
+        );
+      }
+    }
+
     try {
       // Generate random salt
       const salt = this.generateSalt();
 
       // Hash password with Argon2id
-      const result = await argon2.hash({
+      const result = await window.argon2.hash({
         pass: password,
         salt: salt,
         time: ARGON2_CONFIG.time,
         mem: ARGON2_CONFIG.mem,
         hashLen: ARGON2_CONFIG.hashLen,
         parallelism: ARGON2_CONFIG.parallelism,
-        type: argon2.ArgonType.Argon2id,
+        type: 2, // Argon2id type code (0=Argon2d, 1=Argon2i, 2=Argon2id)
       });
 
       // Return encoded hash string
@@ -386,19 +454,27 @@ export class CryptoService {
       );
     }
 
+    console.log('[CryptoService.verifyPassword] Starting verification');
+    console.log('[CryptoService.verifyPassword] Password:', password);
+    console.log('[CryptoService.verifyPassword] Hash:', hash);
+    
     try {
       // Verify password against hash
       // This function uses constant-time comparison internally
-      const result = await argon2.verify({
+      // Note: argon2.verify() resolves to undefined on SUCCESS, throws on FAILURE
+      console.log('[CryptoService.verifyPassword] Calling window.argon2.verify...');
+      await window.argon2.verify({
         pass: password,
         encoded: hash,
       });
-
-      // Return verification result
-      return result;
+      
+      // If we reach here without throwing, verification succeeded
+      console.log('[CryptoService.verifyPassword] Verification SUCCESS');
+      return true;
     } catch (error) {
+      console.error('[CryptoService.verifyPassword] Verification FAILED:', error);
       // If verification throws, password is incorrect or hash is invalid
-      // Return false instead of throwing to avoid information leakage
+      // Return false instead of re-throwing to avoid information leakage
       return false;
     }
   }

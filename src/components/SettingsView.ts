@@ -268,7 +268,7 @@ export class SettingsView {
    * Cache DOM elements
    */
   private cacheElements(): void {
-    this.twoFASection = this.container.querySelector('#2fa-section');
+    this.twoFASection = this.container.querySelector('[id="2fa-section"]');
     this.sessionsSection = this.container.querySelector('#sessions-section');
     this.accountSection = this.container.querySelector('#account-section');
   }
@@ -347,6 +347,10 @@ export class SettingsView {
    * Attach event listeners
    */
   private attachEventListeners(): void {
+    // Close button
+    const closeButton = this.container.querySelector('[data-action="close-settings"]');
+    closeButton?.addEventListener('click', () => this.handleClose());
+
     // 2FA buttons
     const enable2FABtn = this.container.querySelector('#enable-2fa-btn');
     enable2FABtn?.addEventListener('click', () => this.handleEnable2FA());
@@ -572,6 +576,16 @@ export class SettingsView {
     // Dispatch event to open delete account modal
     window.dispatchEvent(new CustomEvent('open-delete-account', {
       detail: { userId: this.currentUser.id },
+      bubbles: true
+    }));
+  }
+
+  /**
+   * Handle close settings
+   */
+  private handleClose(): void {
+    // Dispatch event to notify parent to close settings
+    window.dispatchEvent(new CustomEvent('close-settings', {
       bubbles: true
     }));
   }

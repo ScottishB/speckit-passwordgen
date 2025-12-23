@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self';">
-  <title>Password Generator</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:;">
+  <title>Password Manager</title>
   <link rel="stylesheet" href="./src/styles/main.css">
   <link rel="stylesheet" href="./src/styles/forms.css">
   <link rel="stylesheet" href="./src/styles/history.css">
@@ -16,11 +16,11 @@
 <body>
   <div id="app">
     <header>
-      <h1>Password Generator</h1>
-      <p class="subtitle">Create secure passwords and passphrases</p>
+      <h1>Password Manager</h1>
+      <p class="subtitle">Manage passwords and passphrases</p>
     </header>
 
-    <main>
+    <main hidden>
       <!-- Tab Navigation -->
       <nav class="tab-nav" role="tablist" aria-label="Generation type">
         <button 
@@ -298,13 +298,15 @@
       </section>
     </main>
 
-    <div id="loading-overlay" class="loading-overlay" hidden>
+    <div id="loading-overlay" class="loading-overlay">
       <div class="spinner" role="status" aria-live="polite">
         <span class="sr-only">Loading...</span>
       </div>
     </div>
   </div>
 
+  <!-- Load argon2-browser as a global script (UMD module) -->
+  <script src="/node_modules/argon2-browser/dist/argon2-bundled.min.js"></script>
   <script type="module" src="./src/main.ts"></script>
 </body>
 </html>

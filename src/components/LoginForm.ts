@@ -164,6 +164,13 @@ export class LoginForm {
     this.usernameInput?.addEventListener('input', () => this.clearFieldError('username'));
     this.passwordInput?.addEventListener('input', () => this.clearFieldError('password'));
     this.totpCodeInput?.addEventListener('input', () => this.clearFieldError('totp-code'));
+
+    // Switch to register form
+    const registerLink = this.container.querySelector('.login-form__link');
+    registerLink?.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.dispatchEvent(new CustomEvent('show-register', { bubbles: true }));
+    });
   }
 
   /**
@@ -373,7 +380,7 @@ export class LoginForm {
 
     // Get form values
     const username = this.usernameInput?.value.trim() || '';
-    const password = this.passwordInput?.value || '';
+    const password = this.passwordInput?.value.trim() || '';
     const totpCode = this.show2FAInput ? (this.totpCodeInput?.value.trim().toUpperCase() || '') : undefined;
 
     // Set loading state
@@ -394,16 +401,16 @@ export class LoginForm {
 
       if (error instanceof AuthError) {
         // Handle specific auth errors
-        if (error.message === '2FA_REQUIRED') {
+        if (error.code === '2FA_REQUIRED') {
           // Show 2FA input
           this.show2FACodeInput();
           this.showError('Two-factor authentication is required. Please enter your code.');
-        } else if (error.message.includes('Account is locked')) {
+        } else if (error.code === 'ACCOUNT_LOCKED' || error.message.includes('Account is locked') || error.message.includes('Account locked')) {
           this.showError('Your account is temporarily locked due to multiple failed login attempts. Please try again later.');
         } else if (error.message.includes('Invalid 2FA code')) {
           this.showFieldError('totp-code', 'Invalid 2FA code. Please try again.');
           this.totpCodeInput?.select();
-        } else if (error.message.includes('Invalid credentials')) {
+        } else if (error.message.includes('Invalid credentials') || error.message.includes('Invalid username or password')) {
           this.showError('Invalid username or password. Please try again.');
           this.passwordInput?.select();
         } else {

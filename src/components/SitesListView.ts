@@ -66,33 +66,36 @@ export class SitesListView {
       <div class="sites-view">
         <div class="sites-view__header">
           <h2 class="sites-view__title">Saved Sites</h2>
-          <div class="sites-view__controls">
-            <div class="sites-view__search">
-              <label for="sites-search" class="sr-only">Search sites</label>
-              <input
-                type="search"
-                id="sites-search"
-                class="sites-view__search-input"
-                placeholder="Search by name or URL..."
-                aria-label="Search sites by name or URL"
-                autocomplete="off"
-              />
-            </div>
-            <div class="sites-view__sort">
-              <label for="sites-sort" class="sr-only">Sort sites</label>
-              <select
-                id="sites-sort"
-                class="sites-view__sort-select"
-                aria-label="Sort sites by"
-              >
-                <option value="dateModified-desc">Recently Modified</option>
-                <option value="dateModified-asc">Oldest Modified</option>
-                <option value="dateAdded-desc">Recently Added</option>
-                <option value="dateAdded-asc">Oldest Added</option>
-                <option value="name-asc">Name (A-Z)</option>
-                <option value="name-desc">Name (Z-A)</option>
-              </select>
-            </div>
+          <button type="button" class="btn btn--secondary" data-action="close-sites" aria-label="Close sites view">
+            Close
+          </button>
+        </div>
+        <div class="sites-view__controls">
+          <div class="sites-view__search">
+            <label for="sites-search" class="sr-only">Search sites</label>
+            <input
+              type="search"
+              id="sites-search"
+              class="sites-view__search-input"
+              placeholder="Search by name or URL..."
+              aria-label="Search sites by name or URL"
+              autocomplete="off"
+            />
+          </div>
+          <div class="sites-view__sort">
+            <label for="sites-sort" class="sr-only">Sort sites</label>
+            <select
+              id="sites-sort"
+              class="sites-view__sort-select"
+              aria-label="Sort sites by"
+            >
+              <option value="dateModified-desc">Recently Modified</option>
+              <option value="dateModified-asc">Oldest Modified</option>
+              <option value="dateAdded-desc">Recently Added</option>
+              <option value="dateAdded-asc">Oldest Added</option>
+              <option value="name-asc">Name (A-Z)</option>
+              <option value="name-desc">Name (Z-A)</option>
+            </select>
           </div>
         </div>
 

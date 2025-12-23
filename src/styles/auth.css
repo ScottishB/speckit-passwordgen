@@ -609,12 +609,13 @@
   }
 }
 /* ============================================================================
-   Logout Button
+   Header Navigation Buttons (Sites, Settings, Logout)
    ========================================================================= */
 
+.sites-button,
+.settings-button,
 .logout-button {
   padding: 0.5rem 1rem;
-  background: #ef4444;
   color: #ffffff;
   border: none;
   border-radius: 0.375rem;
@@ -622,6 +623,37 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  margin-left: 0.5rem;
+}
+
+.sites-button {
+  background: #8b5cf6;
+}
+
+.sites-button:hover {
+  background: #7c3aed;
+}
+
+.sites-button:focus {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+}
+
+.settings-button {
+  background: #3b82f6;
+}
+
+.settings-button:hover {
+  background: #2563eb;
+}
+
+.settings-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.logout-button {
+  background: #ef4444;
 }
 
 .logout-button:hover {
