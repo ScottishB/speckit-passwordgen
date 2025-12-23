@@ -16,7 +16,7 @@ export default defineConfig({
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true,
+        drop_console: false, // Keep console logs for now (development)
         drop_debugger: true,
       },
     },
@@ -24,11 +24,18 @@ export default defineConfig({
   server: {
     port: 5173,
     open: true,
+    fs: {
+      // Allow serving files from the argon2-browser package
+      allow: ['..'],
+    },
   },
   optimizeDeps: {
-    exclude: ['sql.js'],
+    exclude: ['sql.js', 'argon2-browser'],
     esbuildOptions: {
       target: 'es2022',
     },
+  },
+  worker: {
+    format: 'es',
   },
 });
