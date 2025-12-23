@@ -18,6 +18,7 @@ import { SiteEditModal } from './components/SiteEditModal';
 import { DeleteAccountModal } from './components/DeleteAccountModal';
 import { SettingsView } from './components/SettingsView';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { initializeDemoUser } from './utils/demoUser';
 
 class AppComponent {
   private database: Database;
@@ -91,6 +92,9 @@ class AppComponent {
       await this.database.initialize();
       console.log('[App] Database initialized');
 
+      // Initialize demo user for testing/demo purposes
+      await this.initializeDemoUser();
+
       // Check authentication status
       console.log('[App] Checking authentication status...');
       this.isAuthenticated = await this.authService.isAuthenticated();
@@ -117,6 +121,19 @@ class AppComponent {
     } catch (error) {
       console.error('[App] Initialization failed:', error);
       this.handleError(error as Error);
+    }
+  }
+
+  /**
+   * Initializes the demo user for testing and demonstration
+   * @private
+   */
+  private async initializeDemoUser(): Promise<void> {
+    try {
+      await initializeDemoUser(this.authService, this.database);
+    } catch (error) {
+      console.warn('[App] Failed to initialize demo user:', error);
+      // Don't throw - this is non-critical
     }
   }
 

@@ -123,6 +123,10 @@ export class LoginForm {
         <div class="login-form__links">
           <a href="#register" class="login-form__link">Create an account</a>
         </div>
+
+        <div class="login-form__demo-note">
+          <p>💡 <strong>Demo:</strong> Use username <code>test</code> and password <code>test123</code> to demo or create your own account</p>
+        </div>
       </form>
     `;
 
