@@ -10,11 +10,11 @@ import type { Database } from '../services/database';
 
 /**
  * Demo user credentials
- * Password meets requirements: 8+ chars, not in common password list
+ * Password meets all requirements: 12+ chars, uppercase, lowercase, number, special char, not common
  */
 export const DEMO_USER = {
   username: 'test',
-  password: 'Demo1234!',
+  password: 'TestDemo123!',
 } as const;
 
 /**

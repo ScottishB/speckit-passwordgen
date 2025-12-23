@@ -125,7 +125,7 @@ export class LoginForm {
         </div>
 
         <div class="login-form__demo-note">
-          <p>💡 <strong>Demo:</strong> Use username <code>test</code> and password <code>Demo1234!</code> to demo or create your own account</p>
+          <p>💡 <strong>Demo:</strong> Use username <code>test</code> and password <code>TestDemo123!</code> to demo or create your own account</p>
         </div>
       </form>
     `;
