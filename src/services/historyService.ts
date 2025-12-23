@@ -5,14 +5,35 @@ import { Database } from './database';
 export class HistoryService {
   constructor(private database: Database) {}
 
-  async getHistory(limit = 50): Promise<HistoryEntry[]> {
+  /**
+   * Get password/passphrase history for a specific user
+   * @param userId - User ID to filter history by
+   * @param limit - Maximum number of entries to return (default: 50)
+   * @returns Array of history entries for the user
+   */
+  async getHistory(userId: string, limit = 50): Promise<HistoryEntry[]> {
     const credentials = await this.database.getAllCredentials(limit);
-    return credentials.map(c => this.toHistoryEntry(c));
+    // Filter by userId if the credential has a userId field
+    const userCredentials = credentials.filter(c => 
+      (c as any).userId === userId || !(c as any).userId // Include old entries without userId for backward compatibility
+    );
+    return userCredentials.map(c => this.toHistoryEntry(c));
   }
 
-  async getHistoryByType(type: 'password' | 'passphrase', limit = 50): Promise<HistoryEntry[]> {
+  /**
+   * Get password/passphrase history filtered by type for a specific user
+   * @param userId - User ID to filter history by
+   * @param type - Type of credential ('password' or 'passphrase')
+   * @param limit - Maximum number of entries to return (default: 50)
+   * @returns Array of history entries for the user and type
+   */
+  async getHistoryByType(userId: string, type: 'password' | 'passphrase', limit = 50): Promise<HistoryEntry[]> {
     const credentials = await this.database.getCredentialsByType(type, limit);
-    return credentials.map(c => this.toHistoryEntry(c));
+    // Filter by userId if the credential has a userId field
+    const userCredentials = credentials.filter(c => 
+      (c as any).userId === userId || !(c as any).userId // Include old entries without userId for backward compatibility
+    );
+    return userCredentials.map(c => this.toHistoryEntry(c));
   }
 
   toHistoryEntry(credential: GeneratedCredential): HistoryEntry {

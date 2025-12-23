@@ -1,10 +1,14 @@
 import { HistoryService } from '../services/historyService';
+import { AuthService } from '../services/AuthService';
 import { copyToClipboard } from '../services/clipboard';
 
 export class HistoryListComponent {
   private currentFilter: 'all' | 'password' | 'passphrase' = 'all';
 
-  constructor(private historyService: HistoryService) {
+  constructor(
+    private historyService: HistoryService,
+    private authService: AuthService
+  ) {
     this.setupEventListeners();
   }
 
@@ -33,7 +37,13 @@ export class HistoryListComponent {
 
   async loadHistory(limit = 50): Promise<void> {
     try {
-      const entries = await this.historyService.getHistory(limit);
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        this.renderError('Please log in to view history');
+        return;
+      }
+      
+      const entries = await this.historyService.getHistory(user.id, limit);
       this.renderHistory(entries);
     } catch (error) {
       console.error('Failed to load history:', error);
@@ -55,11 +65,17 @@ export class HistoryListComponent {
     }
 
     try {
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        this.renderError('Please log in to view history');
+        return;
+      }
+
       let entries;
       if (type === 'all') {
-        entries = await this.historyService.getHistory();
+        entries = await this.historyService.getHistory(user.id);
       } else {
-        entries = await this.historyService.getHistoryByType(type);
+        entries = await this.historyService.getHistoryByType(user.id, type);
       }
       this.renderHistory(entries);
     } catch (error) {
@@ -70,23 +86,54 @@ export class HistoryListComponent {
 
   async copyHistoryItem(id: number): Promise<void> {
     try {
-      const entries = await this.historyService.getHistory(1000);
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        console.error('No user logged in');
+        return;
+      }
+
+      const entries = await this.historyService.getHistory(user.id, 1000);
       const entry = entries.find(e => e.id === id);
       
       if (entry) {
         const result = await copyToClipboard(entry.value);
         
-        // Show temporary feedback on the item
-        const itemElement = document.querySelector(`[data-history-id="${id}"]`);
-        if (itemElement) {
-          itemElement.textContent = result.message;
+        // Show temporary feedback on the button
+        const buttonElement = document.querySelector(`[data-action="copy"][data-history-id="${id}"]`);
+        if (buttonElement) {
+          const originalText = buttonElement.textContent;
+          buttonElement.textContent = '✓ Copied!';
+          buttonElement.classList.add('success');
           setTimeout(() => {
-            this.refresh();
-          }, 1000);
+            buttonElement.textContent = originalText;
+            buttonElement.classList.remove('success');
+          }, 2000);
         }
       }
     } catch (error) {
       console.error('Failed to copy history item:', error);
+    }
+  }
+
+  async assignHistoryItem(id: number): Promise<void> {
+    try {
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        console.error('No user logged in');
+        return;
+      }
+
+      const entries = await this.historyService.getHistory(user.id, 1000);
+      const entry = entries.find(e => e.id === id);
+      
+      if (entry) {
+        // Dispatch event to open site assignment modal with the password
+        window.dispatchEvent(new CustomEvent('open-assign-modal', {
+          detail: { password: entry.value }
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to assign history item:', error);
     }
   }
 
@@ -112,27 +159,47 @@ export class HistoryListComponent {
         class="history-item" 
         data-history-id="${entry.id}"
         role="listitem"
-        tabindex="0"
         aria-label="${entry.type} generated ${entry.displayTimestamp}">
-        <span class="history-item-type ${entry.type}">${entry.type}</span>
+        <div class="history-item-header">
+          <span class="history-item-type ${entry.type}">${entry.type}</span>
+          <div class="history-item-timestamp">${entry.displayTimestamp}</div>
+        </div>
         <div class="history-item-preview">${entry.preview}</div>
-        <div class="history-item-timestamp">${entry.displayTimestamp}</div>
+        <div class="history-item-actions">
+          <button 
+            type="button" 
+            class="btn btn-copy-history" 
+            data-action="copy" 
+            data-history-id="${entry.id}"
+            aria-label="Copy ${entry.type} to clipboard">
+            Copy
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-assign-history" 
+            data-action="assign" 
+            data-history-id="${entry.id}"
+            aria-label="Assign ${entry.type} to a site">
+            Assign to Site
+          </button>
+        </div>
       </div>
     `).join('');
 
-    // Add click handlers to history items
-    historyList.querySelectorAll('.history-item').forEach(item => {
-      const historyId = parseInt(item.getAttribute('data-history-id') || '0');
-      
-      item.addEventListener('click', () => {
+    // Add click handlers for action buttons
+    historyList.querySelectorAll('[data-action="copy"]').forEach(button => {
+      const historyId = parseInt(button.getAttribute('data-history-id') || '0');
+      button.addEventListener('click', (e) => {
+        e.stopPropagation();
         this.copyHistoryItem(historyId);
       });
+    });
 
-      item.addEventListener('keydown', (e) => {
-        if ((e as KeyboardEvent).key === 'Enter' || (e as KeyboardEvent).key === ' ') {
-          e.preventDefault();
-          this.copyHistoryItem(historyId);
-        }
+    historyList.querySelectorAll('[data-action="assign"]').forEach(button => {
+      const historyId = parseInt(button.getAttribute('data-history-id') || '0');
+      button.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.assignHistoryItem(historyId);
       });
     });
   }

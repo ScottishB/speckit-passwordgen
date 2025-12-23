@@ -94,6 +94,11 @@ export class PasswordFormComponent {
       this.copyPassword();
     });
 
+    // Assign to Site button
+    document.getElementById('password-assign-btn')?.addEventListener('click', () => {
+      this.assignToSite();
+    });
+
     // Keyboard navigation: Enter key to generate
     const form = document.getElementById('password-form');
     form?.addEventListener('keydown', (e) => {
@@ -125,6 +130,21 @@ export class PasswordFormComponent {
     
     const copyBtn = document.getElementById('password-copy-btn') as HTMLButtonElement;
     if (copyBtn) copyBtn.disabled = true;
+    
+    const assignBtn = document.getElementById('password-assign-btn') as HTMLButtonElement;
+    if (assignBtn) {
+      assignBtn.disabled = true;
+      assignBtn.style.display = 'none';
+    }
+  }
+
+  assignToSite(): void {
+    if (!this.currentPassword) return;
+    
+    // Dispatch event for main app to open SiteAssignModal
+    window.dispatchEvent(new CustomEvent('open-assign-modal', {
+      detail: { password: this.currentPassword }
+    }));
   }
 
   generate(): string {
@@ -137,9 +157,15 @@ export class PasswordFormComponent {
         resultDiv.textContent = this.currentPassword;
       }
       
-      // Enable copy button
+      // Enable copy and assign buttons
       const copyBtn = document.getElementById('password-copy-btn') as HTMLButtonElement;
       if (copyBtn) copyBtn.disabled = false;
+      
+      const assignBtn = document.getElementById('password-assign-btn') as HTMLButtonElement;
+      if (assignBtn) {
+        assignBtn.disabled = false;
+        assignBtn.style.display = 'inline-block';
+      }
       
       // Save to database
       this.database.saveCredential({

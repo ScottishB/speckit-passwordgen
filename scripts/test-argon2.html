@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argon2 Password Hashing Prototype</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #results {
+            margin-top: 30px;
+        }
+
+        .result-block {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .result-block.success {
+            border-left-color: #28a745;
+        }
+
+        .result-block.error {
+            border-left-color: #dc3545;
+        }
+
+        .result-block h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .result-line {
+            padding: 8px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #555;
+            word-break: break-all;
+        }
+
+        .divider {
+            border-top: 1px solid #ddd;
+            margin: 10px 0;
+        }
+
+        .performance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .performance-table th,
+        .performance-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 13px;
+        }
+
+        .performance-table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pass {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Argon2 Password Hashing Prototype</h1>
+        <p class="subtitle">Testing Argon2id password hashing performance and verification</p>
+
+        <div class="info-box">
+            <strong>About Argon2id:</strong> Winner of the Password Hashing Competition (2015).
+            Provides protection against GPU/ASIC attacks and side-channel attacks.
+            <strong>Target:</strong> Hash generation in &lt;2 seconds.
+        </div>
+
+        <div class="input-group">
+            <label for="passwordInput">Password to Hash:</label>
+            <input type="password" id="passwordInput" value="TestPassword123!@#" placeholder="Enter password">
+        </div>
+
+        <div class="input-group">
+            <label for="verifyInput">Password to Verify (optional):</label>
+            <input type="password" id="verifyInput" placeholder="Enter password for verification">
+        </div>
+
+        <button onclick="testArgon2()">Test Hash Generation</button>
+        <button onclick="testVerification()">Test Verification</button>
+        <button onclick="testParameters()">Test Different Parameters</button>
+
+        <div id="results"></div>
+    </div>
+
+    <script type="module">
+        // Import argon2-browser
+        import argon2 from 'https://cdn.jsdelivr.net/npm/argon2-browser@1.18.0/dist/argon2-bundled.min.js';
+
+        let lastHash = null;
+
+        window.testArgon2 = async function() {
+            const password = document.getElementById('passwordInput').value;
+            if (!password) {
+                alert('Please enter a password');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="result-block"><h3>⏳ Hashing password...</h3></div>';
+
+            try {
+                const startTime = performance.now();
+
+                const result = await argon2.hash({
+                    pass: password,
+                    salt: 'somesalt16bytes!', // In production, use crypto.getRandomValues
+                    time: 3,        // Number of iterations
+                    mem: 65536,     // Memory in KiB (64 MiB)
+                    hashLen: 32,    // Hash length in bytes
+                    parallelism: 1, // Degree of parallelism
+                    type: argon2.ArgonType.Argon2id, // Argon2id variant
+                });
+
+                const endTime = performance.now();
+                const duration = endTime - startTime;
+
+                lastHash = result.hashHex;
+
+                const statusClass = duration < 2000 ? 'status-pass' : 'status-fail';
+                const statusText = duration < 2000 ? 'PASS' : 'FAIL';
+
+                resultsDiv.innerHTML = `
+                    <div class="result-block success">
+                        <h3>✅ Hash Generated Successfully</h3>
+                        <div class="result-line"><strong>Password:</strong> ${password}</div>
+                        <div class="result-line"><strong>Hash (Hex):</strong> ${result.hashHex}</div>
+                        <div class="result-line"><strong>Hash (Base64):</strong> ${result.hash}</div>
+                        <div class="divider"></div>
+                        <div class="result-line"><strong>Time:</strong> ${duration.toFixed(2)}ms</div>
+                        <div class="result-line"><strong>Status:</strong> <span class="${statusClass}">${statusText}</span> (target: &lt;2000ms)</div>
+                        <div class="divider"></div>
+                        <div class="result-line"><strong>Parameters:</strong></div>
+                        <div class="result-line">• Type: Argon2id</div>
+                        <div class="result-line">• Time cost (iterations): 3</div>
+                        <div class="result-line">• Memory cost: 65536 KiB (64 MiB)</div>
+                        <div class="result-line">• Parallelism: 1</div>
+                        <div class="result-line">• Hash length: 32 bytes</div>
+                    </div>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="result-block error">
+                        <h3>❌ Error</h3>
+                        <div class="result-line">${error.message}</div>
+                    </div>
+                `;
+            }
+        };
+
+        window.testVerification = async function() {
+            const password = document.getElementById('verifyInput').value;
+            if (!password) {
+                alert('Please enter a password to verify');
+                return;
+            }
+            if (!lastHash) {
+                alert('Please generate a hash first');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="result-block"><h3>⏳ Verifying password...</h3></div>';
+
+            try {
+                const startTime = performance.now();
+
+                const result = await argon2.verify({
+                    pass: password,
+                    encoded: lastHash,
+                });
+
+                const endTime = performance.now();
+                const duration = endTime - startTime;
+
+                const resultClass = result ? 'success' : 'error';
+                const icon = result ? '✅' : '❌';
+                const message = result ? 'Password Matches!' : 'Password Does Not Match';
+
+                resultsDiv.innerHTML = `
+                    <div class="result-block ${resultClass}">
+                        <h3>${icon} ${message}</h3>
+                        <div class="result-line"><strong>Input Password:</strong> ${password}</div>
+                        <div class="result-line"><strong>Stored Hash:</strong> ${lastHash}</div>
+                        <div class="divider"></div>
+                        <div class="result-line"><strong>Verification Time:</strong> ${duration.toFixed(2)}ms</div>
+                        <div class="result-line"><strong>Match Result:</strong> ${result}</div>
+                    </div>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="result-block error">
+                        <h3>❌ Error</h3>
+                        <div class="result-line">${error.message}</div>
+                    </div>
+                `;
+            }
+        };
+
+        window.testParameters = async function() {
+            const password = 'TestPassword123!@#';
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="result-block"><h3>⏳ Testing different parameter combinations...</h3></div>';
+
+            const tests = [
+                { time: 2, mem: 32768, label: 'Light (2 iter, 32 MiB)' },
+                { time: 3, mem: 65536, label: 'Recommended (3 iter, 64 MiB)' },
+                { time: 4, mem: 65536, label: 'Strong (4 iter, 64 MiB)' },
+                { time: 3, mem: 131072, label: 'High Memory (3 iter, 128 MiB)' },
+            ];
+
+            const results = [];
+
+            for (const test of tests) {
+                try {
+                    const startTime = performance.now();
+                    await argon2.hash({
+                        pass: password,
+                        salt: 'somesalt16bytes!',
+                        time: test.time,
+                        mem: test.mem,
+                        hashLen: 32,
+                        parallelism: 1,
+                        type: argon2.ArgonType.Argon2id,
+                    });
+                    const endTime = performance.now();
+                    const duration = endTime - startTime;
+
+                    results.push({
+                        label: test.label,
+                        time: test.time,
+                        mem: test.mem,
+                        duration: duration,
+                        status: duration < 2000 ? 'PASS' : 'FAIL'
+                    });
+                } catch (error) {
+                    results.push({
+                        label: test.label,
+                        time: test.time,
+                        mem: test.mem,
+                        duration: 0,
+                        status: 'ERROR',
+                        error: error.message
+                    });
+                }
+            }
+
+            let tableHTML = `
+                <div class="result-block">
+                    <h3>📊 Parameter Comparison Results</h3>
+                    <table class="performance-table">
+                        <thead>
+                            <tr>
+                                <th>Configuration</th>
+                                <th>Time Cost</th>
+                                <th>Memory (MiB)</th>
+                                <th>Duration (ms)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            for (const result of results) {
+                const statusClass = result.status === 'PASS' ? 'status-pass' : 'status-fail';
+                tableHTML += `
+                    <tr>
+                        <td>${result.label}</td>
+                        <td>${result.time}</td>
+                        <td>${result.mem / 1024}</td>
+                        <td>${result.duration.toFixed(2)}</td>
+                        <td><span class="status-badge ${statusClass}">${result.status}</span></td>
+                    </tr>
+                `;
+            }
+
+            tableHTML += `
+                        </tbody>
+                    </table>
+                    <div class="divider"></div>
+                    <div class="result-line"><strong>Recommendation:</strong> Use "Recommended" parameters (3 iterations, 64 MiB)</div>
+                    <div class="result-line">• Balances security and performance</div>
+                    <div class="result-line">• Completes in &lt;2s on most devices</div>
+                    <div class="result-line">• Aligns with OWASP recommendations</div>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = tableHTML;
+        };
+
+        // Check if argon2-browser loaded
+        console.log('Argon2 loaded:', typeof argon2 !== 'undefined');
+    </script>
+</body>
+</html>

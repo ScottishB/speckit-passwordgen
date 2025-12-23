@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOTP (2FA) Integration Prototype</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        #results {
+            margin-top: 30px;
+        }
+
+        .result-block {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .result-block.success {
+            border-left-color: #28a745;
+        }
+
+        .result-block.error {
+            border-left-color: #dc3545;
+        }
+
+        .result-block h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .result-line {
+            padding: 8px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .result-line code {
+            background: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .divider {
+            border-top: 1px solid #ddd;
+            margin: 10px 0;
+        }
+
+        .token-display {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            letter-spacing: 4px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .countdown {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .countdown-bar {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .countdown-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 1s linear;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .test-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            transition: border-color 0.2s;
+        }
+
+        .test-card:hover {
+            border-color: #667eea;
+        }
+
+        .test-card h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-pass {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 TOTP (2FA) Integration Prototype</h1>
+        <p class="subtitle">Testing Time-based One-Time Password generation and validation using OTPAuth</p>
+
+        <div class="info-box">
+            <strong>About TOTP:</strong> Time-based One-Time Password (RFC 6238) generates 6-digit codes 
+            that change every 30 seconds. Compatible with Google Authenticator, Authy, and other apps.
+        </div>
+
+        <div class="button-group">
+            <button onclick="generateNewSecret()">Generate New Secret</button>
+            <button onclick="generateToken()">Generate Current Token</button>
+            <button onclick="testValidation()">Test Validation</button>
+            <button onclick="testTimeDrift()">Test Time Drift Tolerance</button>
+            <button onclick="startLiveTokens()">Start Live Tokens</button>
+            <button onclick="stopLiveTokens()">Stop Live Tokens</button>
+        </div>
+
+        <div class="input-group">
+            <label for="tokenInput">Enter Token to Validate:</label>
+            <input type="text" id="tokenInput" placeholder="123456" maxlength="6" pattern="[0-9]{6}">
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script type="module">
+        import * as OTPAuth from 'https://cdn.jsdelivr.net/npm/otpauth@9.3.2/dist/otpauth.esm.min.js';
+
+        let currentSecret = null;
+        let currentTOTP = null;
+        let liveInterval = null;
+
+        window.generateNewSecret = function() {
+            const secret = new OTPAuth.Secret({ size: 20 }); // 160 bits
+            currentSecret = secret;
+            
+            // Create TOTP instance
+            currentTOTP = new OTPAuth.TOTP({
+                issuer: 'PasswordGen',
+                label: 'test@example.com',
+                algorithm: 'SHA1',
+                digits: 6,
+                period: 30,
+                secret: secret,
+            });
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <div class="result-block success">
+                    <h3>✅ Secret Generated</h3>
+                    <div class="result-line"><strong>Secret (Base32):</strong> <code>${secret.base32}</code></div>
+                    <div class="result-line"><strong>Secret (Hex):</strong> <code>${secret.hex}</code></div>
+                    <div class="result-line"><strong>Length:</strong> ${secret.buffer.length} bytes (${secret.buffer.length * 8} bits)</div>
+                    <div class="divider"></div>
+                    <div class="result-line"><strong>TOTP URI:</strong></div>
+                    <div class="result-line"><code>${currentTOTP.toString()}</code></div>
+                    <div class="result-line" style="margin-top: 10px;">
+                        <small><em>This URI is used to generate QR codes for authenticator apps</em></small>
+                    </div>
+                </div>
+            `;
+        };
+
+        window.generateToken = function() {
+            if (!currentTOTP) {
+                alert('Please generate a secret first');
+                return;
+            }
+
+            const token = currentTOTP.generate();
+            const timeRemaining = 30 - (Math.floor(Date.now() / 1000) % 30);
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <div class="result-block success">
+                    <h3>🔑 Current Token Generated</h3>
+                    <div class="token-display">${token}</div>
+                    <div class="countdown">Valid for ${timeRemaining} more seconds</div>
+                    <div class="countdown-bar">
+                        <div class="countdown-fill" style="width: ${(timeRemaining / 30) * 100}%"></div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="result-line"><strong>Algorithm:</strong> SHA1</div>
+                    <div class="result-line"><strong>Digits:</strong> 6</div>
+                    <div class="result-line"><strong>Period:</strong> 30 seconds</div>
+                    <div class="result-line"><strong>Timestamp:</strong> ${Math.floor(Date.now() / 1000)}</div>
+                </div>
+            `;
+
+            // Animate countdown
+            let remaining = timeRemaining;
+            const countdownInterval = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(countdownInterval);
+                    return;
+                }
+                const countdownEl = document.querySelector('.countdown');
+                const fillEl = document.querySelector('.countdown-fill');
+                if (countdownEl) countdownEl.textContent = `Valid for ${remaining} more seconds`;
+                if (fillEl) fillEl.style.width = `${(remaining / 30) * 100}%`;
+            }, 1000);
+        };
+
+        window.testValidation = function() {
+            if (!currentTOTP) {
+                alert('Please generate a secret first');
+                return;
+            }
+
+            const tokenInput = document.getElementById('tokenInput').value;
+            if (!tokenInput || tokenInput.length !== 6) {
+                alert('Please enter a 6-digit token');
+                return;
+            }
+
+            // Test validation with different time windows
+            const currentToken = currentTOTP.generate();
+            const isValid = currentTOTP.validate({ token: tokenInput, window: 1 }) !== null;
+            const validationDelta = currentTOTP.validate({ token: tokenInput, window: 1 });
+
+            const resultsDiv = document.getElementById('results');
+            const resultClass = isValid ? 'success' : 'error';
+            const icon = isValid ? '✅' : '❌';
+            const message = isValid ? 'Token is Valid!' : 'Token is Invalid';
+
+            resultsDiv.innerHTML = `
+                <div class="result-block ${resultClass}">
+                    <h3>${icon} ${message}</h3>
+                    <div class="result-line"><strong>Entered Token:</strong> <code>${tokenInput}</code></div>
+                    <div class="result-line"><strong>Current Token:</strong> <code>${currentToken}</code></div>
+                    <div class="result-line"><strong>Validation Result:</strong> ${isValid ? 'Match' : 'No Match'}</div>
+                    ${isValid ? `<div class="result-line"><strong>Time Delta:</strong> ${validationDelta} period(s)</div>` : ''}
+                    <div class="divider"></div>
+                    <div class="result-line"><strong>Window:</strong> ±1 period (±30 seconds)</div>
+                    <div class="result-line">
+                        <small><em>Tokens are valid for current period plus one period before/after</em></small>
+                    </div>
+                </div>
+            `;
+        };
+
+        window.testTimeDrift = function() {
+            if (!currentTOTP) {
+                alert('Please generate a secret first');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="result-block"><h3>⏳ Testing time drift tolerance...</h3></div>';
+
+            // Test tokens at different time offsets
+            const currentTime = Math.floor(Date.now() / 1000);
+            const tests = [
+                { offset: -60, label: '-2 periods (60s ago)' },
+                { offset: -30, label: '-1 period (30s ago)' },
+                { offset: 0, label: 'Current period' },
+                { offset: 30, label: '+1 period (30s future)' },
+                { offset: 60, label: '+2 periods (60s future)' },
+            ];
+
+            const results = tests.map(test => {
+                const testTime = currentTime + test.offset;
+                const token = currentTOTP.generate({ timestamp: testTime * 1000 });
+                
+                // Test with window of 1 (±1 period = ±30s)
+                const isValidWindow1 = currentTOTP.validate({ token, window: 1 }) !== null;
+                
+                // Test with window of 0 (exact match only)
+                const isValidWindow0 = currentTOTP.validate({ token, window: 0 }) !== null;
+
+                return {
+                    label: test.label,
+                    offset: test.offset,
+                    token,
+                    validWindow0: isValidWindow0,
+                    validWindow1: isValidWindow1,
+                };
+            });
+
+            let html = `
+                <div class="result-block">
+                    <h3>📊 Time Drift Tolerance Test Results</h3>
+                    <div class="test-grid">
+            `;
+
+            results.forEach(result => {
+                const statusClass = result.validWindow1 ? 'status-pass' : 'status-fail';
+                const statusText = result.validWindow1 ? 'ACCEPTED' : 'REJECTED';
+                
+                html += `
+                    <div class="test-card">
+                        <h4>${result.label}</h4>
+                        <div class="result-line"><strong>Token:</strong> <code>${result.token}</code></div>
+                        <div class="result-line"><strong>Offset:</strong> ${result.offset}s</div>
+                        <div class="result-line"><strong>Window 0:</strong> ${result.validWindow0 ? '✓' : '✗'}</div>
+                        <div class="result-line"><strong>Window 1:</strong> ${result.validWindow1 ? '✓' : '✗'}</div>
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                    <div class="divider"></div>
+                    <div class="result-line"><strong>Summary:</strong></div>
+                    <div class="result-line">• Window 0: Exact time period only (strict)</div>
+                    <div class="result-line">• Window 1: ±1 period (±30s) tolerance (recommended)</div>
+                    <div class="result-line">• Tokens outside ±30s are rejected</div>
+                    <div class="result-line">• This prevents replay attacks while allowing clock drift</div>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = html;
+        };
+
+        window.startLiveTokens = function() {
+            if (!currentTOTP) {
+                alert('Please generate a secret first');
+                return;
+            }
+
+            if (liveInterval) {
+                return; // Already running
+            }
+
+            const updateLiveTokens = () => {
+                const token = currentTOTP.generate();
+                const timeRemaining = 30 - (Math.floor(Date.now() / 1000) % 30);
+                const timestamp = Math.floor(Date.now() / 1000);
+
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = `
+                    <div class="result-block success">
+                        <h3>🔄 Live Token Generator (Updating)</h3>
+                        <div class="token-display">${token}</div>
+                        <div class="countdown">Expires in ${timeRemaining} seconds</div>
+                        <div class="countdown-bar">
+                            <div class="countdown-fill" style="width: ${(timeRemaining / 30) * 100}%"></div>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="result-line"><strong>Current Time:</strong> ${new Date().toLocaleTimeString()}</div>
+                        <div class="result-line"><strong>Unix Timestamp:</strong> ${timestamp}</div>
+                        <div class="result-line"><strong>Period:</strong> ${Math.floor(timestamp / 30)}</div>
+                        <div class="result-line" style="margin-top: 10px;">
+                            <small><em>Token updates automatically every 30 seconds. Click "Stop Live Tokens" to end.</em></small>
+                        </div>
+                    </div>
+                `;
+            };
+
+            updateLiveTokens();
+            liveInterval = setInterval(updateLiveTokens, 1000);
+        };
+
+        window.stopLiveTokens = function() {
+            if (liveInterval) {
+                clearInterval(liveInterval);
+                liveInterval = null;
+                document.getElementById('results').innerHTML += `
+                    <div class="result-block">
+                        <h3>⏹️ Live Token Generator Stopped</h3>
+                    </div>
+                `;
+            }
+        };
+
+        // Auto-generate secret on load
+        window.addEventListener('load', () => {
+            generateNewSecret();
+        });
+
+        // Cleanup on unload
+        window.addEventListener('beforeunload', () => {
+            if (liveInterval) {
+                clearInterval(liveInterval);
+            }
+        });
+    </script>
+</body>
+</html>
