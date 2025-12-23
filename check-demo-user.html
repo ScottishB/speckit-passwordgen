@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check Demo User in Database</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    pre {
+      background: #2d2d2d;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    .section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #3e3e3e;
+      border-radius: 5px;
+    }
+    h2 {
+      color: #4ec9b0;
+    }
+    .error {
+      color: #f48771;
+    }
+    .success {
+      color: #4ec9b0;
+    }
+    .warning {
+      color: #dcdcaa;
+    }
+    button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #1177bb;
+    }
+  </style>
+</head>
+<body>
+  <h1>Demo User Database Checker</h1>
+  
+  <div class="section">
+    <h2>LocalStorage Contents</h2>
+    <pre id="localStorage-content">Loading...</pre>
+  </div>
+
+  <div class="section">
+    <h2>Users in Database</h2>
+    <pre id="users-content">Loading...</pre>
+  </div>
+
+  <div class="section">
+    <h2>Actions</h2>
+    <button onclick="clearDatabase()">Clear All Data</button>
+    <button onclick="refreshData()">Refresh</button>
+    <button onclick="tryLogin()">Try Login with test/TestDemo123!</button>
+    <div id="action-result"></div>
+  </div>
+
+  <script type="module">
+    function displayData() {
+      // Show localStorage keys
+      const localStorageContent = document.getElementById('localStorage-content');
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        keys.push(`${key}: ${localStorage.getItem(key)?.substring(0, 100)}...`);
+      }
+      localStorageContent.textContent = keys.length > 0 
+        ? keys.join('\n\n') 
+        : 'No items in localStorage';
+
+      // Show users
+      const usersContent = document.getElementById('users-content');
+      const usersData = localStorage.getItem('pwgen_users');
+      if (usersData) {
+        try {
+          const users = JSON.parse(usersData);
+          usersContent.innerHTML = `<span class="success">Found ${users.length} user(s)</span>\n\n` + 
+            JSON.stringify(users, null, 2);
+        } catch (e) {
+          usersContent.innerHTML = `<span class="error">Error parsing users: ${e.message}</span>`;
+        }
+      } else {
+        usersContent.innerHTML = '<span class="warning">No users found in database</span>';
+      }
+    }
+
+    window.clearDatabase = function() {
+      if (confirm('Are you sure you want to clear all localStorage data?')) {
+        localStorage.clear();
+        displayData();
+        document.getElementById('action-result').innerHTML = 
+          '<p class="success">Database cleared! Refresh the main app to recreate demo user.</p>';
+      }
+    };
+
+    window.refreshData = function() {
+      displayData();
+      document.getElementById('action-result').innerHTML = 
+        '<p class="success">Data refreshed</p>';
+    };
+
+    window.tryLogin = async function() {
+      const resultDiv = document.getElementById('action-result');
+      resultDiv.innerHTML = '<p>Attempting login...</p>';
+      
+      try {
+        // Import services
+        const { Database } = await import('./src/services/database.js');
+        const { CryptoService } = await import('./src/services/CryptoService.js');
+        const { SessionService } = await import('./src/services/SessionService.js');
+        const { SecurityLogService } = await import('./src/services/SecurityLogService.js');
+        const { AuthService } = await import('./src/services/AuthService.js');
+
+        // Initialize services
+        const database = new Database();
+        await database.initialize();
+        
+        const crypto = new CryptoService();
+        const sessionService = new SessionService(database, crypto);
+        const securityLog = new SecurityLogService(database);
+        const authService = new AuthService(crypto, sessionService, securityLog, database);
+
+        // Try login
+        const session = await authService.login('test', 'TestDemo123!');
+        
+        resultDiv.innerHTML = `
+          <p class="success">✓ Login successful!</p>
+          <pre>${JSON.stringify(session, null, 2)}</pre>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <p class="error">✗ Login failed: ${error.message}</p>
+          <pre>${error.stack}</pre>
+        `;
+      }
+    };
+
+    // Initial display
+    displayData();
+  </script>
+</body>
+</html>
