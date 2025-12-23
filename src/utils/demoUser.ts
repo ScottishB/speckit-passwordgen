@@ -10,10 +10,11 @@ import type { Database } from '../services/database';
 
 /**
  * Demo user credentials
+ * Password meets requirements: 8+ chars, not in common password list
  */
 export const DEMO_USER = {
   username: 'test',
-  password: 'test123',
+  password: 'Demo1234!',
 } as const;
 
 /**
@@ -44,7 +45,7 @@ export async function initializeDemoUser(
     // Log out if the registration auto-logged in
     const currentSession = authService.getCurrentSession();
     if (currentSession) {
-      await authService.logout(currentSession.sessionId);
+      await authService.logout(currentSession.id);
       console.log('[DemoUser] Logged out after demo user creation');
     }
   } catch (error) {
